@@ -1,0 +1,39 @@
+---
+description: 
+globs: client/src/components/**/*.jsx,client/src/components/**/*.tsx
+alwaysApply: false
+---
+ @base.mdc
+Description: Specific standards for React components in Gambit Chess
+
+# Component Structure
+- Use functional components with hooks
+- Keep components focused on a single responsibility
+- Extract complex logic to custom hooks
+- Implement proper error boundaries
+- Use React.memo for performance optimization when appropriate
+
+# Props and TypeScript
+- Define TypeScript interfaces for all component props
+- Use defaultProps or default parameters
+- Validate props with PropTypes in JavaScript components
+- Document all props with JSDoc comments
+- Use destructuring for props access
+
+# Hooks Usage
+- Follow React hooks rules (no conditionals, loops)
+- Create custom hooks for reusable logic
+- Implement proper cleanup in useEffect
+- Use useMemo and useCallback for performance optimization
+- Prefer useState and useReducer over class components
+
+# React Best Practices
+- Avoid using indexes as keys
+- Implement proper list virtualization for large datasets
+- Use React.Fragment to avoid unnecessary divs
+- Follow accessibility best practices
+- Implement proper loading states
+
+Globs:
+  client/src/components/**/*.jsx
+  client/src/components/**/*.tsx

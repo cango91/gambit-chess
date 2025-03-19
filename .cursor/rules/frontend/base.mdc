@@ -1,0 +1,39 @@
+---
+description: 
+globs: client/src/components/**/*.jsx,client/src/components/**/*.tsx,client/src/hooks/**/*.js,client/src/hooks/**/*.ts
+alwaysApply: false
+---
+ @../main.mdc
+Description: Frontend development guidelines for Gambit Chess
+
+# React Component Standards
+- Create modular, reusable components
+- Implement presentational components without game logic
+- Use custom hooks for game logic and state management
+- Follow unidirectional data flow
+- Add PropTypes or TypeScript interfaces for all components
+
+# Three.js Implementation
+- Encapsulate Three.js rendering in dedicated components
+- Use React refs to manage canvas elements
+- Implement proper cleanup in useEffect hooks
+- Optimize 3D models for performance
+- Create reusable 3D utilities for common operations
+
+# State Management
+- Use React Context + useReducer or Redux for game state
+- Implement state updates through clearly defined actions
+- Isolate networking code from UI components
+- Use standardized DTOs for all network communication
+
+# Style Guidelines
+- Use CSS Modules or styled-components
+- Implement responsive design for mobile compatibility
+- Follow a consistent color scheme and UI language
+- Use GSAP for animations when appropriate
+
+Globs:
+  client/src/components/**/*.jsx
+  client/src/components/**/*.tsx
+  client/src/hooks/**/*.js
+  client/src/hooks/**/*.ts

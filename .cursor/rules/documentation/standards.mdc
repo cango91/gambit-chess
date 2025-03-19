@@ -1,0 +1,68 @@
+---
+description: 
+globs: **/*.js,**/*.jsx,**/*.ts,**/*.tsx,docs/**/*.md
+alwaysApply: false
+---
+ @../main.mdc
+Description: Documentation standards for Gambit Chess project
+
+# JSDoc Standards
+- Use JSDoc format for all component and function documentation
+- Document all parameters and return values
+- Include component dependencies
+- Note state management approach
+- Add usage examples for reusable components
+
+# Component Documentation
+- Follow the template specified in section 6.1 of README:
+  ```javascript
+  /**
+   * @component ComponentName
+   * @description Detailed description of the component's purpose and functionality
+   * @dependencies List of dependencies and imported modules
+   * @props {Type} propName - Description of each prop
+   * @state {Type} stateName - Description of internal state
+   * @methods
+   *   - methodName(param: Type): ReturnType - Description
+   * @events
+   *   - eventName - Description of events emitted
+   * @example
+   *   // Usage example
+   */
+  ```
+
+# Module Documentation
+- Export documentation using the pattern in section 6.2:
+  ```javascript
+  export const __documentation = {
+    name: "ModuleName",
+    purpose: "Description of module purpose",
+    publicAPI: {
+      // Document public methods and properties
+    },
+    dependencies: [
+      // List module dependencies
+    ],
+    stateManagement: "Description of state management approach",
+    implementationStatus: "Complete/In Progress/Planned"
+  };
+  ```
+
+# Architecture Documentation
+- Update architecture diagrams when implementing new components
+- Create sequence diagrams for complex interactions
+- Document design decisions and trade-offs
+- Reference existing documentation rather than duplicating
+
+# Implementation Status Tracking
+- Update implementation status in module documentation
+- Use "Complete/In Progress/Planned" status indicators
+- Document any deviations from original specifications
+- Note any performance optimizations
+
+Globs:
+  **/*.js
+  **/*.jsx
+  **/*.ts
+  **/*.tsx
+  docs/**/*.md

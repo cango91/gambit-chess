@@ -1,0 +1,48 @@
+---
+description: 
+globs: server/src/websocket/**/*.js,server/src/websocket/**/*.ts,server/src/events/**/*.js,server/src/events/**/*.ts
+alwaysApply: false
+---
+ @base.mdc
+Description: WebSocket implementation standards for Gambit Chess
+
+# WebSocket Events
+- Implement WebSocket events defined in section 10.2 of README
+- Use consistent event naming conventions
+- Document all events and their payloads
+- Implement proper event validation
+- Create typed event interfaces
+
+# Connection Management
+- Implement proper authentication for WebSocket connections
+- Handle connection errors gracefully
+- Implement reconnection strategies
+- Manage connection timeouts
+- Track connection status
+
+# Game Session Management
+- Implement room-based game sessions
+- Handle player disconnections gracefully
+- Provide appropriate timeouts for player actions
+- Implement spectator mode functionality
+- Track player presence
+
+# Real-time Updates
+- Send game state updates efficiently
+- Minimize payload size
+- Implement proper error handling for failed updates
+- Support partial state updates when appropriate
+- Ensure consistent event ordering
+
+# WebSocket Security
+- Validate all incoming messages
+- Implement rate limiting for WebSocket events
+- Prevent unauthorized access to game sessions
+- Implement proper session timeouts
+- Log suspicious activity
+
+Globs:
+  server/src/websocket/**/*.js
+  server/src/websocket/**/*.ts
+  server/src/events/**/*.js
+  server/src/events/**/*.ts

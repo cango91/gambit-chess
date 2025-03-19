@@ -1,0 +1,51 @@
+---
+description: 
+globs: **/*.test.js,**/*.spec.js,**/*.test.ts,**/*.spec.ts,tests/**/*.js,tests/**/*.ts
+alwaysApply: false
+---
+ @../main.mdc
+Description: Testing standards for Gambit Chess project
+
+# Unit Testing
+- Write unit tests for all game logic components
+- Test BP allocation and regeneration mechanics
+- Verify duel resolution logic
+- Test board state validation
+- Use Jest or similar testing framework
+- Aim for high test coverage of core game logic
+
+# Integration Testing
+- Test client-server communication
+- Verify game state synchronization
+- Test move validation across network
+- Implement WebSocket communication tests
+- Test API endpoints
+
+# End-to-End Testing
+- Test complete game flow
+- Verify AI opponent behavior
+- Test matchmaking functionality
+- Include mobile compatibility tests
+- Implement performance testing
+
+# Test Organization
+- Group tests by functional area
+- Create test fixtures for common scenarios
+- Use descriptive test names following "should..." pattern
+- Implement test utilities for common operations
+- Mock external dependencies
+
+# Testing Best Practices
+- Keep tests independent and isolated
+- Avoid test interdependencies
+- Clean up test state after each test
+- Use test-driven development where appropriate
+- Document edge cases being tested
+
+Globs:
+  **/*.test.js
+  **/*.spec.js
+  **/*.test.ts
+  **/*.spec.ts
+  tests/**/*.js
+  tests/**/*.ts

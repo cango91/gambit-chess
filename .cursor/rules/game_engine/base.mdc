@@ -1,0 +1,54 @@
+---
+description: 
+globs: client/src/**/*.js,client/src/**/*.ts,client/src/**/*.js,client/src/**/*.ts,shared/src/**/*.js,shared/src/**/*.ts
+alwaysApply: false
+---
+ @../main.mdc
+Description: Game engine and core logic standards for Gambit Chess
+
+# Chess Implementation
+- Implement standard chess rules with proper validation
+- Create clear interfaces for board representation
+- Ensure efficient move generation and validation
+- Implement proper check and checkmate detection
+- Use algebraic notation for move recording
+
+# Battle Points System
+- Implement BP system according to section 7.1 of README
+- Initial BP pool: 39 points per player
+- Set BP Capacity equal to classic chess piece values
+- Enforce maximum BP of 10 for any single piece
+- Implement BP Cost Doubling for allocations beyond capacity
+- Create BP Regeneration mechanics based on chess tactics
+
+# Resource Management Duel
+- Implement duel system following section 7.2 specifications
+- Trigger on any capture attempt
+- Support secret BP allocation
+- Determine duel outcomes based on allocation comparison
+- Implement tactical retreat options for failed captures
+- Track and record duel history
+
+# Game State Tracking
+- Track all required state as specified in section 7.3
+- Maintain current board position
+- Track each player's BP pool
+- Record move and duel history
+- Track game phase transitions
+- Monitor check/checkmate status
+- Implement proper serialization for network transmission
+
+# Testing Requirements
+- Implement unit tests for all game rules
+- Test BP allocation and regeneration mechanics
+- Verify duel resolution logic
+- Validate board state transitions
+- Test edge cases for special chess rules
+
+Globs:
+  client/src/**/*.js
+  client/src/**/*.ts
+  client/src/**/*.js
+  client/src/**/*.ts
+  shared/src/**/*.js
+  shared/src/**/*.ts
