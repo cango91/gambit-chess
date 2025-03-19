@@ -7,6 +7,23 @@ export interface Position {
 }
 
 /**
+ * Chess piece interface
+ */
+export interface Piece {
+  type: PieceType;
+  color: PlayerColor;
+  position: Position;
+  hasMoved: boolean;
+  battlePoints: number;
+  getBPCapacity(): number;
+  allocateBattlePoints(amount: number): number;
+  resetBattlePoints(): void;
+  moveTo(position: Position): void;
+  isLongRangePiece(): boolean;
+  clone(): Piece;
+}
+
+/**
  * Chess piece types
  */
 export enum PieceType {

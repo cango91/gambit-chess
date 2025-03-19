@@ -1,11 +1,30 @@
-// Export types for communication
-import * as Types from './types';
-import * as Rules from './rules';
-import * as Utils from './utils';
-import * as Constants from './constants';
-import * as Events from './events';
+/**
+ * Gambit Chess Shared Module
+ * 
+ * This module contains shared code and interfaces for the Gambit Chess game,
+ * used by both the client and server components.
+ * 
+ * - Types: Game data structures and enums
+ * - Utils: Shared utility functions
+ * - Rules: Basic movement and game rules
+ * - Constants: Game constants and configurations
+ * - Events: WebSocket event types for communication
+ */
 
-export { Types, Rules, Utils, Constants, Events };
+// Export types
+export * from './types';
+
+// Export utilities
+export * from './utils';
+
+// Export rules
+export * from './rules';
+
+// Export constants
+export * from './constants';
+
+// Export events
+export * from './events';
 
 // Export module documentation for reference by other modules
 export const __documentation = {
