@@ -141,7 +141,16 @@ export interface DuelResult {
   defenderPiece: PieceDTO;
   bpSpent: number; // Only shows the requesting client's BP spent
   tacticalRetreatAvailable: boolean;
-  tacticalRetreatPositions: Position[]; // Only included for the player who can retreat
+  retreatOptions?: RetreatOption[]; // Contains positions and their BP costs
+  originalPosition?: Position; // Original position of the attacker before the duel (for tactical retreat)
+}
+
+/**
+ * Retreat option with position and BP cost
+ */
+export interface RetreatOption {
+  position: Position;
+  bpCost: number;
 }
 
 /**
@@ -150,6 +159,7 @@ export interface DuelResult {
 export interface TacticalRetreatRequest {
   gameId: string;
   to: Position;
+  acknowledgedBPCost: number; // The BP cost client acknowledges for the retreat
 }
 
 /**
@@ -190,7 +200,9 @@ export interface GameStateDTO {
     to: Position;
     type: MoveType;
   } | null;
-  availableRetreats: Position[]; // Only populated during tactical retreat phase
+  availableRetreats: RetreatOption[]; // Only populated during tactical retreat phase
+  failedCapturePosition?: Position; // Position of the piece that failed to be captured (for tactical retreat)
+  originalPosition?: Position; // Original position of the attacker before failed capture (for tactical retreat)
 }
 
 /**

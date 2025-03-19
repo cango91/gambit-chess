@@ -9,8 +9,8 @@
     "build": "tsc",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["chess", "game", "server", "vibe-coded"],
+  "author": "cango91",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {

@@ -39,7 +39,21 @@ When a player attempts to capture an opponent's piece with a valid chess move, i
 
 ## Tactical Retreat
 
-If an attacker loses the duel, their turn is forfeited and the attacking piece moves back to its original (non-capturing) position. However; the losing attacker can choose to spend BPs to perform a tactical retreat after a failed attack (only valid for long-range pieces): They can reposition to any unoccupied (non-capturing) AND unblocked square ALONG their axis of attack (diagonal for bishop, horizontal/vertical for rook, depending on axis of attack, diagonal/vertical/horizontal for queen depending on axis of attack)
+If an attacker loses the duel, their turn is forfeited and the attacking piece moves back to its original (non-capturing) position. However; the losing attacker can choose to spend BPs to perform a tactical retreat after a failed attack:
+
+### Long-Range Pieces (Bishop, Rook, Queen)
+They can reposition to any unoccupied (non-capturing) AND unblocked square ALONG their axis of attack (diagonal for bishop, horizontal/vertical for rook, depending on axis of attack, diagonal/vertical/horizontal for queen depending on axis of attack).
+
+### Knights
+Knights can also perform tactical retreats, repositioning to any unoccupied (non-capturing) square along the 3x2 or 2x3 rectangle defined by the 2 possible imaginary L-paths between their original position and the failed attacked square. The retreat path is considered the rectangle defined by the imaginary L shapes that could've been taken by the knight to make the attack, giving the knight a maximum possibility of 4 retreat squares. The BP cost for each square is calculated dynamically: the minimum number of turns it would normally take the knight for moving to that square from its initial (non-capturing) square (this calculation ignores actual board state: as long as a move lands within the board it is considered valid for the purposes of calculating minimum turns).
+
+### BP Costs for Retreats
+For all retreating pieces:
+- Returning to the original position costs 0 BP
+- For any other valid retreat position, the BP cost equals the distance from the original position (measured in squares moved) except for Knights.
+- Knights follow a dynamic cost calculation based on their original (0-cost) position and the target retreat square (minimum number of turns it would normally take the knight to move to that square, ignoring occupied squares)
+
+This tactical retreat system adds depth to failed captures, allowing pieces to reposition strategically even when an attack is unsuccessful.
 
 ## Gameplay Loop
 
