@@ -8,8 +8,14 @@
     "prebuild": "ts-node scripts/generateKnightRetreatTable.js",
     "build": "tsc",
     "test": "jest",
-    "package": "npm pack --pack-destination ./package/"
+    "package": "npm pack --pack-destination ./package/",
+    "docs": "ts-node scripts/generateDocs.js shared"
   },
+  "files": [
+    "dist/**/*",
+    "scripts/generateDocs.js",
+    "README.md"
+  ],
   "keywords": [
     "chess",
     "game",
