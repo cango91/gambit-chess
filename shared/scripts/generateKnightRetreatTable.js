@@ -84,10 +84,14 @@ function generateCompactKey(start, attack) {
 
 /**
  * Creates a bit-packed representation of position and cost
- * Format: first 6 bits for position (3 bits each for x, y), last 3 bits for cost (0-4)
+ * Format: 
+ * - x: 3 bits (bits 6-8), shifted left by 6
+ * - y: 3 bits (bits 3-5), shifted left by 3
+ * - cost: 3 bits (bits 0-2), no shift
+ * Total: 9 bits
  */
 function packRetreatOption(position, cost) {
-  return (position.x << 5) | (position.y << 2) | (cost & 0x7);
+  return (position.x << 6) | (position.y << 3) | (cost & 0x7);
 }
 
 /**

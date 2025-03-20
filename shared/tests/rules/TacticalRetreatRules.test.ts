@@ -53,7 +53,7 @@ describe('TacticalRetreatRules', () => {
       const failedCapturePosition: Position = { x: 5, y: 4 }; // Knight's move away
       
       // Valid retreats are within the rectangle formed by original position and failed capture
-      // For this scenario, valid retreats are: (4,3), (5,3), (3,2), (4,2)
+      // For this scenario, valid retreats would be in a 3x2 rectangle excluding original and failed positions
       const retreatPosition: Position = { x: 4, y: 3 }; // Valid retreat position in the rectangle
       
       const result = TacticalRetreatRules.calculateRetreatBPCost(
@@ -66,7 +66,7 @@ describe('TacticalRetreatRules', () => {
       // We're not testing the exact value, just that it's not -1 (invalid)
       expect(result).not.toBe(-1);
       expect(result).toBeGreaterThanOrEqual(0);
-      expect(result).toBeLessThanOrEqual(3); // Maximum cost is 3 (using 2 bits)
+      expect(result).toBeLessThanOrEqual(7); // Maximum cost is 7 (using 3 bits)
     });
     
     it('should return -1 for invalid retreat position', () => {

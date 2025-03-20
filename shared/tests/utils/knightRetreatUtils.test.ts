@@ -16,9 +16,9 @@ describe('knightRetreatUtils', () => {
 
   describe('unpackRetreatOption', () => {
     it('should correctly unpack a retreat option', () => {
-      // 3 bits for x (3), 3 bits for y (4), 2 bits for cost (2)
-      // (3 << 5) | (4 << 2) | 2 = 96 + 16 + 2 = 114
-      const packedOption = 114;
+      // 3 bits for x (3), 3 bits for y (4), 3 bits for cost (2)
+      // (3 << 6) | (4 << 3) | 2 = 192 + 32 + 2 = 226
+      const packedOption = 226;
       
       const unpacked = unpackRetreatOption(packedOption);
       
@@ -28,27 +28,49 @@ describe('knightRetreatUtils', () => {
     });
 
     it('should handle edge values correctly', () => {
-      // 3 bits for x (7), 3 bits for y (7), 2 bits for cost (3)
-      // (7 << 5) | (7 << 2) | 3 = 224 + 28 + 3 = 255
-      const packedOption = 255;
+      // 3 bits for x (7), 3 bits for y (7), 3 bits for cost (7)
+      // (7 << 6) | (7 << 3) | 7 = 448 + 56 + 7 = 511
+      const packedOption = 511;
       
       const unpacked = unpackRetreatOption(packedOption);
       
       expect(unpacked.position.x).toBe(7);
       expect(unpacked.position.y).toBe(7);
-      expect(unpacked.bpCost).toBe(3);
+      expect(unpacked.bpCost).toBe(7);
     });
 
     it('should unpack the maximum cost value correctly', () => {
-      // 3 bits for x (0), 3 bits for y (1), 2 bits for cost (3 as max)
-      // (0 << 5) | (1 << 2) | 3 = 0 + 4 + 3 = 7
-      const packedOption = 7;
+      // Knight at corner (0,0) attempting capture at (2,1), retreat to (1,1)
+      // This would have a cost of 4 (the max for knights in a corner)
+      // (1 << 6) | (1 << 3) | 4 = 64 + 8 + 4 = 76
+      const packedOption = 76;
       
       const unpacked = unpackRetreatOption(packedOption);
       
-      expect(unpacked.position.x).toBe(0);
+      expect(unpacked.position.x).toBe(1);
       expect(unpacked.position.y).toBe(1);
-      expect(unpacked.bpCost).toBe(3);
+      expect(unpacked.bpCost).toBe(4);
+    });
+    
+    it('should match the packing format used in the generation script', () => {
+      // These values use the corrected bit packing format without overlap
+      const testCases = [
+        // Knight at (3,3) captures at (5,4), retreats to original position
+        { x: 3, y: 3, cost: 0, packed: 192 + 24 + 0 },  // (3 << 6) | (3 << 3) | 0 = 216
+        // Knight at (3,3) captures at (5,4), retreats to (4,3)
+        { x: 4, y: 3, cost: 2, packed: 256 + 24 + 2 },  // (4 << 6) | (3 << 3) | 2 = 282
+        // Knight at (3,3) captures at (5,4), retreats to (5,3)
+        { x: 5, y: 3, cost: 3, packed: 320 + 24 + 3 },  // (5 << 6) | (3 << 3) | 3 = 347
+        // Knight at (3,3) captures at (5,4), retreats to (4,4)
+        { x: 4, y: 4, cost: 2, packed: 256 + 32 + 2 }   // (4 << 6) | (4 << 3) | 2 = 290
+      ];
+      
+      testCases.forEach(tc => {
+        const unpacked = unpackRetreatOption(tc.packed);
+        expect(unpacked.position.x).toBe(tc.x);
+        expect(unpacked.position.y).toBe(tc.y);
+        expect(unpacked.bpCost).toBe(tc.cost);
+      });
     });
   });
 

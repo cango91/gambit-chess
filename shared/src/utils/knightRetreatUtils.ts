@@ -38,12 +38,19 @@ export function generateRetreatKey(
  */
 export function unpackRetreatOption(packedOption: number): RetreatOption {
   // Extract the components from the packed number
-  // - x: 3 bits (0-7), shifted 5 bits left
-  // - y: 3 bits (0-7), shifted 2 bits left
-  // - bpCost: 2 bits (0-3), in the lowest 2 bits
-  const x = (packedOption >> 5) & 0x7;
-  const y = (packedOption >> 2) & 0x7;
-  const bpCost = packedOption & 0x3; // Only using 2 bits for cost (0-3)
+  // CORRECTED bit packing format (to avoid overlap between fields):
+  // - x: 3 bits (bits 6-8) shifted left by 6
+  // - y: 3 bits (bits 3-5) shifted left by 3
+  // - cost: 3 bits (bits 0-2)
+  //
+  // NOTE: This packing format has been updated from the original implementation
+  // to fix a bit overlap issue. The generateKnightRetreatTable.js script has been
+  // similarly updated. You MUST run the pre-build script (npm run prebuild) to
+  // regenerate the retreat table data with the corrected packing format.
+  
+  const x = (packedOption >> 6) & 0x7;   // Extract bits 6-8 (3 bits for x)
+  const y = (packedOption >> 3) & 0x7;   // Extract bits 3-5 (3 bits for y)
+  const bpCost = packedOption & 0x7;     // Extract bits 0-2 (3 bits for cost)
   
   return {
     position: { x, y },
@@ -124,27 +131,25 @@ export function getKnightRetreatOptions(
   // Get compact key for lookup
   const key = generateRetreatKey(originalPosition, failedCapturePosition);
   
+  // Create a base array with the original position (cost 0)
+  const retreatOptions: RetreatOption[] = [{
+    position: { ...originalPosition },
+    bpCost: 0
+  }];
+  
   // If no entry in table, return only the original position
   if (!knightRetreatTable[key]) {
-    return [{
-      position: { ...originalPosition },
-      bpCost: 0
-    }];
+    return retreatOptions;
   }
   
   // Unpack the options from the lookup table
-  const retreatOptions = knightRetreatTable[key].map(packed => unpackRetreatOption(packed));
+  const tableOptions = knightRetreatTable[key].map(packed => unpackRetreatOption(packed));
   
-  // Always ensure original position is included as a valid retreat with cost 0
-  const hasOriginalPosition = retreatOptions.some(option => 
-    option.position.x === originalPosition.x && option.position.y === originalPosition.y
-  );
-  
-  if (!hasOriginalPosition) {
-    retreatOptions.push({
-      position: { ...originalPosition },
-      bpCost: 0
-    });
+  // Add all table options that are not the original position
+  for (const option of tableOptions) {
+    if (option.position.x !== originalPosition.x || option.position.y !== originalPosition.y) {
+      retreatOptions.push(option);
+    }
   }
   
   return retreatOptions;
