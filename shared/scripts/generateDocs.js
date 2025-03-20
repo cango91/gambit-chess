@@ -6,15 +6,17 @@ const { execSync } = require('child_process');
 // Get command line arguments
 const args = process.argv.slice(2);
 const projectName = args[0] || 'shared'; // Default to 'shared' if no argument provided
+const customRootDir = args[1]; // New parameter for custom root directory
 
 // Configuration
-const rootDir = path.resolve(__dirname, '../../');
+const rootDir = customRootDir ? path.resolve(customRootDir) : path.resolve(__dirname, '../../');
 const projectDir = path.resolve(rootDir, projectName);
 const sourceDirectory = path.resolve(projectDir, 'src');
 const outputDirectory = path.resolve(rootDir, 'docs/api', projectName);
 const indexFile = path.resolve(outputDirectory, 'index.md');
 
 console.log(`Generating documentation for ${projectName} module...`);
+console.log(`Root directory: ${rootDir}`);
 console.log(`Source directory: ${sourceDirectory}`);
 console.log(`Output directory: ${outputDirectory}`);
 
