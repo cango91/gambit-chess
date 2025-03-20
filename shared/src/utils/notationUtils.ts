@@ -187,11 +187,22 @@ export function positionToNotation(position: Position): string {
 /**
  * Convert algebraic notation to a position
  * @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object
+ * @returns Position object or null if notation is invalid
  */
-export function notationToPosition(notation: string): Position {
+export function notationToPosition(notation: string): Position | null {
+  // Validate format: should be a letter followed by a number
+  if (!notation || notation.length < 2 || !/^[a-h][1-8]$/.test(notation)) {
+    return null;
+  }
+  
   const file = notation.charCodeAt(0) - 97; // 'a' = 97 in ASCII
   const rank = parseInt(notation.substring(1)) - 1; // Chess ranks start at 1
+  
+  // Validate bounds (redundant with regex check but kept for clarity)
+  if (file < 0 || file > 7 || rank < 0 || rank > 7) {
+    return null;
+  }
+  
   return { x: file, y: rank };
 }
 

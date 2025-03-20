@@ -65,36 +65,64 @@ export class TacticalRetreatRules {
     failedCapturePosition: Position,
     retreatPosition: Position
   ): boolean {
+    // Return to original position is always valid
+    if (originalPosition.x === retreatPosition.x && originalPosition.y === retreatPosition.y) {
+      return true;
+    }
+
     // Knight retreat validation uses a pre-computed lookup table
     if (pieceType === PieceType.KNIGHT) {
       return isValidKnightRetreatPosition(originalPosition, failedCapturePosition, retreatPosition);
     }
     
-    // For long-range pieces:
+    // For long-range pieces, check if retreat is on the same line as the attack
     // Get the attack vector (direction of attack)
     const attackDx = failedCapturePosition.x - originalPosition.x;
     const attackDy = failedCapturePosition.y - originalPosition.y;
-    
-    // Normalize to direction unit vector
-    const attackDirX = attackDx === 0 ? 0 : attackDx > 0 ? 1 : -1;
-    const attackDirY = attackDy === 0 ? 0 : attackDy > 0 ? 1 : -1;
     
     // Get retreat vector
     const retreatDx = retreatPosition.x - originalPosition.x;
     const retreatDy = retreatPosition.y - originalPosition.y;
     
-    // Normalize to direction unit vector
-    const retreatDirX = retreatDx === 0 ? 0 : retreatDx > 0 ? 1 : -1;
-    const retreatDirY = retreatDy === 0 ? 0 : retreatDy > 0 ? 1 : -1;
+    // Check if the retreat is along the same line/diagonal as the attack
+    // For rooks (horizontal/vertical movement)
+    if (pieceType === PieceType.ROOK) {
+      // If attack was horizontal, retreat must be horizontal
+      if (attackDy === 0) {
+        return retreatDy === 0;
+      }
+      // If attack was vertical, retreat must be vertical
+      if (attackDx === 0) {
+        return retreatDx === 0;
+      }
+      return false;
+    }
     
-    // For a valid retreat:
-    // 1. Must be in the opposite direction of attack 
-    // 2. OR returning to original position is always valid
+    // For bishops (diagonal movement)
+    if (pieceType === PieceType.BISHOP) {
+      // Attack and retreat must be on the same diagonal (same absolute slope)
+      return Math.abs(attackDx) === Math.abs(attackDy) && 
+             Math.abs(retreatDx) === Math.abs(retreatDy) &&
+             Math.abs(attackDx/attackDy - retreatDx/retreatDy) < 0.001; // Account for floating point imprecision
+    }
     
-    const isReturnToOriginal = retreatDx === 0 && retreatDy === 0;
-    const isOppositeDirection = (retreatDirX === -attackDirX && retreatDirY === -attackDirY);
+    // For queen (can move in any direction)
+    if (pieceType === PieceType.QUEEN) {
+      // If attack was horizontal/vertical
+      if (attackDx === 0 || attackDy === 0) {
+        // Retreat must be on the same axis
+        return (attackDx === 0 && retreatDx === 0) || (attackDy === 0 && retreatDy === 0);
+      }
+      // If attack was diagonal
+      if (Math.abs(attackDx) === Math.abs(attackDy)) {
+        // Retreat must be on the same diagonal
+        return Math.abs(retreatDx) === Math.abs(retreatDy) &&
+               Math.abs(attackDx/attackDy - retreatDx/retreatDy) < 0.001; // Account for floating point imprecision
+      }
+      return false;
+    }
     
-    return isReturnToOriginal || isOppositeDirection;
+    return false;
   }
 
   /**

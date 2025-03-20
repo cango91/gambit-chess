@@ -38,12 +38,12 @@ export function generateRetreatKey(
  */
 export function unpackRetreatOption(packedOption: number): RetreatOption {
   // Extract the components from the packed number
-  // - x: 3 bits (0-7)
-  // - y: 3 bits (0-7)
-  // - bpCost: 2 bits (0-3)
+  // - x: 3 bits (0-7), shifted 5 bits left
+  // - y: 3 bits (0-7), shifted 2 bits left
+  // - bpCost: 2 bits (0-3), in the lowest 2 bits
   const x = (packedOption >> 5) & 0x7;
   const y = (packedOption >> 2) & 0x7;
-  const bpCost = packedOption & 0x3;
+  const bpCost = packedOption & 0x3; // Only using 2 bits for cost (0-3)
   
   return {
     position: { x, y },
@@ -54,7 +54,7 @@ export function unpackRetreatOption(packedOption: number): RetreatOption {
 /**
  * Decompresses and initializes the knight retreat table
  */
-function initializeKnightRetreatTable(): void {
+export function initializeKnightRetreatTable(): void {
   if (tableInitialized) return;
   
   try {
@@ -108,8 +108,11 @@ function initializeKnightRetreatTable(): void {
 
 /**
  * Gets knight retreat options from the lookup table
+ * @param originalPosition The knight's original position
+ * @param failedCapturePosition The position where the knight's attempted capture failed
+ * @returns Array of valid retreat options with their BP costs
  */
-function getKnightRetreatOptions(
+export function getKnightRetreatOptions(
   originalPosition: Position,
   failedCapturePosition: Position
 ): RetreatOption[] {
@@ -121,19 +124,36 @@ function getKnightRetreatOptions(
   // Get compact key for lookup
   const key = generateRetreatKey(originalPosition, failedCapturePosition);
   
-  // If no entry in table, return empty array
+  // If no entry in table, return only the original position
   if (!knightRetreatTable[key]) {
-    return [];
+    return [{
+      position: { ...originalPosition },
+      bpCost: 0
+    }];
   }
   
-  // Unpack the options
-  return knightRetreatTable[key].map(packed => unpackRetreatOption(packed));
+  // Unpack the options from the lookup table
+  const retreatOptions = knightRetreatTable[key].map(packed => unpackRetreatOption(packed));
+  
+  // Always ensure original position is included as a valid retreat with cost 0
+  const hasOriginalPosition = retreatOptions.some(option => 
+    option.position.x === originalPosition.x && option.position.y === originalPosition.y
+  );
+  
+  if (!hasOriginalPosition) {
+    retreatOptions.push({
+      position: { ...originalPosition },
+      bpCost: 0
+    });
+  }
+  
+  return retreatOptions;
 }
 
 /**
  * Checks if a position is a valid knight retreat position
  */
-function isValidKnightRetreatPosition(
+export function isValidKnightRetreatPosition(
   originalPosition: Position,
   failedCapturePosition: Position,
   retreatPosition: Position
@@ -148,7 +168,7 @@ function isValidKnightRetreatPosition(
 /**
  * Gets the BP cost for a knight retreat
  */
-function getKnightRetreatCost(
+export function getKnightRetreatCost(
   originalPosition: Position,
   failedCapturePosition: Position,
   retreatPosition: Position
@@ -195,11 +215,4 @@ export const __documentation = {
     "Platform-specific decompression (pako for browser, zlib for Node.js)",
     "Compact numeric keys and values for space efficiency"
   ]
-};
-
-export {
-  initializeKnightRetreatTable,
-  getKnightRetreatOptions,
-  isValidKnightRetreatPosition,
-  getKnightRetreatCost
 }; 

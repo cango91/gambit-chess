@@ -84,10 +84,10 @@ function generateCompactKey(start, attack) {
 
 /**
  * Creates a bit-packed representation of position and cost
- * Format: first 6 bits for position (3 bits each for x, y), last 2 bits for cost
+ * Format: first 6 bits for position (3 bits each for x, y), last 3 bits for cost (0-4)
  */
 function packRetreatOption(position, cost) {
-  return (position.x & 0x7) | ((position.y & 0x7) << 3) | ((cost & 0x3) << 6);
+  return (position.x << 5) | (position.y << 2) | (cost & 0x7);
 }
 
 /**
@@ -163,11 +163,11 @@ function generateKnightRetreatTable() {
           // Calculate cost (minimum knight moves required)
           const cost = calculateKnightDistance(startPos, retreatPos);
           
-          // Cap cost at 3 (maximum cost we can store in 2 bits)
-          const cappedCost = Math.min(cost, 3);
+          // No need to cap cost at 3 anymore - we now use 3 bits (0-7)
+          // We expect costs to be 0, 2, 3, or 4 for knights
           
           // Pack position and cost
-          const packedOption = packRetreatOption(retreatPos, cappedCost);
+          const packedOption = packRetreatOption(retreatPos, cost);
           retreatOptions.push(packedOption);
         }
         
