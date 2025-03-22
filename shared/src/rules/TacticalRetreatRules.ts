@@ -169,13 +169,13 @@ export class TacticalRetreatRules {
   }
 
   /**
-   * Check if a retreat move is valid for a piece
+   * Check if a retreat move is valid based on piece movement rules and retreat vectors
    * @param pieceType The type of piece
    * @param originalPosition Position before attack
    * @param failedCapturePosition Position of the piece that wasn't captured
    * @param retreatPosition Position to retreat to
-   * @param hasMoved Whether the piece has moved before (pre-attack)
-   * @returns True if the retreat is valid
+   * @param hasMoved Whether the piece has moved before the attack
+   * @returns True if the retreat move is valid
    */
   static isValidRetreatMove(
     pieceType: PieceType,
@@ -184,55 +184,60 @@ export class TacticalRetreatRules {
     retreatPosition: Position,
     hasMoved: boolean
   ): boolean {
-    // Validate board boundaries
-    if (!isValidPosition(originalPosition) || !isValidPosition(retreatPosition)) {
-      return false;
-    }
-
-    // Check if piece type is eligible for retreat
-    if (![PieceType.BISHOP, PieceType.ROOK, PieceType.QUEEN, PieceType.KNIGHT].includes(pieceType)) {
-      return false;
-    }
-    
     // Return to original position is always valid
-    const isReturningToOriginal = originalPosition.x === retreatPosition.x && originalPosition.y === retreatPosition.y;
-    if (isReturningToOriginal) {
+    if (originalPosition.x === retreatPosition.x && originalPosition.y === retreatPosition.y) {
       return true;
     }
-
-    // For knights, use the lookup table validation
-    if (pieceType === PieceType.KNIGHT) {
-      return isValidKnightRetreatPosition(originalPosition, failedCapturePosition, retreatPosition);
+    
+    // Pawns can't retreat to a new position
+    if (pieceType === PieceType.PAWN) {
+      return false;
     }
     
-    // For long-range pieces:
-    // Retreat must:
-    // 1. Follow the piece's movement pattern
-    // 2. Be on the attack vector (opposite direction)
-    // 3. Not go beyond the failed capture target (if retreating forward)
+    // Kings can only "retreat" by returning to their original position
+    if (pieceType === PieceType.KING) {
+      return false;
+    }
+    
+    // For knights, retreat positions are pre-validated
+    if (pieceType === PieceType.KNIGHT) {
+      if (!isValidKnightRetreatPosition(originalPosition, failedCapturePosition, retreatPosition)) {
+        return false;
+      }
+    } else {
+      // For other pieces, check that the retreat follows the attack vector
+      if (!this.isOnRetreatVector(pieceType, originalPosition, failedCapturePosition, retreatPosition)) {
+        return false;
+      }
+      
+      // Also check that the retreat position is not beyond the failed capture
+      if (this.isBeyondFailedCapture(pieceType, originalPosition, failedCapturePosition, retreatPosition)) {
+        return false;
+      }
+    }
+    
+    // Check that the retreat position is a valid move for the piece
+    // This validates that the piece is moving according to its movement pattern
+    // The hasTargetPiece parameter is false for retreat moves
     const isValidMovement = MovementRules.isValidBasicMove(
-      pieceType, 
-      PlayerColor.WHITE, // Color doesn't matter for movement validation
-      originalPosition, 
-      retreatPosition, 
-      hasMoved
-    );
-    
-    const isOnValidVector = this.isOnRetreatVector(
       pieceType,
+      PlayerColor.WHITE, // Color doesn't matter for non-pawn pieces
       originalPosition,
-      failedCapturePosition,
-      retreatPosition
+      retreatPosition,
+      hasMoved,
+      false // No target piece at retreat position
     );
     
-    const notBeyondFailedCapture = !this.isBeyondFailedCapture(
-      pieceType,
-      originalPosition,
-      failedCapturePosition,
-      retreatPosition
-    );
+    if (!isValidMovement) {
+      return false;
+    }
     
-    return isValidMovement && isOnValidVector && notBeyondFailedCapture;
+    // Ensure position is valid
+    if (!isValidPosition(retreatPosition)) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**

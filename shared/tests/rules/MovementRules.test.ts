@@ -6,49 +6,63 @@ describe('MovementRules', () => {
     it('should allow a white pawn to move one square forward', () => {
       const from: Position = { x: 3, y: 1 };
       const to: Position = { x: 3, y: 2 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, false);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, false, false);
       expect(result).toBe(true);
     });
 
     it('should allow a white pawn to move two squares forward on first move', () => {
       const from: Position = { x: 3, y: 1 };
       const to: Position = { x: 3, y: 3 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, false);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, false, false);
       expect(result).toBe(true);
     });
 
     it('should not allow a white pawn to move two squares forward after first move', () => {
       const from: Position = { x: 3, y: 2 }; // Not starting position
       const to: Position = { x: 3, y: 4 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true, false);
       expect(result).toBe(false);
     });
 
     it('should allow a black pawn to move one square forward', () => {
       const from: Position = { x: 3, y: 6 };
       const to: Position = { x: 3, y: 5 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.BLACK, from, to, false);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.BLACK, from, to, false, false);
       expect(result).toBe(true);
     });
 
     it('should allow a black pawn to move two squares forward on first move', () => {
       const from: Position = { x: 3, y: 6 };
       const to: Position = { x: 3, y: 4 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.BLACK, from, to, false);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.BLACK, from, to, false, false);
       expect(result).toBe(true);
     });
 
-    it('should allow a pawn to capture diagonally', () => {
+    it('should allow a pawn to capture diagonally when there is a target piece', () => {
       const from: Position = { x: 3, y: 3 };
       const to: Position = { x: 4, y: 4 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true, true);
       expect(result).toBe(true);
+    });
+
+    it('should not allow a pawn to move diagonally when there is no target piece', () => {
+      const from: Position = { x: 3, y: 3 };
+      const to: Position = { x: 4, y: 4 };
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true, false);
+      expect(result).toBe(false);
+    });
+
+    it('should not allow a pawn to move forwards when there is a target piece', () => {
+      const from: Position = { x: 3, y: 3 };
+      const to: Position = { x: 3, y: 4 };
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true, true);
+      expect(result).toBe(false);
     });
 
     it('should not allow a pawn to move backwards', () => {
       const from: Position = { x: 3, y: 3 };
       const to: Position = { x: 3, y: 2 };
-      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true);
+      const result = MovementRules['isValidPawnMove'](PlayerColor.WHITE, from, to, true, false);
       expect(result).toBe(false);
     });
   });
@@ -171,7 +185,8 @@ describe('MovementRules', () => {
   });
 
   describe('isValidBasicMove', () => {
-    it('should validate pawn moves correctly', () => {
+    // Pawn tests with hasTargetPiece
+    it('should validate pawn forward moves correctly when no target piece', () => {
       const from: Position = { x: 3, y: 1 };
       const to: Position = { x: 3, y: 2 };
       const result = MovementRules.isValidBasicMove(
@@ -179,11 +194,55 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);
     });
 
+    it('should reject pawn forward moves when there is a target piece', () => {
+      const from: Position = { x: 3, y: 1 };
+      const to: Position = { x: 3, y: 2 };
+      const result = MovementRules.isValidBasicMove(
+        PieceType.PAWN,
+        PlayerColor.WHITE,
+        from, 
+        to, 
+        false,
+        true
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should validate pawn diagonal capture moves when there is a target piece', () => {
+      const from: Position = { x: 3, y: 1 };
+      const to: Position = { x: 4, y: 2 };
+      const result = MovementRules.isValidBasicMove(
+        PieceType.PAWN,
+        PlayerColor.WHITE,
+        from, 
+        to, 
+        false,
+        true
+      );
+      expect(result).toBe(true);
+    });
+
+    it('should reject pawn diagonal moves when there is no target piece', () => {
+      const from: Position = { x: 3, y: 1 };
+      const to: Position = { x: 4, y: 2 };
+      const result = MovementRules.isValidBasicMove(
+        PieceType.PAWN,
+        PlayerColor.WHITE,
+        from, 
+        to, 
+        false,
+        false
+      );
+      expect(result).toBe(false);
+    });
+
+    // Other piece tests
     it('should validate knight moves correctly', () => {
       const from: Position = { x: 3, y: 3 };
       const to: Position = { x: 5, y: 4 };
@@ -192,6 +251,7 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);
@@ -205,6 +265,7 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);
@@ -218,6 +279,7 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);
@@ -231,6 +293,7 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);
@@ -244,6 +307,7 @@ describe('MovementRules', () => {
         PlayerColor.WHITE,
         from, 
         to, 
+        false,
         false
       );
       expect(result).toBe(true);

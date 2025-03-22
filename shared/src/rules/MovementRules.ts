@@ -14,6 +14,7 @@ export class MovementRules {
    * @param from Starting position
    * @param to Destination position
    * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for pawn diagonal moves)
    * @returns True if the move follows the piece's movement pattern
    */
   static isValidBasicMove(
@@ -21,7 +22,8 @@ export class MovementRules {
     pieceColor: PlayerColor,
     from: Position,
     to: Position,
-    hasMoved: boolean
+    hasMoved: boolean,
+    hasTargetPiece: boolean = false
   ): boolean {
     // Validate board boundaries
     if (!isValidPosition(from) || !isValidPosition(to)) {
@@ -35,7 +37,7 @@ export class MovementRules {
 
     switch (pieceType) {
       case PieceType.PAWN:
-        return this.isValidPawnMove(pieceColor, from, to, hasMoved);
+        return this.isValidPawnMove(pieceColor, from, to, hasMoved, hasTargetPiece);
       case PieceType.KNIGHT:
         return this.isValidKnightMove(from, to);
       case PieceType.BISHOP:
@@ -53,13 +55,20 @@ export class MovementRules {
 
   /**
    * Check if a pawn move follows the basic movement pattern
-   * (Note: This does not check for collisions or captures, only the movement pattern)
+   * Includes validation for capture patterns requiring presence of a target piece
+   * @param pieceColor The color of the piece
+   * @param from Starting position
+   * @param to Destination position
+   * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for diagonal captures)
+   * @returns True if the move follows the pawn's movement pattern
    */
   private static isValidPawnMove(
     pieceColor: PlayerColor,
     from: Position,
     to: Position,
-    hasMoved: boolean
+    hasMoved: boolean,
+    hasTargetPiece: boolean = false
   ): boolean {
     const direction = pieceColor === PlayerColor.WHITE ? 1 : -1;
     const startingRow = pieceColor === PlayerColor.WHITE ? 1 : 6;
@@ -68,18 +77,21 @@ export class MovementRules {
     if (from.x === to.x) {
       // Single square forward
       if (to.y === from.y + direction) {
-        return true;
+        // Forward movement is only valid if there's no piece at the destination
+        return !hasTargetPiece;
       }
       
       // Double square forward from starting position
       if (!hasMoved && from.y === startingRow && to.y === from.y + 2 * direction) {
-        return true;
+        return !hasTargetPiece;
       }
     }
     
     // Diagonal movement (potential capture)
+    // Only valid if there's a piece to capture
     if ((to.x === from.x - 1 || to.x === from.x + 1) && to.y === from.y + direction) {
-      return true;
+      return hasTargetPiece;
+      // TODO: Add en passant validation later
     }
     
     return false;

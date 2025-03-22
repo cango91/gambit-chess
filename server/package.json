@@ -8,9 +8,15 @@
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "docs": "node ./node_modules/gambit-chess-shared/scripts/generateDocs.js server $(node scripts/getProjectRoot.js)"
+    "docs": "node ./node_modules/gambit-chess-shared/scripts/generateDocs.js server $(node scripts/getProjectRoot.js)",
+    "lint": "eslint src --ext .ts"
   },
-  "keywords": ["chess", "game", "server", "vibe-coded"],
+  "keywords": [
+    "chess",
+    "game",
+    "server",
+    "vibe-coded"
+  ],
   "author": "cango91",
   "license": "ISC",
   "type": "commonjs",
@@ -19,12 +25,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "gambit-chess-shared": "file:../shared/package/gambit-chess-shared-1.0.0.tgz",
+    "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.1",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
-    "ws": "^8.18.1",
-    "gambit-chess-shared": "file:../shared/package/gambit-chess-shared-1.0.0.tgz"
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -33,13 +39,22 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
-    "@types/pg": "^8.11.11",
     "@types/uuid": "^10.0.0",
     "@types/ws": "^8.18.0",
+    "eslint": "^9.22.0",
     "jest": "^29.7.0",
     "nodemon": "^3.1.9",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*.test.ts"
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "coverage"
   }
 }
