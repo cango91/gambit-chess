@@ -91,11 +91,6 @@ export interface GameConfig {
      */
     knightRetreatCosts: {
       /**
-       * Cost for one-move retreat
-       */
-      oneMove: number;
-      
-      /**
        * Cost for two-move retreat
        */
       twoMove: number;
@@ -104,6 +99,10 @@ export interface GameConfig {
        * Cost for three-move retreat
        */
       threeMove: number;
+       /**
+       * Cost for four-move retreat
+       */
+      fourMove: number;
     };
   };
   
@@ -164,9 +163,9 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
     baseCost: 0,
     distanceMultiplier: 1,
     knightRetreatCosts: {
-      oneMove: 1,
       twoMove: 2,
-      threeMove: 3
+      threeMove: 3,
+      fourMove: 4
     }
   },
   timeControl: {

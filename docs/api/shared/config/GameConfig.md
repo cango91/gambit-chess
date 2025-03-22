@@ -217,16 +217,6 @@ Knight retreat BP cost configuration
      */
 ```
 
-### oneMove (PropertySignature)
-
-Cost for one-move retreat
-
-```typescript
-/**
-       * Cost for one-move retreat
-       */
-```
-
 ### twoMove (PropertySignature)
 
 Cost for two-move retreat
@@ -244,6 +234,16 @@ Cost for three-move retreat
 ```typescript
 /**
        * Cost for three-move retreat
+       */
+```
+
+### fourMove (PropertySignature)
+
+Cost for four-move retreat
+
+```typescript
+/**
+       * Cost for four-move retreat
        */
 ```
 
