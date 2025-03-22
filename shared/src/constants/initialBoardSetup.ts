@@ -45,8 +45,3 @@ export const INITIAL_BOARD_SETUP: PieceDTO[] = [
   { id: 'bn2', type: PieceType.KNIGHT, color: PlayerColor.BLACK, position: { x: 6, y: 7 }, hasMoved: false },
   { id: 'br2', type: PieceType.ROOK, color: PlayerColor.BLACK, position: { x: 7, y: 7 }, hasMoved: false },
 ];
-
-/**
- * Initial Battle Points for each player
- */
-export const INITIAL_BP = 39; // Sum of classic chess piece values 

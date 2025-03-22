@@ -6,7 +6,9 @@ File: `rules/MovementRules.ts`
 
 ### MovementRules (ClassDeclaration)
 
-Basic movement rules that can be shared between client and server.These don't include any security-sensitive features like check detection or full game state validation.
+Basic movement rules that can be shared between client and server.
+These don't include any security-sensitive features like check detection 
+or full game state validation.
 
 ```typescript
 /**
@@ -27,6 +29,7 @@ Check if a move follows the basic movement pattern for a piece
    * @param from Starting position
    * @param to Destination position
    * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for pawn diagonal moves)
    * @returns True if the move follows the piece's movement pattern
 
 ```typescript
@@ -37,18 +40,35 @@ Check if a move follows the basic movement pattern for a piece
    * @param from Starting position
    * @param to Destination position
    * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for pawn diagonal moves)
    * @returns True if the move follows the piece's movement pattern
    */
 ```
 
 ### isValidPawnMove (MethodDeclaration)
 
-Check if a pawn move follows the basic movement pattern(Note: This does not check for collisions or captures, only the movement pattern)
+Check if a pawn move follows the basic movement pattern
+Includes validation for capture patterns requiring presence of a target piece
+
+**Tags:**
+
+- @param pieceColor The color of the piece
+   * @param from Starting position
+   * @param to Destination position
+   * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for diagonal captures)
+   * @returns True if the move follows the pawn's movement pattern
 
 ```typescript
 /**
    * Check if a pawn move follows the basic movement pattern
-   * (Note: This does not check for collisions or captures, only the movement pattern)
+   * Includes validation for capture patterns requiring presence of a target piece
+   * @param pieceColor The color of the piece
+   * @param from Starting position
+   * @param to Destination position
+   * @param hasMoved Whether the piece has moved before
+   * @param hasTargetPiece Whether there is a piece at the destination (for diagonal captures)
+   * @returns True if the move follows the pawn's movement pattern
    */
 ```
 
@@ -104,7 +124,8 @@ Check if a king move follows the basic movement pattern
 
 ### getPositionsBetween (MethodDeclaration)
 
-Get the positions between two points (not including the endpoints)Used to check if a path is clear
+Get the positions between two points (not including the endpoints)
+Used to check if a path is clear
 
 **Tags:**
 

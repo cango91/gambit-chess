@@ -14,622 +14,184 @@ Chess piece interface with Battle Points
  */
 ```
 
-### id (PropertySignature) in MoveNotation
+### positionToAlgebraic (FunctionDeclaration)
 
-Unique identifier for the move
+Convert a position to algebraic notation (e.g., {x: 0, y: 0} to "a1")
 
-```typescript
-/**
-   * Unique identifier for the move
-   */
-```
+**Tags:**
 
-### moveNumber (PropertySignature) in MoveNotation
-
-Move number (e.g., 1 for White's first move, 1.5 for Black's first move)Using half moves where whole numbers are White's moves
+- @param position The position to convert
+ * @returns The position in algebraic notation
 
 ```typescript
 /**
-   * Move number (e.g., 1 for White's first move, 1.5 for Black's first move)
-   * Using half moves where whole numbers are White's moves
-   */
-```
-
-### player (PropertySignature) in MoveNotation
-
-Player who made the move
-
-```typescript
-/**
-   * Player who made the move
-   */
-```
-
-### piece (PropertySignature) in MoveNotation
-
-Piece that was moved
-
-```typescript
-/**
-   * Piece that was moved
-   */
-```
-
-### from (PropertySignature) in MoveNotation
-
-Starting position in algebraic notation (e.g., "e2")
-
-```typescript
-/**
-   * Starting position in algebraic notation (e.g., "e2")
-   */
-```
-
-### to (PropertySignature) in MoveNotation
-
-Target position in algebraic notation (e.g., "e4")
-
-```typescript
-/**
-   * Target position in algebraic notation (e.g., "e4")
-   */
-```
-
-### moveType (PropertySignature) in MoveNotation
-
-Type of move
-
-```typescript
-/**
-   * Type of move
-   */
-```
-
-### capturedPiece (PropertySignature) in MoveNotation
-
-Captured piece type (if any)
-
-```typescript
-/**
-   * Captured piece type (if any)
-   */
-```
-
-### promotedTo (PropertySignature) in MoveNotation
-
-Piece type after promotion (if applicable)
-
-```typescript
-/**
-   * Piece type after promotion (if applicable)
-   */
-```
-
-### isCheck (PropertySignature) in MoveNotation
-
-Whether the move resulted in check
-
-```typescript
-/**
-   * Whether the move resulted in check
-   */
-```
-
-### isCheckmate (PropertySignature) in MoveNotation
-
-Whether the move resulted in checkmate
-
-```typescript
-/**
-   * Whether the move resulted in checkmate
-   */
-```
-
-### duel (PropertySignature) in MoveNotation
-
-Related duel (if move triggered a duel)
-
-```typescript
-/**
-   * Related duel (if move triggered a duel)
-   */
-```
-
-### tacticalRetreat (PropertySignature) in MoveNotation
-
-Related tactical retreat (if a duel resulted in a retreat)
-
-```typescript
-/**
-   * Related tactical retreat (if a duel resulted in a retreat)
-   */
-```
-
-### san (PropertySignature) in MoveNotation
-
-Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qxf7#"
-
-```typescript
-/**
-   * Standard algebraic notation (SAN) representation
-   * e.g., "Nf3", "exd5", "O-O", "Qxf7#"
-   */
-```
-
-### extended (PropertySignature) in MoveNotation
-
-Extended notation for Gambit Chess (includes BP information)
-
-```typescript
-/**
-   * Extended notation for Gambit Chess (includes BP information)
-   */
-```
-
-### MoveNotation (InterfaceDeclaration)
-
-Represents a move in standard algebraic notation with extensions for Gambit Chess
-
-```typescript
-/**
- * Represents a move in standard algebraic notation with extensions for Gambit Chess
+ * Convert a position to algebraic notation (e.g., {x: 0, y: 0} to "a1")
+ * @param position The position to convert
+ * @returns The position in algebraic notation
  */
 ```
 
-### id (PropertySignature)
+### algebraicToPosition (FunctionDeclaration)
 
-Unique identifier for the move
+Convert algebraic notation to a position (e.g., "a1" to {x: 0, y: 0})
 
-```typescript
-/**
-   * Unique identifier for the move
-   */
-```
+**Tags:**
 
-### moveNumber (PropertySignature)
-
-Move number (e.g., 1 for White's first move, 1.5 for Black's first move)Using half moves where whole numbers are White's moves
+- @param algebraic The algebraic notation
+ * @returns The position
 
 ```typescript
 /**
-   * Move number (e.g., 1 for White's first move, 1.5 for Black's first move)
-   * Using half moves where whole numbers are White's moves
-   */
-```
-
-### player (PropertySignature)
-
-Player who made the move
-
-```typescript
-/**
-   * Player who made the move
-   */
-```
-
-### piece (PropertySignature)
-
-Piece that was moved
-
-```typescript
-/**
-   * Piece that was moved
-   */
-```
-
-### from (PropertySignature)
-
-Starting position in algebraic notation (e.g., "e2")
-
-```typescript
-/**
-   * Starting position in algebraic notation (e.g., "e2")
-   */
-```
-
-### to (PropertySignature)
-
-Target position in algebraic notation (e.g., "e4")
-
-```typescript
-/**
-   * Target position in algebraic notation (e.g., "e4")
-   */
-```
-
-### moveType (PropertySignature)
-
-Type of move
-
-```typescript
-/**
-   * Type of move
-   */
-```
-
-### capturedPiece (PropertySignature)
-
-Captured piece type (if any)
-
-```typescript
-/**
-   * Captured piece type (if any)
-   */
-```
-
-### promotedTo (PropertySignature)
-
-Piece type after promotion (if applicable)
-
-```typescript
-/**
-   * Piece type after promotion (if applicable)
-   */
-```
-
-### isCheck (PropertySignature)
-
-Whether the move resulted in check
-
-```typescript
-/**
-   * Whether the move resulted in check
-   */
-```
-
-### isCheckmate (PropertySignature)
-
-Whether the move resulted in checkmate
-
-```typescript
-/**
-   * Whether the move resulted in checkmate
-   */
-```
-
-### duel (PropertySignature)
-
-Related duel (if move triggered a duel)
-
-```typescript
-/**
-   * Related duel (if move triggered a duel)
-   */
-```
-
-### tacticalRetreat (PropertySignature)
-
-Related tactical retreat (if a duel resulted in a retreat)
-
-```typescript
-/**
-   * Related tactical retreat (if a duel resulted in a retreat)
-   */
-```
-
-### san (PropertySignature)
-
-Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qxf7#"
-
-```typescript
-/**
-   * Standard algebraic notation (SAN) representation
-   * e.g., "Nf3", "exd5", "O-O", "Qxf7#"
-   */
-```
-
-### extended (PropertySignature)
-
-Extended notation for Gambit Chess (includes BP information)
-
-```typescript
-/**
-   * Extended notation for Gambit Chess (includes BP information)
-   */
-```
-
-### id (PropertySignature) in DuelNotation
-
-Unique identifier for the duel
-
-```typescript
-/**
-   * Unique identifier for the duel
-   */
-```
-
-### attackerPiece (PropertySignature) in DuelNotation
-
-Attacker's piece type
-
-```typescript
-/**
-   * Attacker's piece type
-   */
-```
-
-### defenderPiece (PropertySignature) in DuelNotation
-
-Defender's piece type
-
-```typescript
-/**
-   * Defender's piece type
-   */
-```
-
-### outcome (PropertySignature) in DuelNotation
-
-Outcome of the duel
-
-```typescript
-/**
-   * Outcome of the duel
-   */
-```
-
-### notation (PropertySignature) in DuelNotation
-
-Standard notation representation of the duele.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-
-```typescript
-/**
-   * Standard notation representation of the duel
-   * e.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-   */
-```
-
-### DuelNotation (InterfaceDeclaration)
-
-Represents a duel in Gambit Chess notation
-
-```typescript
-/**
- * Represents a duel in Gambit Chess notation
+ * Convert algebraic notation to a position (e.g., "a1" to {x: 0, y: 0})
+ * @param algebraic The algebraic notation
+ * @returns The position
  */
-```
-
-### id (PropertySignature)
-
-Unique identifier for the duel
-
-```typescript
-/**
-   * Unique identifier for the duel
-   */
-```
-
-### attackerPiece (PropertySignature)
-
-Attacker's piece type
-
-```typescript
-/**
-   * Attacker's piece type
-   */
-```
-
-### defenderPiece (PropertySignature)
-
-Defender's piece type
-
-```typescript
-/**
-   * Defender's piece type
-   */
-```
-
-### outcome (PropertySignature)
-
-Outcome of the duel
-
-```typescript
-/**
-   * Outcome of the duel
-   */
-```
-
-### notation (PropertySignature)
-
-Standard notation representation of the duele.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-
-```typescript
-/**
-   * Standard notation representation of the duel
-   * e.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-   */
-```
-
-### id (PropertySignature) in TacticalRetreatNotation
-
-Unique identifier for the retreat
-
-```typescript
-/**
-   * Unique identifier for the retreat
-   */
-```
-
-### piece (PropertySignature) in TacticalRetreatNotation
-
-Retreating piece type
-
-```typescript
-/**
-   * Retreating piece type
-   */
-```
-
-### to (PropertySignature) in TacticalRetreatNotation
-
-Target position for the retreat in algebraic notation
-
-```typescript
-/**
-   * Target position for the retreat in algebraic notation
-   */
-```
-
-### notation (PropertySignature) in TacticalRetreatNotation
-
-Standard notation representation of the retreate.g., "B↩️c4" (Bishop retreats to c4)
-
-```typescript
-/**
-   * Standard notation representation of the retreat
-   * e.g., "B↩️c4" (Bishop retreats to c4)
-   */
-```
-
-### TacticalRetreatNotation (InterfaceDeclaration)
-
-Represents a tactical retreat after a failed capture attempt
-
-```typescript
-/**
- * Represents a tactical retreat after a failed capture attempt
- */
-```
-
-### id (PropertySignature)
-
-Unique identifier for the retreat
-
-```typescript
-/**
-   * Unique identifier for the retreat
-   */
-```
-
-### piece (PropertySignature)
-
-Retreating piece type
-
-```typescript
-/**
-   * Retreating piece type
-   */
-```
-
-### to (PropertySignature)
-
-Target position for the retreat in algebraic notation
-
-```typescript
-/**
-   * Target position for the retreat in algebraic notation
-   */
-```
-
-### notation (PropertySignature)
-
-Standard notation representation of the retreate.g., "B↩️c4" (Bishop retreats to c4)
-
-```typescript
-/**
-   * Standard notation representation of the retreat
-   * e.g., "B↩️c4" (Bishop retreats to c4)
-   */
-```
-
-### moves (PropertySignature) in GameHistory
-
-Array of moves in the game
-
-```typescript
-/**
-   * Array of moves in the game
-   */
-```
-
-### toString (PropertySignature) in GameHistory
-
-Get a string representation of the full game history
-
-```typescript
-/**
-   * Get a string representation of the full game history
-   */
-```
-
-### GameHistory (InterfaceDeclaration)
-
-Represents the complete game history
-
-```typescript
-/**
- * Represents the complete game history
- */
-```
-
-### moves (PropertySignature)
-
-Array of moves in the game
-
-```typescript
-/**
-   * Array of moves in the game
-   */
-```
-
-### toString (PropertySignature)
-
-Get a string representation of the full game history
-
-```typescript
-/**
-   * Get a string representation of the full game history
-   */
 ```
 
 ### positionToNotation (FunctionDeclaration)
 
-Convert a position to algebraic notation
+Convert a position to standard notation format
 
 **Tags:**
 
-- @param position Position object (x,y coordinates)
- * @returns String in algebraic notation (e.g., "e4")
+- @param position The position to convert
+ * @returns Position in notation format (e.g., "a1")
 
 ```typescript
 /**
- * Convert a position to algebraic notation
- * @param position Position object (x,y coordinates)
- * @returns String in algebraic notation (e.g., "e4")
+ * Convert a position to standard notation format
+ * @param position The position to convert
+ * @returns Position in notation format (e.g., "a1")
  */
 ```
 
 ### notationToPosition (FunctionDeclaration)
 
-Convert algebraic notation to a position
+Convert notation to a position
 
 **Tags:**
 
-- @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object or null if notation is invalid
+- @param notation The notation string (e.g., "a1")
+ * @returns Position object or null if the notation is invalid
 
 ```typescript
 /**
- * Convert algebraic notation to a position
- * @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object or null if notation is invalid
+ * Convert notation to a position
+ * @param notation The notation string (e.g., "a1")
+ * @returns Position object or null if the notation is invalid
  */
 ```
 
-### getPieceSymbol (FunctionDeclaration)
+### createMoveNotation (FunctionDeclaration)
 
-Get the piece symbol for notation
+Create a move notation object
 
 **Tags:**
 
-- @param pieceType The type of piece
- * @returns Symbol representing the piece (e.g., "N" for Knight)
+- @param piece The piece that moved
+ * @param from Starting position
+ * @param to Destination position
+ * @param moveType Type of move
+ * @param isCheck Whether the move resulted in check
+ * @param isCheckmate Whether the move resulted in checkmate
+ * @param capturedPiece Piece that was captured (if any)
+ * @param promotedTo Piece type after promotion (if applicable)
+ * @returns Move notation object
 
 ```typescript
 /**
- * Get the piece symbol for notation
- * @param pieceType The type of piece
- * @returns Symbol representing the piece (e.g., "N" for Knight)
+ * Create a move notation object
+ * @param piece The piece that moved
+ * @param from Starting position
+ * @param to Destination position
+ * @param moveType Type of move
+ * @param isCheck Whether the move resulted in check
+ * @param isCheckmate Whether the move resulted in checkmate
+ * @param capturedPiece Piece that was captured (if any)
+ * @param promotedTo Piece type after promotion (if applicable)
+ * @returns Move notation object
+ */
+```
+
+### createDuelNotation (FunctionDeclaration)
+
+Create a duel notation object
+
+**Tags:**
+
+- @param attackerPiece Attacker piece type
+ * @param defenderPiece Defender piece type
+ * @param attackerPosition Attacker position
+ * @param defenderPosition Defender position
+ * @param outcome Duel outcome
+ * @returns Duel notation object
+
+```typescript
+/**
+ * Create a duel notation object
+ * @param attackerPiece Attacker piece type
+ * @param defenderPiece Defender piece type
+ * @param attackerPosition Attacker position
+ * @param defenderPosition Defender position
+ * @param outcome Duel outcome
+ * @returns Duel notation object
+ */
+```
+
+### createTacticalRetreatNotation (FunctionDeclaration)
+
+Create a tactical retreat notation object
+
+**Tags:**
+
+- @param piece The piece that retreated
+ * @param from Starting position
+ * @param to Destination position
+ * @param failedCapturePosition Position of the failed capture attempt
+ * @returns Tactical retreat notation object
+
+```typescript
+/**
+ * Create a tactical retreat notation object
+ * @param piece The piece that retreated
+ * @param from Starting position
+ * @param to Destination position
+ * @param failedCapturePosition Position of the failed capture attempt
+ * @returns Tactical retreat notation object
+ */
+```
+
+### createGameHistory (FunctionDeclaration)
+
+Create a new game history object
+
+**Tags:**
+
+- @returns Empty game history
+
+```typescript
+/**
+ * Create a new game history object
+ * @returns Empty game history
+ */
+```
+
+### addMoveToHistory (FunctionDeclaration)
+
+Add a move to the game history
+
+**Tags:**
+
+- @param history The game history
+ * @param move Move to add
+ * @returns Updated game history
+
+```typescript
+/**
+ * Add a move to the game history
+ * @param history The game history
+ * @param move Move to add
+ * @returns Updated game history
  */
 ```
 
@@ -664,118 +226,20 @@ Generate standard algebraic notation (SAN) for a chess move
  */
 ```
 
-### generateExtendedNotation (FunctionDeclaration)
+### getPieceSymbol (FunctionDeclaration)
 
-Generate extended notation specifically for Gambit Chess, including BP information
-
-**Tags:**
-
-- @param san Standard algebraic notation
- * @param duel Duel information (if applicable)
- * @param tacticalRetreat Tactical retreat information (if applicable)
- * @returns Extended notation string
-
-```typescript
-/**
- * Generate extended notation specifically for Gambit Chess, including BP information
- * @param san Standard algebraic notation
- * @param duel Duel information (if applicable)
- * @param tacticalRetreat Tactical retreat information (if applicable)
- * @returns Extended notation string
- */
-```
-
-### createMoveNotation (FunctionDeclaration)
-
-Generate a complete move notation object
+Get the piece symbol for notation
 
 **Tags:**
 
-- @param moveNumber Move number in the game
- * @param player Color of the player making the move
- * @param piece Type of piece being moved
- * @param from Starting position
- * @param to Target position
- * @param moveType Type of move
- * @param capturedPiece Type of piece captured (if any)
- * @param isCheck Whether the move resulted in check
- * @param isCheckmate Whether the move resulted in checkmate
- * @param promotedTo Piece type after promotion (if applicable)
- * @param duel Related duel information (if applicable)
- * @param tacticalRetreat Related tactical retreat information (if applicable)
- * @returns Complete MoveNotation object
+- @param pieceType The type of piece
+ * @returns Symbol representing the piece (e.g., "N" for Knight)
 
 ```typescript
 /**
- * Generate a complete move notation object
- * @param moveNumber Move number in the game
- * @param player Color of the player making the move
- * @param piece Type of piece being moved
- * @param from Starting position
- * @param to Target position
- * @param moveType Type of move
- * @param capturedPiece Type of piece captured (if any)
- * @param isCheck Whether the move resulted in check
- * @param isCheckmate Whether the move resulted in checkmate
- * @param promotedTo Piece type after promotion (if applicable)
- * @param duel Related duel information (if applicable)
- * @param tacticalRetreat Related tactical retreat information (if applicable)
- * @returns Complete MoveNotation object
- */
-```
-
-### createDuelNotation (FunctionDeclaration)
-
-Create a duel notation object
-
-**Tags:**
-
-- @param attackerPiece Type of attacking piece
- * @param defenderPiece Type of defending piece
- * @param outcome Outcome of the duel
- * @returns DuelNotation object
-
-```typescript
-/**
- * Create a duel notation object
- * @param attackerPiece Type of attacking piece
- * @param defenderPiece Type of defending piece
- * @param outcome Outcome of the duel
- * @returns DuelNotation object
- */
-```
-
-### createTacticalRetreatNotation (FunctionDeclaration)
-
-Create a tactical retreat notation object
-
-**Tags:**
-
-- @param piece Type of retreating piece
- * @param to Target position for the retreat
- * @returns TacticalRetreatNotation object
-
-```typescript
-/**
- * Create a tactical retreat notation object
- * @param piece Type of retreating piece
- * @param to Target position for the retreat
- * @returns TacticalRetreatNotation object
- */
-```
-
-### createGameHistory (FunctionDeclaration)
-
-Create a game history object to track moves
-
-**Tags:**
-
-- @returns GameHistory object with methods for managing the history
-
-```typescript
-/**
- * Create a game history object to track moves
- * @returns GameHistory object with methods for managing the history
+ * Get the piece symbol for notation
+ * @param pieceType The type of piece
+ * @returns Symbol representing the piece (e.g., "N" for Knight)
  */
 ```
 

@@ -89,7 +89,7 @@ Check if a retreat position is beyond the failed capture target
 
 ### isValidRetreatMove (MethodDeclaration)
 
-Check if a retreat move is valid for a piece
+Check if a retreat move is valid based on piece movement rules and retreat vectors
 
 **Tags:**
 
@@ -97,18 +97,18 @@ Check if a retreat move is valid for a piece
    * @param originalPosition Position before attack
    * @param failedCapturePosition Position of the piece that wasn't captured
    * @param retreatPosition Position to retreat to
-   * @param hasMoved Whether the piece has moved before (pre-attack)
-   * @returns True if the retreat is valid
+   * @param hasMoved Whether the piece has moved before the attack
+   * @returns True if the retreat move is valid
 
 ```typescript
 /**
-   * Check if a retreat move is valid for a piece
+   * Check if a retreat move is valid based on piece movement rules and retreat vectors
    * @param pieceType The type of piece
    * @param originalPosition Position before attack
    * @param failedCapturePosition Position of the piece that wasn't captured
    * @param retreatPosition Position to retreat to
-   * @param hasMoved Whether the piece has moved before (pre-attack)
-   * @returns True if the retreat is valid
+   * @param hasMoved Whether the piece has moved before the attack
+   * @returns True if the retreat move is valid
    */
 ```
 

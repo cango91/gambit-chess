@@ -1,4 +1,4 @@
-import { DuelOutcome, MoveType, PieceType, PlayerColor, Position } from './index';
+import { DuelOutcome, MoveType, PieceType, PlayerColor } from './index';
 
 /**
  * Represents a move in standard algebraic notation with extensions for Gambit Chess
@@ -8,17 +8,6 @@ export interface MoveNotation {
    * Unique identifier for the move
    */
   id: string;
-  
-  /**
-   * Move number (e.g., 1 for White's first move, 1.5 for Black's first move)
-   * Using half moves where whole numbers are White's moves
-   */
-  moveNumber: number;
-  
-  /**
-   * Player who made the move
-   */
-  player: PlayerColor;
   
   /**
    * Piece that was moved
@@ -61,25 +50,10 @@ export interface MoveNotation {
   isCheckmate: boolean;
   
   /**
-   * Related duel (if move triggered a duel)
-   */
-  duel?: DuelNotation;
-  
-  /**
-   * Related tactical retreat (if a duel resulted in a retreat)
-   */
-  tacticalRetreat?: TacticalRetreatNotation;
-  
-  /**
    * Standard algebraic notation (SAN) representation
    * e.g., "Nf3", "exd5", "O-O", "Qxf7#"
    */
   san: string;
-  
-  /**
-   * Extended notation for Gambit Chess (includes BP information)
-   */
-  extended: string;
 }
 
 /**
@@ -102,15 +76,19 @@ export interface DuelNotation {
   defenderPiece: PieceType;
   
   /**
+   * Attacker's position in algebraic notation
+   */
+  attackerPosition: string;
+  
+  /**
+   * Defender's position in algebraic notation
+   */
+  defenderPosition: string;
+  
+  /**
    * Outcome of the duel
    */
   outcome: DuelOutcome;
-  
-  /**
-   * Standard notation representation of the duel
-   * e.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-   */
-  notation: string;
 }
 
 /**
@@ -128,15 +106,19 @@ export interface TacticalRetreatNotation {
   piece: PieceType;
   
   /**
+   * Original position before the retreat in algebraic notation
+   */
+  from: string;
+  
+  /**
    * Target position for the retreat in algebraic notation
    */
   to: string;
   
   /**
-   * Standard notation representation of the retreat
-   * e.g., "B↩️c4" (Bishop retreats to c4)
+   * Position of the failed capture attempt in algebraic notation
    */
-  notation: string;
+  failedCapturePosition: string;
 }
 
 /**
@@ -152,50 +134,4 @@ export interface GameHistory {
    * Get a string representation of the full game history
    */
   toString: () => string;
-}
-
-/**
- * Convert a position to algebraic notation
- * @param position Position object (x,y coordinates)
- * @returns String in algebraic notation (e.g., "e4")
- */
-export function positionToNotation(position: Position): string {
-  const file = String.fromCharCode(97 + position.x); // 'a' = 97 in ASCII
-  const rank = position.y + 1; // Chess ranks start at 1
-  return `${file}${rank}`;
-}
-
-/**
- * Convert algebraic notation to a position
- * @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object
- */
-export function notationToPosition(notation: string): Position {
-  const file = notation.charCodeAt(0) - 97; // 'a' = 97 in ASCII
-  const rank = parseInt(notation.substring(1)) - 1; // Chess ranks start at 1
-  return { x: file, y: rank };
-}
-
-/**
- * Get the piece symbol for notation
- * @param pieceType The type of piece
- * @returns Symbol representing the piece (e.g., "N" for Knight)
- */
-export function getPieceSymbol(pieceType: PieceType): string {
-  switch (pieceType) {
-    case PieceType.PAWN:
-      return '';
-    case PieceType.KNIGHT:
-      return 'N';
-    case PieceType.BISHOP:
-      return 'B';
-    case PieceType.ROOK:
-      return 'R';
-    case PieceType.QUEEN:
-      return 'Q';
-    case PieceType.KING:
-      return 'K';
-    default:
-      return '?';
-  }
 } 

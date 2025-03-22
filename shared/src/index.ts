@@ -9,6 +9,9 @@
  * - Rules: Basic movement and game rules
  * - Constants: Game constants and configurations
  * - Events: WebSocket event types for communication
+ * - Models: Piece and board implementations
+ * - Validation: Check detection and move validation
+ * - Config: Game configuration
  */
 
 // Export types
@@ -25,6 +28,15 @@ export * from './constants';
 
 // Export events
 export * from './events';
+
+// Export models
+export * from './models';
+
+// Export validation
+export * from './validation';
+
+// Export config
+export * from './config';
 
 /**
  * Initialize the knight retreat table.
@@ -43,6 +55,7 @@ export function initializeGameData() {
 // Export module documentation for reference by other modules
 export const __documentation = {
   name: "GambitChess-Shared",
+  version: "1.0.0",
   purpose: "Shared types and utilities for Gambit Chess client-server communication",
   publicAPI: {
     types: "Types, enums, and DTOs for client-server communication",
@@ -50,12 +63,53 @@ export const __documentation = {
     utils: "Shared utility functions for chess-related logic",
     constants: "Shared constants like initial board setup",
     events: "WebSocket event definitions for client-server communication",
+    models: "Piece and board implementations for shared validation",
+    validation: "Check detection and move validation utilities",
+    config: "Game configuration types and defaults",
     initializeGameData: "Function to initialize game data like the knight retreat table"
   },
-  dependencies: [],
+  submodules: {
+    types: {
+      purpose: "Core type definitions for the chess game",
+      implementationStatus: "Complete"
+    },
+    utils: {
+      purpose: "Utility functions for chess operations",
+      implementationStatus: "Complete" 
+    },
+    rules: {
+      purpose: "Basic rules for piece movement",
+      implementationStatus: "Complete"
+    },
+    models: {
+      purpose: "Piece and board implementations",
+      implementationStatus: "Complete"
+    },
+    validation: {
+      purpose: "Check detection and move validation",
+      implementationStatus: "Complete"
+    },
+    config: {
+      purpose: "Game configuration system",
+      implementationStatus: "Complete"
+    }
+  },
+  dependencies: [
+    "uuid (for generating unique IDs)"
+  ],
   securityNotes: "This module contains only information that can be safely shared between client and server. Sensitive game logic and state management is kept server-side only.",
-  implementationStatus: "Done",
+  implementationStatus: "Complete",
   optimizations: [
-    "Knight retreat lookup table is pre-computed and compressed to improve performance"
+    "Knight retreat lookup table is pre-computed and compressed to improve performance",
+    "Board validation uses efficient path-checking algorithms",
+    "Piece hierarchy is optimized for extensibility and validation"
+  ],
+  changes: [
+    "Added board representation for validation",
+    "Added check detection functionality",
+    "Added comprehensive move validation",
+    "Added game configuration system",
+    "Implemented piece class hierarchy",
+    "Fixed export ambiguities in utility functions"
   ]
 }; 

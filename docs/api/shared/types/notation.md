@@ -14,27 +14,6 @@ Unique identifier for the move
    */
 ```
 
-### moveNumber (PropertySignature) in MoveNotation
-
-Move number (e.g., 1 for White's first move, 1.5 for Black's first move)Using half moves where whole numbers are White's moves
-
-```typescript
-/**
-   * Move number (e.g., 1 for White's first move, 1.5 for Black's first move)
-   * Using half moves where whole numbers are White's moves
-   */
-```
-
-### player (PropertySignature) in MoveNotation
-
-Player who made the move
-
-```typescript
-/**
-   * Player who made the move
-   */
-```
-
 ### piece (PropertySignature) in MoveNotation
 
 Piece that was moved
@@ -115,26 +94,6 @@ Whether the move resulted in checkmate
    */
 ```
 
-### duel (PropertySignature) in MoveNotation
-
-Related duel (if move triggered a duel)
-
-```typescript
-/**
-   * Related duel (if move triggered a duel)
-   */
-```
-
-### tacticalRetreat (PropertySignature) in MoveNotation
-
-Related tactical retreat (if a duel resulted in a retreat)
-
-```typescript
-/**
-   * Related tactical retreat (if a duel resulted in a retreat)
-   */
-```
-
 ### san (PropertySignature) in MoveNotation
 
 Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qxf7#"
@@ -143,16 +102,6 @@ Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qx
 /**
    * Standard algebraic notation (SAN) representation
    * e.g., "Nf3", "exd5", "O-O", "Qxf7#"
-   */
-```
-
-### extended (PropertySignature) in MoveNotation
-
-Extended notation for Gambit Chess (includes BP information)
-
-```typescript
-/**
-   * Extended notation for Gambit Chess (includes BP information)
    */
 ```
 
@@ -173,27 +122,6 @@ Unique identifier for the move
 ```typescript
 /**
    * Unique identifier for the move
-   */
-```
-
-### moveNumber (PropertySignature)
-
-Move number (e.g., 1 for White's first move, 1.5 for Black's first move)Using half moves where whole numbers are White's moves
-
-```typescript
-/**
-   * Move number (e.g., 1 for White's first move, 1.5 for Black's first move)
-   * Using half moves where whole numbers are White's moves
-   */
-```
-
-### player (PropertySignature)
-
-Player who made the move
-
-```typescript
-/**
-   * Player who made the move
    */
 ```
 
@@ -277,26 +205,6 @@ Whether the move resulted in checkmate
    */
 ```
 
-### duel (PropertySignature)
-
-Related duel (if move triggered a duel)
-
-```typescript
-/**
-   * Related duel (if move triggered a duel)
-   */
-```
-
-### tacticalRetreat (PropertySignature)
-
-Related tactical retreat (if a duel resulted in a retreat)
-
-```typescript
-/**
-   * Related tactical retreat (if a duel resulted in a retreat)
-   */
-```
-
 ### san (PropertySignature)
 
 Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qxf7#"
@@ -305,16 +213,6 @@ Standard algebraic notation (SAN) representatione.g., "Nf3", "exd5", "O-O", "Qx
 /**
    * Standard algebraic notation (SAN) representation
    * e.g., "Nf3", "exd5", "O-O", "Qxf7#"
-   */
-```
-
-### extended (PropertySignature)
-
-Extended notation for Gambit Chess (includes BP information)
-
-```typescript
-/**
-   * Extended notation for Gambit Chess (includes BP information)
    */
 ```
 
@@ -348,6 +246,26 @@ Defender's piece type
    */
 ```
 
+### attackerPosition (PropertySignature) in DuelNotation
+
+Attacker's position in algebraic notation
+
+```typescript
+/**
+   * Attacker's position in algebraic notation
+   */
+```
+
+### defenderPosition (PropertySignature) in DuelNotation
+
+Defender's position in algebraic notation
+
+```typescript
+/**
+   * Defender's position in algebraic notation
+   */
+```
+
 ### outcome (PropertySignature) in DuelNotation
 
 Outcome of the duel
@@ -355,17 +273,6 @@ Outcome of the duel
 ```typescript
 /**
    * Outcome of the duel
-   */
-```
-
-### notation (PropertySignature) in DuelNotation
-
-Standard notation representation of the duele.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-
-```typescript
-/**
-   * Standard notation representation of the duel
-   * e.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
    */
 ```
 
@@ -409,6 +316,26 @@ Defender's piece type
    */
 ```
 
+### attackerPosition (PropertySignature)
+
+Attacker's position in algebraic notation
+
+```typescript
+/**
+   * Attacker's position in algebraic notation
+   */
+```
+
+### defenderPosition (PropertySignature)
+
+Defender's position in algebraic notation
+
+```typescript
+/**
+   * Defender's position in algebraic notation
+   */
+```
+
 ### outcome (PropertySignature)
 
 Outcome of the duel
@@ -416,17 +343,6 @@ Outcome of the duel
 ```typescript
 /**
    * Outcome of the duel
-   */
-```
-
-### notation (PropertySignature)
-
-Standard notation representation of the duele.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
-
-```typescript
-/**
-   * Standard notation representation of the duel
-   * e.g., "R⚔️N:R+" (Rook attacks Knight, Rook wins)
    */
 ```
 
@@ -450,6 +366,16 @@ Retreating piece type
    */
 ```
 
+### from (PropertySignature) in TacticalRetreatNotation
+
+Original position before the retreat in algebraic notation
+
+```typescript
+/**
+   * Original position before the retreat in algebraic notation
+   */
+```
+
 ### to (PropertySignature) in TacticalRetreatNotation
 
 Target position for the retreat in algebraic notation
@@ -460,14 +386,13 @@ Target position for the retreat in algebraic notation
    */
 ```
 
-### notation (PropertySignature) in TacticalRetreatNotation
+### failedCapturePosition (PropertySignature) in TacticalRetreatNotation
 
-Standard notation representation of the retreate.g., "B↩️c4" (Bishop retreats to c4)
+Position of the failed capture attempt in algebraic notation
 
 ```typescript
 /**
-   * Standard notation representation of the retreat
-   * e.g., "B↩️c4" (Bishop retreats to c4)
+   * Position of the failed capture attempt in algebraic notation
    */
 ```
 
@@ -501,6 +426,16 @@ Retreating piece type
    */
 ```
 
+### from (PropertySignature)
+
+Original position before the retreat in algebraic notation
+
+```typescript
+/**
+   * Original position before the retreat in algebraic notation
+   */
+```
+
 ### to (PropertySignature)
 
 Target position for the retreat in algebraic notation
@@ -511,14 +446,13 @@ Target position for the retreat in algebraic notation
    */
 ```
 
-### notation (PropertySignature)
+### failedCapturePosition (PropertySignature)
 
-Standard notation representation of the retreate.g., "B↩️c4" (Bishop retreats to c4)
+Position of the failed capture attempt in algebraic notation
 
 ```typescript
 /**
-   * Standard notation representation of the retreat
-   * e.g., "B↩️c4" (Bishop retreats to c4)
+   * Position of the failed capture attempt in algebraic notation
    */
 ```
 
@@ -570,56 +504,5 @@ Get a string representation of the full game history
 /**
    * Get a string representation of the full game history
    */
-```
-
-### positionToNotation (FunctionDeclaration)
-
-Convert a position to algebraic notation
-
-**Tags:**
-
-- @param position Position object (x,y coordinates)
- * @returns String in algebraic notation (e.g., "e4")
-
-```typescript
-/**
- * Convert a position to algebraic notation
- * @param position Position object (x,y coordinates)
- * @returns String in algebraic notation (e.g., "e4")
- */
-```
-
-### notationToPosition (FunctionDeclaration)
-
-Convert algebraic notation to a position
-
-**Tags:**
-
-- @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object
-
-```typescript
-/**
- * Convert algebraic notation to a position
- * @param notation String in algebraic notation (e.g., "e4")
- * @returns Position object
- */
-```
-
-### getPieceSymbol (FunctionDeclaration)
-
-Get the piece symbol for notation
-
-**Tags:**
-
-- @param pieceType The type of piece
- * @returns Symbol representing the piece (e.g., "N" for Knight)
-
-```typescript
-/**
- * Get the piece symbol for notation
- * @param pieceType The type of piece
- * @returns Symbol representing the piece (e.g., "N" for Knight)
- */
 ```
 

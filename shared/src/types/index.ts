@@ -52,6 +52,16 @@ export enum PlayerRole {
   SPECTATOR = 'spectator'
 }
 
+// Export board types
+export * from './board';
+
+// Export notation types without re-exporting ambiguous names
+import * as NotationTypes from './notation';
+// Re-export specific types from notation without ambiguity
+export { 
+  NotationTypes
+};
+
 /**
  * Battle Points capacity for each piece type (classic chess values)
  */
