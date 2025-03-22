@@ -25,6 +25,27 @@ if (!fs.existsSync(outputDirectory)) {
   fs.mkdirSync(outputDirectory, { recursive: true });
 }
 
+// Recursively clean the output directory
+function cleanOutputDirectory(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    return;
+  }
+
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    
+    if (entry.isDirectory()) {
+      cleanOutputDirectory(fullPath);
+    } else if (entry.isFile()) {
+      fs.unlinkSync(fullPath);
+    }
+  }
+}
+
+cleanOutputDirectory(outputDirectory);
+
 // Helper function to extract the name of a node
 function getNodeName(node) {
   if (!node) return 'Unnamed';

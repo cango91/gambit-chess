@@ -41,11 +41,17 @@ gambit-chess/
 
 ## Installation & Setup
 
+If not already available, install `yarn` globally
+
+```bash
+npm install yarn -g
+```
+
 From the root directory:
 
 ```bash
 # Install all dependencies across workspaces
-npm install
+yarn
 ```
 
 ## Scripts
@@ -54,22 +60,22 @@ The following scripts can be run from the root directory:
 
 ```bash
 # Build all modules
-npm run build
+yarn build
 
 # Build only shared module
-npm run build:shared
+yarn build:shared
 
 # Run tests across all modules
-npm run test
+yarn test
 
 # Run only shared module tests
-npm run test:shared
+yarn test:shared
 
 # Generate documentation
-npm run docs
+yarn docs
 
 # Generate only shared module documentation
-npm run docs:shared
+yarn docs:shared
 ```
 
 ## Usage

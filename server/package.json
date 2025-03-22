@@ -25,7 +25,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "gambit-chess-shared": "workspace:*",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^11.1.0",
@@ -47,6 +46,9 @@
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+        "gambit-chess-shared": "workspace:*"
   },
   "jest": {
     "preset": "ts-jest",
