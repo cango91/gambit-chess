@@ -8,7 +8,6 @@
     "prebuild": "ts-node scripts/generateKnightRetreatTable.js",
     "build": "tsc",
     "test": "jest",
-    "package": "npm pack --pack-destination ./package/",
     "docs": "ts-node scripts/generateDocs.js shared"
   },
   "files": [

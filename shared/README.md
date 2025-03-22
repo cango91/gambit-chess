@@ -1,4 +1,8 @@
 
+
+Read file: package.json
+
+Read file: shared/package.json
 # Gambit Chess Shared Module
 
 ## Overview
@@ -23,30 +27,59 @@ The Gambit Chess Shared Module provides the core domain logic and types for the 
 - 🧩 Board position and piece utilities
 - 🔄 Game state transformation helpers
 
-## Installation
+## Workspace Structure
+
+This module is part of a monorepo using npm workspaces. The project structure includes:
+
+```
+gambit-chess/
+├── shared/    - This module (common code)
+├── client/    - Frontend application
+├── server/    - Backend server
+└── package.json - Root workspace configuration
+```
+
+## Installation & Setup
+
+From the root directory:
 
 ```bash
-cd shared
+# Install all dependencies across workspaces
 npm install
+```
+
+## Scripts
+
+The following scripts can be run from the root directory:
+
+```bash
+# Build all modules
+npm run build
+
+# Build only shared module
+npm run build:shared
+
+# Run tests across all modules
+npm run test
+
+# Run only shared module tests
+npm run test:shared
+
+# Generate documentation
+npm run docs
+
+# Generate only shared module documentation
+npm run docs:shared
 ```
 
 ## Usage
 
-The shared module needs to be built and packaged for use in upstream projects (server and client)
-Convenience scripts are provided.
+### Importing in client or server workspaces
+Since this is a workspace package, you can import it directly:
 
-```bash
-npm run build
-npm run package
-```
-
-### Importing in client or server
 ```typescript
-// From client
+// From client or server code
 import { Board, PieceType, MoveValidator } from 'gambit-chess-shared';
-
-// From server
-const { Board, PieceType, MoveValidator } = require('gambit-chess-shared');
 ```
 
 ### Examples
@@ -108,15 +141,6 @@ The shared module follows a clean separation of concerns:
 - `validation/` - Move and check validation
 - `utils/` - Helper functions
 
-## Running Tests
-
-Before running tests you should build the project (this ensures the compressed knight retreat cost table is generated in pre-compile step)
-
-```bash
-npm run build
-npm run test
-```
-
 ## Documentation
 
 All components are documented according to JSDoc standards. The module uses a documentation export pattern to ensure up-to-date API documentation:
@@ -128,12 +152,6 @@ export const __documentation = {
   publicAPI: { /* ... */ },
   implementationStatus: "Complete"
 };
-```
-
-Generate api documentation from code:
-
-```bash
-npm run docs
 ```
 
 ---

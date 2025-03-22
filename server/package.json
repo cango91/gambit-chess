@@ -8,7 +8,7 @@
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "docs": "node ./node_modules/gambit-chess-shared/scripts/generateDocs.js server $(node scripts/getProjectRoot.js)",
+    "docs": "ts-node ../shared/scripts/generateDocs.js server $(node scripts/getProjectRoot.js)",
     "lint": "eslint src --ext .ts"
   },
   "keywords": [
@@ -25,7 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "gambit-chess-shared": "file:../shared/package/gambit-chess-shared-1.0.0.tgz",
+    "gambit-chess-shared": "workspace:*",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^11.1.0",

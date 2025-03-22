@@ -1,0 +1,29 @@
+{
+    "name": "gambit-chess",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Gambit Chess game monorepo with shared library, client and server",
+    "workspaces": [
+      "shared",
+      "server",
+      "client"
+    ],
+    "scripts": {
+      "build": "npm run build:shared && npm run build:server && npm run build:client",
+      "build:shared": "npm run build --workspace=gambit-chess-shared",
+      "build:server": "npm run build --workspace=gambit-chess-server",
+      "build:client": "npm run build --workspace=gambit-chess-client",
+      "dev": "npm run dev --workspace=gambit-chess-server",
+      "start": "npm run start --workspace=gambit-chess-server",
+      "test": "npm run test --workspaces",
+      "test:shared": "npm run test --workspace=gambit-chess-shared",
+      "test:server": "npm run test --workspace=gambit-chess-server",
+      "test:client": "npm run test --workspace=gambit-chess-client",
+      "docs": "npm run docs --workspaces",
+      "docs:shared": "npm run docs --workspace=gambit-chess-shared",
+      "docs:server": "npm run docs --workspace=gambit-chess-server",
+      "docs:client": "npm run docs --workspace=gambit-chess-client"
+    },
+    "author": "cango91",
+    "license": "ISC"
+  }

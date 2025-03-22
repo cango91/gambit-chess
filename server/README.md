@@ -35,7 +35,7 @@ The server implements a layered architecture:
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v22 or higher)
 - Redis instance (local or remote)
 
 ### Installation
@@ -122,10 +122,10 @@ The server includes a minimal HTTP API:
 
 ## 📚 Implementation Status
 
-- Core Game Engine: 100% complete
-- Game State Management: 100% complete
-- WebSocket Communication: 100% complete
-- Player Session Management: 100% complete
-- Matchmaking: 100% complete
-- AI Opponent: 90% complete
-- HTTP API: Basic implementation only 
+- Core Game Engine: 75% complete
+- Game State Management: 0% complete
+- WebSocket Communication: 0% complete
+- Player Session Management: 0% complete
+- Matchmaking: 0% complete
+- AI Opponent: 0% complete
+- HTTP API: 0% complete

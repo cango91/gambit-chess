@@ -2,7 +2,7 @@
 
 This documentation is auto-generated from JSDoc comments and `__documentation` exports in the source code.
 
-Generated on: 2025-03-22T08:06:22.328Z
+Generated on: 2025-03-22T09:41:37.024Z
 
 ## Module Structure
 
