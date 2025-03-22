@@ -85,14 +85,14 @@ Since this is a workspace package, you can import it directly:
 
 ```typescript
 // From client or server code
-import { Board, PieceType, MoveValidator } from 'gambit-chess-shared';
+import { Board, PieceType, MoveValidator } from '@gambit-chess/shared';
 ```
 
 ### Examples
 
 #### Creating a board
 ```typescript
-import { BoardImpl, PieceFactoryImpl, PieceType, PlayerColor } from 'gambit-chess-shared';
+import { BoardImpl, PieceFactoryImpl, PieceType, PlayerColor } from '@gambit-chess/shared';
 
 const pieceFactory = new PieceFactoryImpl();
 const board = new BoardImpl([
@@ -104,7 +104,7 @@ const board = new BoardImpl([
 
 #### Validating moves
 ```typescript
-import { MoveValidator } from 'gambit-chess-shared';
+import { MoveValidator } from '@gambit-chess/shared';
 
 // Returns a MoveType or throws an error if invalid
 const moveType = MoveValidator.validateMove(
@@ -116,7 +116,7 @@ const moveType = MoveValidator.validateMove(
 
 #### Working with notation
 ```typescript
-import { positionToNotation, notationToPosition } from 'gambit-chess-shared';
+import { positionToNotation, notationToPosition } from '@gambit-chess/shared';
 
 // Convert between chess notation and coordinates
 const notation = positionToNotation({ x: 4, y: 1 }); // "e2"
@@ -125,7 +125,7 @@ const position = notationToPosition("e2"); // { x: 4, y: 1 }
 
 #### Duel and Tactical Retreat
 ```typescript
-import { DuelRules, TacticalRetreatRules } from 'gambit-chess-shared';
+import { DuelRules, TacticalRetreatRules } from '@gambit-chess/shared';
 
 // Validate battle point allocation
 const isValid = DuelRules.validateBPAllocation(piece, allocatedBP);

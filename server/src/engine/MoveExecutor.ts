@@ -10,7 +10,7 @@ import {
   CheckDetection,
   Piece,
   Board
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { GameState } from './GameState';
 import { BPRegenerationService } from './BPRegenerationService';
 

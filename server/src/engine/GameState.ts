@@ -13,7 +13,7 @@ import {
   MoveValidator,
   CheckDetection,
   RetreatOption
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { ServerGameState } from '../types';
 
 const DEFAULT_INITIAL_BP = 39; // Sum of classic chess piece values

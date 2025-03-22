@@ -13,7 +13,7 @@ import {
   CheckDetection,
   MoveValidator,
   Board
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { GameState } from './GameState';
 
 /**

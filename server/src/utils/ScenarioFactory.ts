@@ -6,7 +6,7 @@ import {
   Position,
   GamePhase,
   GameState as SharedGameState
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { GameState } from '../engine/GameState';
 import { ServerGameState } from '../types';
 

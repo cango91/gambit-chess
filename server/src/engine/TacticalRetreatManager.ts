@@ -5,7 +5,7 @@ import {
   GamePhase,
   TacticalRetreatRules,
   GameState as SharedGameState
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { GameState } from './GameState';
 
 /**

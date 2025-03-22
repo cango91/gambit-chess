@@ -9,7 +9,7 @@ import {
   Piece,
   MoveValidator,
   isLongRangePiece
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 import { GameState } from './GameState';
 
 /**

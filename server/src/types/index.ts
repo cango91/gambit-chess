@@ -12,7 +12,7 @@ import {
   MoveType,
   DuelOutcome,
   RetreatOption
-} from 'gambit-chess-shared';
+} from '@gambit-chess/shared';
 
 /**
  * Extended server game state with additional properties
