@@ -21,6 +21,7 @@ export interface Piece {
   moveTo(position: Position): void;
   isLongRangePiece(): boolean;
   clone(): Piece;
+  toDTO(): PieceDTO;
 }
 
 /**

@@ -1,29 +1,32 @@
 {
-  "name": "gambit-chess-shared",
+  "name": "@gambit-chess/shared",
   "version": "1.0.0",
   "description": "Shared code for Gambit Chess game",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "prebuild": "ts-node scripts/generateKnightRetreatTable.js",
-    "build": "tsc",
-    "test": "jest",
-    "docs": "ts-node scripts/generateDocs.js shared"
-  },
-  "files": [
-    "dist/**/*",
-    "scripts/generateDocs.js",
-    "README.md"
-  ],
   "keywords": [
     "chess",
     "game",
     "shared",
     "vibe-coded"
   ],
-  "author": "cango91",
   "license": "ISC",
+  "author": "cango91",
   "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "files": [
+    "dist/**/*",
+    "scripts/generateDocs.js",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "ts-node scripts/generateKnightRetreatTable.js",
+    "build": "tsc",
+    "test": "jest",
+    "docs": "ts-node scripts/generateDocs.js shared"
+  },
   "dependencies": {
     "pako": "^2.1.0",
     "uuid": "^11.1.0"
