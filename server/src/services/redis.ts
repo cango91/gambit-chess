@@ -7,12 +7,22 @@ export const redisClient = new Redis(redisUrl);
 
 // Set up event handlers
 redisClient.on('connect', () => {
-  logger.info('Connected to Redis');
+  logger.info('Redis connected');
 });
 
 redisClient.on('error', (err) => {
-  logger.error('Redis error', { error: err.message });
+  logger.error('Redis error', { error: err });
 });
+
+// Helper function to disconnect Redis (useful for tests)
+export const disconnectRedis = async (): Promise<void> => {
+  try {
+    await redisClient.quit();
+    logger.info('Redis disconnected');
+  } catch (error) {
+    logger.error('Error disconnecting from Redis', { error });
+  }
+};
 
 // Key prefixes for better organization
 const KEY_PREFIXES = {
