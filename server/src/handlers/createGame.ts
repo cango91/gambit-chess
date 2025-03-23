@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
-import { sendMessage } from '../services/websocket';
+import { sendMessage, registerSessionWithGame } from '../services/websocket';
 import { PlayerRole } from '@gambit-chess/shared';
 import { defaultGameStateStorage } from '../storage';
 
@@ -34,6 +34,9 @@ export async function handleCreateGame(
       aiDifficulty,
       whiteSessionId: sessionId
     });
+    
+    // Register this session with the game for security validation
+    registerSessionWithGame(gameId, sessionId);
     
     // Send confirmation to the client
     sendMessage(ws, 'game_created', {

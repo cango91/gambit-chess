@@ -27,6 +27,9 @@ const clientStatus = new Map<string, {
   isAlive: boolean;
 }>();
 
+// Track game sessions: gameId -> [sessionIds]
+const gameSessions = new Map<string, Set<string>>();
+
 /**
  * Set up WebSocket server and message handlers
  */
@@ -86,6 +89,19 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
           return;
         }
         
+        // Validate session for game actions
+        if (['move', 'bp_allocation', 'tactical_retreat'].includes(type)) {
+          if (!validateSessionForGameAction(ws, sessionId, payload.gameId)) {
+            sendError(ws, 'Unauthorized: Invalid session for this game action');
+            logger.warn('Unauthorized game action attempt', { 
+              sessionId,
+              gameId: payload.gameId,
+              actionType: type
+            });
+            return;
+          }
+        }
+        
         // Route to appropriate handler based on message type
         switch (type) {
           case 'create_game':
@@ -98,6 +114,10 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
             
           case 'join_game':
             await handleJoinGame(ws, sessionId, payload);
+            // When a player joins a game, register their session with this game
+            if (payload.gameId) {
+              registerSessionWithGame(payload.gameId, sessionId);
+            }
             break;
             
           case 'move':
@@ -199,9 +219,87 @@ function handleConnectionClosed(ws: ExtendedWebSocket): void {
     connections.delete(sessionId);
     sessions.delete(ws);
     
+    // Cleanup session from any games it was participating in
+    for (const [gameId, sessionsSet] of gameSessions.entries()) {
+      if (sessionsSet.has(sessionId)) {
+        sessionsSet.delete(sessionId);
+        logger.debug('Removed session from game', { sessionId, gameId });
+        
+        // If no sessions left for this game, clean up the entry
+        if (sessionsSet.size === 0) {
+          gameSessions.delete(gameId);
+          logger.debug('Removed empty game session tracking', { gameId });
+        }
+      }
+    }
+    
     // Here you would add any additional cleanup like:
     // - redis.matchmaking.markInactive(sessionId)
   }
+}
+
+/**
+ * Register a session with a game for security validation
+ * @param gameId The game ID
+ * @param sessionId The session ID to register
+ */
+export function registerSessionWithGame(gameId: string, sessionId: string): void {
+  if (!gameSessions.has(gameId)) {
+    gameSessions.set(gameId, new Set<string>());
+  }
+  
+  gameSessions.get(gameId)?.add(sessionId);
+  logger.debug('Registered session with game', { sessionId, gameId });
+}
+
+/**
+ * Validate that a session is authorized to perform actions on a game
+ * This combines WebSocket connection validation with game session validation
+ * @param ws The WebSocket connection
+ * @param claimedSessionId The session ID claimed in the message
+ * @param gameId The game ID being acted upon
+ * @returns True if the session is valid for this game action
+ */
+export function validateSessionForGameAction(
+  ws: ExtendedWebSocket, 
+  claimedSessionId: string,
+  gameId: string
+): boolean {
+  // Step 1: Verify the WebSocket connection is associated with this session
+  const actualSessionId = sessions.get(ws);
+  if (actualSessionId !== claimedSessionId) {
+    logger.warn('WebSocket connection session mismatch', {
+      claimedSessionId,
+      actualSessionId,
+      gameId
+    });
+    return false;
+  }
+  
+  // Step 2: For existing games, verify this session is registered with the game
+  if (gameId) {
+    const gameSessions = getSessionsForGame(gameId);
+    if (gameSessions.size > 0 && !gameSessions.has(claimedSessionId)) {
+      // Only validate once we have session registrations for this game
+      logger.warn('Session not registered with game', {
+        sessionId: claimedSessionId,
+        gameId,
+        registeredSessions: Array.from(gameSessions)
+      });
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+/**
+ * Get all sessions registered with a game
+ * @param gameId The game ID
+ * @returns Set of session IDs
+ */
+export function getSessionsForGame(gameId: string): Set<string> {
+  return gameSessions.get(gameId) || new Set<string>();
 }
 
 /**
