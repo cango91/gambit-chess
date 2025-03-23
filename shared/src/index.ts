@@ -112,4 +112,54 @@ export const __documentation = {
     "Implemented piece class hierarchy",
     "Fixed export ambiguities in utility functions"
   ]
+};
+
+// Game constants
+export const BOARD_SIZE = 8;
+export const INITIAL_BP_POOL = 39;
+export const MAX_BP_ALLOCATION = 10;
+export const BASE_BP_REGEN = 1;
+
+// Piece values in traditional chess
+export const PIECE_VALUES = {
+  PAWN: 1,
+  KNIGHT: 3,
+  BISHOP: 3,
+  ROOK: 5,
+  QUEEN: 9,
+  KING: Infinity
+};
+
+// Battle Point regeneration values for tactics
+export const BP_REGEN = {
+  CHECK: 2,
+  FORK: 3,
+  PIN: 2,
+  SKEWER: 2,
+  DISCOVERED_ATTACK: 2,
+  DISCOVERED_CHECK: 3
+};
+
+// WebSocket event types
+export const WS_EVENTS = {
+  // Client -> Server events
+  CREATE_GAME: 'create_game',
+  JOIN_GAME: 'join_game',
+  FIND_GAME: 'find_game',
+  MOVE: 'move',
+  BP_ALLOCATION: 'bp_allocation',
+  TACTICAL_RETREAT: 'tactical_retreat',
+  PING: 'ping',
+  
+  // Server -> Client events
+  SESSION: 'session',
+  GAME_CREATED: 'game_created',
+  GAME_JOINED: 'game_joined',
+  GAME_STATE: 'game_state',
+  DUEL_STARTED: 'duel_started',
+  DUEL_RESULT: 'duel_result',
+  TACTICAL_RETREAT_AVAILABLE: 'tactical_retreat_available',
+  GAME_OVER: 'game_over',
+  ERROR: 'error',
+  PONG: 'pong'
 }; 

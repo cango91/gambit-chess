@@ -3,7 +3,7 @@ import {
   isValidPosition, 
   isValidKnightRetreatPosition, 
   getKnightRetreatCost,
-  getKnightRetreatOptions,
+  getKnightRetreatOptions as getKnightRetreatOptionsUtil,
   initializeKnightRetreatTable
 } from '../utils';
 import { MovementRules } from './MovementRules';
@@ -18,6 +18,19 @@ initializeKnightRetreatTable();
  * Actual retreat resolution happens on the server.
  */
 export class TacticalRetreatRules {
+  /**
+   * Get all possible knight retreat options
+   * @param originalPosition Position before attack
+   * @param failedCapturePosition Position of the piece that wasn't captured
+   * @returns Array of retreat options with positions and BP costs
+   */
+  static getKnightRetreatOptions(
+    originalPosition: Position,
+    failedCapturePosition: Position
+  ): RetreatOption[] {
+    return getKnightRetreatOptionsUtil(originalPosition, failedCapturePosition);
+  }
+
   /**
    * Calculate the base BP cost for a retreat move
    * @param pieceType The type of piece
@@ -270,7 +283,7 @@ export class TacticalRetreatRules {
     // For knights, use the pre-computed lookup table
     if (pieceType === PieceType.KNIGHT) {
       // Get knight retreat options from the lookup table (excluding the original position)
-      const knightOptions = getKnightRetreatOptions(originalPosition, failedCapturePosition)
+      const knightOptions = getKnightRetreatOptionsUtil(originalPosition, failedCapturePosition)
         .filter(option => 
           !(option.position.x === originalPosition.x && option.position.y === originalPosition.y)
         );

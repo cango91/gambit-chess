@@ -10,8 +10,9 @@
     "resolveJsonModule": true,
     "rootDir": "./src",
     "moduleResolution": "node",
+    "baseUrl": ".",
     "paths": {
-      "gambit-chess-shared": ["../shared/dist"]
+      "@gambit-chess/shared": ["../shared/dist"]
     }
   },
   "include": ["src/**/*", "tests"],

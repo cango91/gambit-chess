@@ -25,9 +25,10 @@ export class MoveValidator {
    * @param board The board
    * @param from Starting position
    * @param to Destination position
+   * @param promotionPiece Optional piece type for pawn promotion
    * @returns The move type if valid, or throws an error if invalid
    */
-  static validateMove(board: Board, from: Position, to: Position): MoveType {
+  static validateMove(board: Board, from: Position, to: Position, promotionPiece?: PieceType): MoveType {
     // Check if there's a piece at the starting position
     const piece = board.getPieceAt(from);
     if (!piece) {
@@ -68,6 +69,31 @@ export class MoveValidator {
       } else {
         // Re-throw other errors
         throw error;
+      }
+    }
+
+    // Check if promotion piece is valid for pawn promotion
+    if (piece.type === PieceType.PAWN) {
+      const isFinalRank = (piece.color === PlayerColor.WHITE && to.y === 7) || 
+                         (piece.color === PlayerColor.BLACK && to.y === 0);
+      
+      if (isFinalRank) {
+        // Promotion piece must be provided and valid
+        if (!promotionPiece) {
+          throw new Error('Promotion piece must be specified');
+        }
+        
+        // Only certain piece types are valid for promotion
+        const validPromotionPieces = [
+          PieceType.QUEEN, 
+          PieceType.ROOK, 
+          PieceType.BISHOP, 
+          PieceType.KNIGHT
+        ];
+        
+        if (!validPromotionPieces.includes(promotionPiece)) {
+          throw new Error('Invalid promotion piece type');
+        }
       }
     }
 

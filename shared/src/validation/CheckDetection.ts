@@ -24,6 +24,93 @@ export class CheckDetection {
   }
 
   /**
+   * Check if a player is in checkmate
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in checkmate
+   */
+  static isCheckmate(board: Board, playerColor: PlayerColor): boolean {
+    // First check if the player is in check
+    if (!this.isInCheck(board, playerColor)) {
+      return false;
+    }
+    
+    // Check if any piece can make a move that gets out of check
+    return !this.hasLegalMoves(board, playerColor);
+  }
+  
+  /**
+   * Check if a player is in stalemate
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in stalemate
+   */
+  static isStalemate(board: Board, playerColor: PlayerColor): boolean {
+    // First check that the player is NOT in check
+    if (this.isInCheck(board, playerColor)) {
+      return false;
+    }
+    
+    // Then check if the player has no legal moves
+    return !this.hasLegalMoves(board, playerColor);
+  }
+  
+  /**
+   * Check if a player has any legal moves
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player has at least one legal move
+   */
+  private static hasLegalMoves(board: Board, playerColor: PlayerColor): boolean {
+    const pieces = board.getPieces().filter(piece => piece.color === playerColor);
+    
+    // For each piece, try all possible moves
+    for (const piece of pieces) {
+      // Try every square on the board as a potential destination
+      for (let x = 0; x < 8; x++) {
+        for (let y = 0; y < 8; y++) {
+          const to = { x, y };
+          
+          // Skip the current position
+          if (piece.position.x === x && piece.position.y === y) {
+            continue;
+          }
+          
+          // Skip positions with friendly pieces
+          const pieceAtDest = board.getPieceAt(to);
+          if (pieceAtDest && pieceAtDest.color === playerColor) {
+            continue;
+          }
+          
+          // Check if basic move is valid
+          if (!MovementRules.isValidBasicMove(
+            piece.type,
+            piece.color,
+            piece.position,
+            to,
+            piece.hasMoved,
+            !!pieceAtDest
+          )) {
+            continue;
+          }
+          
+          // For long-range pieces, check if path is clear
+          if (piece.isLongRangePiece() && !board.isPathClear(piece.position, to)) {
+            continue;
+          }
+          
+          // Check if move would leave player in check
+          if (!this.wouldMoveResultInCheck(board, piece.position, to, playerColor)) {
+            return true; // Found at least one legal move
+          }
+        }
+      }
+    }
+    
+    return false; // No legal moves found
+  }
+
+  /**
    * Check if a position is under attack by any opponent piece
    * @param board The current board state
    * @param position The position to check
