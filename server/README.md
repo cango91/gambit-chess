@@ -122,7 +122,7 @@ The server includes a minimal HTTP API:
 
 ## 📚 Implementation Status
 
-- Core Game Engine: 75% complete
+- Core Game Engine: 65% complete
 - Game State Management: 0% complete
 - WebSocket Communication: 0% complete
 - Player Session Management: 0% complete
