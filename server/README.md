@@ -43,7 +43,7 @@ The server implements a layered architecture:
 1. Clone the repository
 2. Install dependencies:
    ```bash
-   npm install
+   yarn install
    ```
 3. Copy the environment file:
    ```bash
@@ -53,11 +53,11 @@ The server implements a layered architecture:
 5. Start the server:
    ```bash
    # Development
-   npm run dev
+   yarn dev
    
    # Production
-   npm run build
-   npm start
+   yarn build
+   yarn start
    ```
 
 ## ⚙️ Configuration
@@ -69,8 +69,16 @@ The server is highly configurable through environment variables:
 - `INITIAL_BP_POOL`: Starting battle points for each player (default: 39)
 - `MAX_BP_ALLOCATION`: Maximum BP allocation for a single piece (default: 10)
 - `BASE_BP_REGEN`: Base BP regeneration per turn (default: 1)
-- `BP_CAPACITIES`: BP capacities of each piece type
-- `TIMER_SETTINGS`: Settings for game timer
+- `BP_REGEN_CHECK`: BP for putting opponent in check (default: 2)
+- `BP_REGEN_FORK`: BP for creating a fork (default: 3)
+- `BP_REGEN_PIN`: BP for creating a pin (default: 2)
+- `BP_REGEN_SKEWER`: BP for creating a skewer (default: 2)
+- `BP_REGEN_DISCOVERED_ATTACK`: BP for creating a discovered attack (default: 2)
+- `BP_REGEN_DISCOVERED_CHECK`: BP for creating a discovered check (default: 3)
+- `BP_CAPACITY_PAWN/KNIGHT/BISHOP/ROOK/QUEEN`: BP capacities for each piece type
+- `GAME_EXPIRY`: Game session expiry time in seconds (default: 86400 - 24 hours)
+- `MATCHMAKING_MAX_WAIT_TIME`: Maximum wait time in matchmaking queue (default: 60 seconds)
+- `MATCHMAKING_CHECK_INTERVAL`: Matchmaking queue check interval (default: 5000 milliseconds)
 
 See `.env.example` for all available configuration options.
 
@@ -128,26 +136,31 @@ The server communicates with clients via a WebSocket protocol:
 - `find_game`: Find a game via matchmaking
 - `join_game`: Join an existing game
 - `move`: Submit a move
-- `bp_allocate`: Allocate BP during a duel
+- `bp_allocation`: Allocate BP during a duel
 - `tactical_retreat`: Perform a tactical retreat
 - `update_session`: Update session identifier
+- `ping`: Health check ping
 
 ### Server -> Client Messages
 
 - `session`: Initial session assignment
+- `session_updated`: Session update confirmation
 - `game_created`: Game creation confirmation
 - `game_found`: Game found via matchmaking
 - `game_joined`: Successful game join
 - `game_state`: Updated game state
+- `duel_started`: Duel phase initiated
+- `duel_result`: Duel resolution result
+- `tactical_retreat_available`: Tactical retreat options
+- `matchmaking_joined`: Joined matchmaking queue
+- `pong`: Response to ping
 - `error`: Error message
 
 ## 📝 API Documentation
 
 The server includes a minimal HTTP API:
 
-- `GET /`: Server info
-- `GET /health`: Health check
-- `POST /api/games/create`: Create a game (WebSocket preferred)
+- `GET /health`: Health check with status, version, and active connections
 
 ## 🛡️ Security & Session Management
 
@@ -158,10 +171,13 @@ The server includes a minimal HTTP API:
 
 ## 📚 Implementation Status
 
-- Core Game Engine: 65% complete (65% implemented in `shared` workspace)
-- Game State Management: 0% complete
-- WebSocket Communication: 0% complete
-- Player Session Management: 0% complete
-- Matchmaking: 0% complete
-- AI Opponent: 0% complete
-- HTTP API: 0% complete
+- ✅ Core Game Engine: 100% complete
+- ✅ Game State Management: 100% complete
+- ✅ WebSocket Communication: 100% complete
+- ✅ Player Session Management: 100% complete
+- ✅ Matchmaking: 100% complete
+- ✅ Tactics Detection: 100% complete
+- ✅ Duel Resolution: 100% complete
+- ✅ Tactical Retreat: 100% complete
+- ⏳ AI Opponent: 30% complete (basic structure in place)
+- ✅ HTTP API: 100% complete (minimal implementation)
