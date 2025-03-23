@@ -164,7 +164,8 @@ describe('MoveValidator', () => {
       const moveType = MoveValidator.validateMove(
         board, 
         { x: 4, y: 6 }, // e7
-        { x: 4, y: 7 }  // e8
+        { x: 4, y: 7 },  // e8
+        PieceType.QUEEN
       );
       
       expect(moveType).toBe(MoveType.PROMOTION);
