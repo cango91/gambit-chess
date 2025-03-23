@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
 import { sendMessage, findConnectionBySessionId } from '../services/websocket';
 import { TacticalRetreatRequest } from '@gambit-chess/shared';
+import { defaultGameStateStorage } from '../storage';
 
 /**
  * Handle a tactical retreat request after a failed capture
@@ -32,7 +33,7 @@ export async function handleTacticalRetreat(
     });
     
     // Create game engine and load state
-    const gameEngine = new GameEngine(gameId);
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
     const loaded = await gameEngine.loadState();
     
     if (!loaded) {

@@ -4,9 +4,10 @@ import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
 import { sendMessage } from '../services/websocket';
 import { PlayerRole } from '@gambit-chess/shared';
+import { defaultGameStateStorage } from '../storage';
 
 /**
- * Handle a create game request from client
+ * Handle a create game request
  * @param ws WebSocket connection
  * @param sessionId Client session ID
  * @param payload Request payload
@@ -17,44 +18,42 @@ export async function handleCreateGame(
   payload: any
 ): Promise<void> {
   try {
-    const { againstAI = false, aiDifficulty = 'intermediate' } = payload;
+    const { againstAI, aiDifficulty } = payload || {};
     
-    // Create a unique game ID
+    // Generate a unique game ID
     const gameId = uuidv4();
     
-    // Create a new game engine instance
-    const gameEngine = new GameEngine(gameId);
+    logger.debug('Creating new game', { gameId, sessionId, againstAI });
     
-    // Initialize the game
+    // Create a new game engine with the default storage
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
+    
+    // Initialize the game state
     await gameEngine.initialize({
       againstAI,
       aiDifficulty,
-      whiteSessionId: sessionId // Creator plays as white
+      whiteSessionId: sessionId
     });
     
-    logger.info('Game created', { gameId, sessionId, againstAI });
-    
-    // Send game created confirmation to client
+    // Send confirmation to the client
     sendMessage(ws, 'game_created', {
       gameId,
-      playerRole: PlayerRole.PLAYER_WHITE,
-      success: true
+      success: true,
+      playerRole: PlayerRole.PLAYER_WHITE
     });
     
-    // If against AI, send game state immediately
+    // If against AI, send the current game state immediately
     if (againstAI) {
       const gameState = gameEngine.createGameStateDTO(sessionId);
       sendMessage(ws, 'game_state', gameState);
-      
-      // TODO: If AI's turn, make AI move
     }
-  } catch (err) {
-    logger.error('Error creating game', { error: err, sessionId });
     
-    // Send error to client
-    sendMessage(ws, 'error', { 
-      message: 'Failed to create game', 
-      details: err instanceof Error ? err.message : 'Unknown error'
+    logger.info('Game created', { gameId, sessionId, againstAI });
+  } catch (error) {
+    logger.error('Error creating game', { error, sessionId });
+    sendMessage(ws, 'error', {
+      message: 'Failed to create game',
+      code: 'CREATE_GAME_ERROR'
     });
   }
 } 

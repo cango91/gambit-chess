@@ -6,6 +6,7 @@ import { GameEngine } from '../engine/GameEngine';
 import { PlayerRole } from '@gambit-chess/shared';
 import { v4 as uuidv4 } from 'uuid';
 import { gameConfig } from '../config/gameConfig';
+import { defaultGameStateStorage } from '../storage';
 
 /**
  * Handle a find game request via matchmaking
@@ -122,7 +123,7 @@ async function findMatch(sessionId: string): Promise<{
     
     // Create a new game
     const gameId = uuidv4();
-    const gameEngine = new GameEngine(gameId);
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
     
     // Initialize game with both players
     // Coin toss to decide who plays white

@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { logger } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { GameEngine } from '../engine/GameEngine';
+import { defaultGameStateStorage } from '../storage';
 
 /**
  * Set up API routes for the Express app
@@ -18,7 +19,7 @@ export function setupApiRoutes(app: Express): void {
       const gameId = uuidv4();
       
       // Initialize a new game
-      const gameEngine = new GameEngine(gameId);
+      const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
       await gameEngine.initialize({
         againstAI,
         aiDifficulty

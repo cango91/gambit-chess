@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
 import { sendMessage, findConnectionBySessionId } from '../services/websocket';
 import { MoveRequest, PieceType, Position } from '@gambit-chess/shared';
+import { defaultGameStateStorage } from '../storage';
 
 /**
  * Handle a move request from client
@@ -32,7 +33,7 @@ export async function handleMove(
     });
     
     // Create game engine and load state
-    const gameEngine = new GameEngine(gameId);
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
     const loaded = await gameEngine.loadState();
     
     if (!loaded) {
@@ -116,7 +117,7 @@ async function notifyOpponent(
 ): Promise<void> {
   try {
     // Load game state to get opponent session
-    const gameEngine = new GameEngine(gameId);
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
     const loaded = await gameEngine.loadState();
     
     if (!loaded) return;

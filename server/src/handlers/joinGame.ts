@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
 import { sendMessage, findConnectionBySessionId } from '../services/websocket';
 import { PlayerRole } from '@gambit-chess/shared';
+import { defaultGameStateStorage } from '../storage';
 
 /**
  * Handle a join game request
@@ -26,7 +27,7 @@ export async function handleJoinGame(
     logger.debug('Join game request', { gameId, sessionId });
     
     // Load the game
-    const gameEngine = new GameEngine(gameId);
+    const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
     const loaded = await gameEngine.loadState();
     
     if (!loaded) {

@@ -2,6 +2,7 @@ import {
   Board,
   BoardFactory,
   BoardImpl,
+  BoardFactoryImpl,
   BoardSnapshot,
   CheckDetection,
   DuelOutcome,
@@ -25,7 +26,7 @@ import {
 } from '@gambit-chess/shared';
 import { v4 as uuidv4 } from 'uuid';
 import { gameConfig } from '../config/gameConfig';
-import { redis } from '../services/redis';
+import { GameStateStorage, defaultGameStateStorage } from '../storage';
 import { TacticsDetection } from './TacticsDetection';
 import { logger } from '../utils/logger';
 
@@ -95,42 +96,45 @@ export class GameEngine {
   private boardFactory: BoardFactory;
   private board: Board | null = null;
   private tacticsDetection: TacticsDetection;
+  private gameStateStorage: GameStateStorage;
 
-  constructor(gameId: string) {
+  /**
+   * Create a game engine for a specific game
+   * @param gameId The unique game ID
+   * @param storage Optional storage implementation (defaults to Redis)
+   */
+  constructor(gameId: string, storage?: GameStateStorage) {
     this.gameId = gameId;
     this.pieceFactory = new PieceFactoryImpl();
-    // Initialize board factory with piece factory
-    this.boardFactory = {
-      createFromPieces: (pieceDTOs: PieceDTO[]): Board => {
-        const pieces = pieceDTOs.map(pieceDTO => this.pieceFactory.createPiece(pieceDTO));
-        return new BoardImpl(pieces);
-      }
-    };
+    this.boardFactory = new BoardFactoryImpl(this.pieceFactory);
     this.tacticsDetection = new TacticsDetection();
+    this.gameStateStorage = storage || defaultGameStateStorage;
   }
 
   /**
    * Initialize a new game
+   * @param options Game initialization options
    */
   public async initialize(options: {
     againstAI?: boolean;
     aiDifficulty?: string;
     whiteSessionId?: string;
     blackSessionId?: string;
-  } = {}): Promise<void> {
-    const {
+  }): Promise<void> {
+    const { 
       againstAI = false,
-      aiDifficulty = 'intermediate',
+      aiDifficulty,
       whiteSessionId = null,
       blackSessionId = null
     } = options;
-
-    // Create standard chess setup
+    
+    // Create initial pieces
     const pieces = this.createInitialPieces();
     
-    // Create the board
-    this.board = new BoardImpl(pieces);
-
+    // Set up the board with DTOs
+    const pieceDTOs = pieces.map(p => p.toDTO());
+    this.board = this.boardFactory.createFromPieces(pieceDTOs);
+    
     // Initialize game state
     this.gameState = {
       id: this.gameId,
@@ -145,7 +149,7 @@ export class GameEngine {
       phase: GamePhase.NORMAL_MOVE,
       gameState: GameState.ACTIVE,
       
-      pieces: pieces.map(p => p.toDTO()),
+      pieces: pieceDTOs,
       capturedPieces: [],
       
       whiteBP: gameConfig.INITIAL_BP_POOL,
@@ -159,15 +163,15 @@ export class GameEngine {
       aiDifficulty: aiDifficulty
     };
 
-    // Save to Redis
+    // Save state
     await this.saveState();
   }
 
   /**
-   * Load game state from Redis
+   * Load game state
    */
   public async loadState(): Promise<boolean> {
-    const state = await redis.game.get(this.gameId);
+    const state = await this.gameStateStorage.getGameState(this.gameId);
     if (!state) {
       return false;
     }
@@ -183,11 +187,11 @@ export class GameEngine {
   }
 
   /**
-   * Save game state to Redis
+   * Save game state
    */
   private async saveState(): Promise<void> {
     if (this.gameState) {
-      await redis.game.save(this.gameId, this.gameState, gameConfig.GAME_EXPIRY);
+      await this.gameStateStorage.saveGameState(this.gameId, this.gameState, gameConfig.GAME_EXPIRY);
     }
   }
 
