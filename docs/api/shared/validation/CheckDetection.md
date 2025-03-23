@@ -33,6 +33,63 @@ Check if a player is in check
    */
 ```
 
+### isCheckmate (MethodDeclaration)
+
+Check if a player is in checkmate
+
+**Tags:**
+
+- @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in checkmate
+
+```typescript
+/**
+   * Check if a player is in checkmate
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in checkmate
+   */
+```
+
+### isStalemate (MethodDeclaration)
+
+Check if a player is in stalemate
+
+**Tags:**
+
+- @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in stalemate
+
+```typescript
+/**
+   * Check if a player is in stalemate
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player is in stalemate
+   */
+```
+
+### hasLegalMoves (MethodDeclaration)
+
+Check if a player has any legal moves
+
+**Tags:**
+
+- @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player has at least one legal move
+
+```typescript
+/**
+   * Check if a player has any legal moves
+   * @param board The current board state
+   * @param playerColor The color of the player to check
+   * @returns True if the player has at least one legal move
+   */
+```
+
 ### isPositionUnderAttack (MethodDeclaration)
 
 Check if a position is under attack by any opponent piece

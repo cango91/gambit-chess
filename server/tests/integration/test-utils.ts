@@ -163,7 +163,7 @@ export async function createWebSocketClient(port: number): Promise<TestClient> {
     
     // Handle close
     client.on('close', (code, reason) => {
-      console.log(`WebSocket closed with code ${code}, reason: ${reason || 'none'}`);
+      // Removed console.log to avoid "Cannot log after tests are done" errors
     });
   });
   
@@ -182,18 +182,18 @@ export function safeCloseClient(client: WebSocket | null): void {
   try {
     if (client.readyState === WebSocket.OPEN) {
       client.close();
-      console.log('WebSocket client closed gracefully');
+      // Removed console.log to avoid "Cannot log after tests are done" errors
     } else if (client.readyState === WebSocket.CONNECTING) {
       client.terminate();
-      console.log('WebSocket client terminated while connecting');
+      // Removed console.log to avoid "Cannot log after tests are done" errors
     }
   } catch (err) {
-    console.error('Error closing WebSocket client:', err);
+    // Removed console.error to avoid "Cannot log after tests are done" errors
     // Force terminate as fallback
     try {
       client.terminate();
     } catch (e) {
-      console.error('Failed to terminate WebSocket client:', e);
+      // Removed console.error to avoid "Cannot log after tests are done" errors
     }
   }
 }

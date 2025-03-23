@@ -18,6 +18,25 @@ Actual retreat resolution happens on the server.
  */
 ```
 
+### getKnightRetreatOptions (MethodDeclaration)
+
+Get all possible knight retreat options
+
+**Tags:**
+
+- @param originalPosition Position before attack
+   * @param failedCapturePosition Position of the piece that wasn't captured
+   * @returns Array of retreat options with positions and BP costs
+
+```typescript
+/**
+   * Get all possible knight retreat options
+   * @param originalPosition Position before attack
+   * @param failedCapturePosition Position of the piece that wasn't captured
+   * @returns Array of retreat options with positions and BP costs
+   */
+```
+
 ### calculateRetreatBPCost (MethodDeclaration)
 
 Calculate the base BP cost for a retreat move

@@ -38,6 +38,7 @@ Validates a move on the board
 - @param board The board
    * @param from Starting position
    * @param to Destination position
+   * @param promotionPiece Optional piece type for pawn promotion
    * @returns The move type if valid, or throws an error if invalid
 
 ```typescript
@@ -46,6 +47,7 @@ Validates a move on the board
    * @param board The board
    * @param from Starting position
    * @param to Destination position
+   * @param promotionPiece Optional piece type for pawn promotion
    * @returns The move type if valid, or throws an error if invalid
    */
 ```
