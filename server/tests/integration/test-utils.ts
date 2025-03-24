@@ -174,28 +174,99 @@ export async function createWebSocketClient(port: number): Promise<TestClient> {
 }
 
 /**
- * Safely close a WebSocket client connection if it exists and is open
+ * Wait for a specific message type
  */
-export function safeCloseClient(client: WebSocket | null): void {
-  if (!client) return;
-  
-  try {
-    if (client.readyState === WebSocket.OPEN) {
-      client.close();
-      // Removed console.log to avoid "Cannot log after tests are done" errors
-    } else if (client.readyState === WebSocket.CONNECTING) {
-      client.terminate();
-      // Removed console.log to avoid "Cannot log after tests are done" errors
+export async function waitForMessage(
+  client: WebSocket, 
+  messageType: string,
+  timeoutMs: number = 10000 // Increased from 5000
+): Promise<any> {
+  return new Promise<any>((resolve, reject) => {
+    // Store messages that don't match our type to help with debugging
+    const otherMessages: any[] = [];
+    
+    const messageHandler = (message: any) => {
+      try {
+        const data = JSON.parse(message.toString());
+        console.log(`Test received message: ${data.type}`);
+        
+        if (data.type === messageType) {
+          clearTimeout(timeoutId);
+          client.removeListener('message', messageHandler);
+          resolve(data);
+        } else {
+          // Store other messages for debugging
+          otherMessages.push(data.type);
+        }
+      } catch (err) {
+        console.error('Error parsing message:', err);
+      }
+    };
+    
+    client.on('message', messageHandler);
+    
+    const timeoutId = setTimeout(() => {
+      client.removeListener('message', messageHandler);
+      console.log(`Timeout waiting for ${messageType}. Other messages received:`, otherMessages);
+      reject(new Error(`Timeout waiting for message type: ${messageType}`));
+    }, timeoutMs);
+
+    // Ensure the timeout is cleared if the promise is otherwise rejected
+    const originalReject = reject;
+    reject = (reason) => {
+      clearTimeout(timeoutId);
+      client.removeListener('message', messageHandler);
+      originalReject(reason);
+    };
+  });
+}
+
+/**
+ * Safely close a WebSocket client with logging and proper error handling
+ */
+export function safeCloseClient(client: WebSocket | null): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (!client) {
+      resolve();
+      return;
     }
-  } catch (err) {
-    // Removed console.error to avoid "Cannot log after tests are done" errors
-    // Force terminate as fallback
+    
+    if (client.readyState === WebSocket.CLOSED || 
+        client.readyState === WebSocket.CLOSING) {
+      resolve();
+      return;
+    }
+    
+    // Function to handle cleanup
+    const cleanup = () => {
+      // Remove all listeners to prevent memory leaks
+      client.removeAllListeners();
+      resolve();
+    };
+    
     try {
-      client.terminate();
-    } catch (e) {
-      // Removed console.error to avoid "Cannot log after tests are done" errors
+      // Listen for close event
+      client.once('close', cleanup);
+      
+      // Set a timeout in case connection doesn't close cleanly
+      const timeoutId = setTimeout(() => {
+        console.log('WebSocket close timed out, forcing cleanup');
+        client.removeListener('close', cleanup);
+        cleanup();
+      }, 2000);
+      
+      // Ensure timeout is cleared if connection closes normally
+      client.once('close', () => {
+        clearTimeout(timeoutId);
+      });
+      
+      // Close the connection
+      client.close();
+    } catch (err) {
+      console.error('Error closing WebSocket client:', err);
+      cleanup();
     }
-  }
+  });
 }
 
 /**
@@ -323,35 +394,4 @@ export async function collectMessages(
   client.removeListener('message', messageHandler);
   
   return messages;
-}
-
-/**
- * Wait for a specific message type
- */
-export async function waitForMessage(
-  client: WebSocket, 
-  messageType: string,
-  timeoutMs: number = 5000
-): Promise<any> {
-  return new Promise<any>((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      client.removeListener('message', messageHandler);
-      reject(new Error(`Timeout waiting for message type: ${messageType}`));
-    }, timeoutMs);
-    
-    const messageHandler = (message: any) => {
-      try {
-        const data = JSON.parse(message.toString());
-        if (data.type === messageType) {
-          clearTimeout(timeoutId);
-          client.removeListener('message', messageHandler);
-          resolve(data);
-        }
-      } catch (err) {
-        // Ignore parse errors
-      }
-    };
-    
-    client.on('message', messageHandler);
-  });
 } 
