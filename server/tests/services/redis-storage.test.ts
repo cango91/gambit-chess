@@ -8,7 +8,7 @@ import {
   PieceType, 
   PlayerColor, 
   PlayerRole 
-} from '../../../shared/src';
+} from '@gambit-chess/shared';
 
 // Define test timeouts
 jest.setTimeout(30000);
