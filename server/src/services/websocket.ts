@@ -8,6 +8,13 @@ import { handleBPAllocation } from '../handlers/bpAllocation';
 import { handleTacticalRetreat } from '../handlers/tacticalRetreat';
 import { handleFindGame } from '../handlers/findGame';
 import { handleJoinGame } from '../handlers/joinGame';
+import { handleResign } from '../handlers/resign';
+import { handleOfferDraw, handleAcceptDraw, handleRejectDraw } from '../handlers/draw';
+import { handleRequestTakeback, handleAcceptTakeback, handleRejectTakeback } from '../handlers/takeback';
+import { handleChatMessage } from '../handlers/chat';
+import { handleTimeFlag, handleRequestMoreTime } from '../handlers/timeControl';
+import { handleSpectateGame } from '../handlers/spectate';
+import { handleRequestGameHistory } from '../handlers/gameHistory';
 
 // Extend WebSocket type to include custom properties
 interface ExtendedWebSocket extends WebSocket {
@@ -90,7 +97,9 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
         }
         
         // Validate session for game actions
-        if (['move', 'bp_allocation', 'tactical_retreat'].includes(type)) {
+        if (['move', 'bp_allocation', 'tactical_retreat', 'resign', 'offer_draw', 
+             'accept_draw', 'reject_draw', 'request_takeback', 'accept_takeback', 
+             'reject_takeback'].includes(type)) {
           if (!validateSessionForGameAction(ws, sessionId, payload.gameId)) {
             sendError(ws, 'Unauthorized: Invalid session for this game action');
             logger.warn('Unauthorized game action attempt', { 
@@ -120,6 +129,18 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
             }
             break;
             
+          case 'spectate_game':
+            await handleSpectateGame(ws, sessionId, payload);
+            // Register spectator session with the game
+            if (payload.gameId) {
+              registerSessionWithGame(payload.gameId, sessionId);
+            }
+            break;
+            
+          case 'request_game_history':
+            await handleRequestGameHistory(ws, sessionId, payload);
+            break;
+            
           case 'move':
             await handleMove(ws, sessionId, payload);
             break;
@@ -130,6 +151,46 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
             
           case 'tactical_retreat':
             await handleTacticalRetreat(ws, sessionId, payload);
+            break;
+            
+          case 'resign':
+            await handleResign(ws, sessionId, payload);
+            break;
+            
+          case 'offer_draw':
+            await handleOfferDraw(ws, sessionId, payload);
+            break;
+            
+          case 'accept_draw':
+            await handleAcceptDraw(ws, sessionId, payload);
+            break;
+            
+          case 'reject_draw':
+            await handleRejectDraw(ws, sessionId, payload);
+            break;
+            
+          case 'request_takeback':
+            await handleRequestTakeback(ws, sessionId, payload);
+            break;
+            
+          case 'accept_takeback':
+            await handleAcceptTakeback(ws, sessionId, payload);
+            break;
+            
+          case 'reject_takeback':
+            await handleRejectTakeback(ws, sessionId, payload);
+            break;
+            
+          case 'chat_message':
+            await handleChatMessage(ws, sessionId, payload);
+            break;
+            
+          case 'time_flag':
+            await handleTimeFlag(ws, sessionId, payload);
+            break;
+            
+          case 'request_more_time':
+            await handleRequestMoreTime(ws, sessionId, payload);
             break;
             
           case 'ping':
@@ -422,4 +483,46 @@ export function closeConnection(
   }
   
   return false;
+}
+
+/**
+ * Notify all participants of a game (players and spectators)
+ * @param gameId ID of the game
+ * @param excludeSessionId Optional session ID to exclude from notifications
+ * @param messageType Type of message to send
+ * @param payload Message payload
+ */
+export async function notifyGameParticipants(
+  gameId: string,
+  messageType: string,
+  payload: any,
+  excludeSessionId?: string
+): Promise<void> {
+  try {
+    // Get all sessions associated with this game
+    const sessions = gameSessions.get(gameId);
+    
+    if (!sessions || sessions.size === 0) {
+      return;
+    }
+    
+    // Send message to all participants except excluded one
+    for (const sessionId of sessions) {
+      // Skip excluded session if provided
+      if (excludeSessionId && sessionId === excludeSessionId) {
+        continue;
+      }
+      
+      const ws = findConnectionBySessionId(sessionId);
+      if (ws) {
+        sendMessage(ws, messageType, payload);
+      }
+    }
+  } catch (err) {
+    logger.error('Error notifying game participants', { 
+      error: err, 
+      gameId, 
+      messageType 
+    });
+  }
 } 
