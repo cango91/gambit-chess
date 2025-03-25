@@ -11,6 +11,8 @@ import {
 
 /**
  * WebSocket event names for game communication
+ * 
+ * PREFERRED: Use this enum instead of the deprecated GameEventType
  */
 export enum GameEvents {
   // Client-to-server events
@@ -87,7 +89,17 @@ export interface SpectatingEvent extends WSMessage {
 }
 
 /**
- * Legacy event system - will be migrated to the new system above
+ * @deprecated - LEGACY EVENT SYSTEM
+ * Migration guide:
+ * 1. Use GameEvents enum instead of GameEventType
+ * 2. Replace message structure from { type, gameId, data } to { event, gameId, ...data }
+ * 3. Use the new type-safe event interfaces instead of the legacy ones
+ * 
+ * Example:
+ * OLD: { type: GameEventType.CREATE_GAME, gameId: "123", data: { ... } }
+ * NEW: { event: GameEvents.CREATE_GAME, gameId: "123", ... }
+ * 
+ * This system will be removed in a future release.
  */
 export enum GameEventType {
   // Client to Server events
@@ -112,52 +124,64 @@ export enum GameEventType {
   SPECTATING = 'game:spectating'
 }
 
+/**
+ * @deprecated - Use the new event interfaces with GameEvents enum instead
+ */
 export interface GameEvent {
   type: GameEventType;
   gameId: string;
 }
 
-// Client to Server event interfaces
+// Legacy Client to Server event interfaces - deprecated
 
+/** @deprecated - Use the new event system */
 export interface CreateGameEvent extends GameEvent {
   type: GameEventType.CREATE_GAME;
   data: CreateGameRequest;
 }
 
+/** @deprecated - Use the new event system */
 export interface JoinGameEvent extends GameEvent {
   type: GameEventType.JOIN_GAME;
 }
 
+/** @deprecated - Use the new event system */
 export interface MakeMoveEvent extends GameEvent {
   type: GameEventType.MAKE_MOVE;
   data: MoveRequest;
 }
 
+/** @deprecated - Use the new event system */
 export interface AllocateBPEvent extends GameEvent {
   type: GameEventType.ALLOCATE_BP;
   data: BPAllocationRequest;
 }
 
+/** @deprecated - Use the new event system */
 export interface TacticalRetreatEvent extends GameEvent {
   type: GameEventType.TACTICAL_RETREAT;
   data: TacticalRetreatRequest;
 }
 
+/** @deprecated - Use the new event system */
 export interface RequestGameHistoryLegacyEvent extends GameEvent {
   type: GameEventType.REQUEST_GAME_HISTORY;
 }
 
+/** @deprecated - Use the new event system */
 export interface SpectateGameLegacyEvent extends GameEvent {
   type: GameEventType.SPECTATE_GAME;
 }
 
-// Server to Client event interfaces
+// Legacy Server to Client event interfaces - deprecated
 
+/** @deprecated - Use the new event system */
 export interface GameCreatedEvent extends GameEvent {
   type: GameEventType.GAME_CREATED;
   data: CreateGameResult;
 }
 
+/** @deprecated - Use the new event system */
 export interface GameJoinedEvent extends GameEvent {
   type: GameEventType.GAME_JOINED;
   data: {
@@ -167,16 +191,19 @@ export interface GameJoinedEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export interface GameStateUpdatedEvent extends GameEvent {
   type: GameEventType.GAME_STATE_UPDATED;
   data: GameStateDTO;
 }
 
+/** @deprecated - Use the new event system */
 export interface MoveResultEvent extends GameEvent {
   type: GameEventType.MOVE_RESULT;
   data: MoveResult;
 }
 
+/** @deprecated - Use the new event system */
 export interface DuelStartedEvent extends GameEvent {
   type: GameEventType.DUEL_STARTED;
   data: {
@@ -185,11 +212,13 @@ export interface DuelStartedEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export interface DuelResultEvent extends GameEvent {
   type: GameEventType.DUEL_RESULT;
   data: DuelResult;
 }
 
+/** @deprecated - Use the new event system */
 export interface GameErrorEvent extends GameEvent {
   type: GameEventType.GAME_ERROR;
   data: {
@@ -198,6 +227,7 @@ export interface GameErrorEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export interface GameOverEvent extends GameEvent {
   type: GameEventType.GAME_OVER;
   data: {
@@ -206,6 +236,7 @@ export interface GameOverEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export interface GameHistoryEvent extends GameEvent {
   type: GameEventType.GAME_HISTORY;
   data: {
@@ -220,6 +251,7 @@ export interface GameHistoryEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export interface SpectatingLegacyEvent extends GameEvent {
   type: GameEventType.SPECTATING;
   data: {
@@ -228,6 +260,7 @@ export interface SpectatingLegacyEvent extends GameEvent {
   };
 }
 
+/** @deprecated - Use the new event system */
 export type ClientGameEvent = 
   | CreateGameEvent
   | JoinGameEvent
@@ -237,6 +270,7 @@ export type ClientGameEvent =
   | RequestGameHistoryLegacyEvent
   | SpectateGameLegacyEvent;
 
+/** @deprecated - Use the new event system */
 export type ServerGameEvent = 
   | GameCreatedEvent
   | GameJoinedEvent

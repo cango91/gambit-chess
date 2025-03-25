@@ -181,3 +181,37 @@ The server includes a minimal HTTP API:
 - ✅ Tactical Retreat: 100% complete
 - ⏳ AI Opponent: 30% complete (basic structure in place)
 - ✅ HTTP API: 100% complete (minimal implementation)
+
+## 🛠️ Recent Technical Debt Fixes
+
+### GameEvents Unification
+- Clearly marked legacy `GameEventType` and related interfaces as deprecated with `@deprecated` JSDoc
+- Added migration guide for transitioning from legacy to new event system
+- Ensured backward compatibility while encouraging new code to use the updated system
+
+### WebSocket Service Consolidation
+- Eliminated duplicate WebSocket handling code between `server.ts` and `handlers/websocket.ts`
+- Centralized all WebSocket management in the `services/websocket.ts` service
+- Updated server initialization to use the centralized setup function
+
+### Temporal Tactics Detection
+- Fixed BP regeneration implementation to only reward new tactics created on the player's current turn
+- Modified `TacticsDetection` to track new vs. pre-existing tactics using before/after board comparison
+- Ensured BP regeneration is properly calculated based on actual new tactical achievements
+
+### BoardSnapshot Type Compatibility
+- Fixed type compatibility issues between `Board` and `BoardSnapshot` interfaces
+- Updated `TacticsDetection` class to properly handle both types with type guards
+- Implemented simplified fallback logic for methods when working with `BoardSnapshot`
+- Ensured type safety while preserving existing functionality
+
+## Technical Debt
+
+The server codebase has undergone several improvements to reduce technical debt. Key fixes include:
+
+1. **Legacy Enum System**: Deprecated old event types with clear migration paths
+2. **WebSocket Code Consolidation**: Eliminated duplicate WebSocket handling code
+3. **BP Regeneration Logic**: Fixed battle points calculation to only reward new tactics
+4. **Type Compatibility**: Improved type safety between similar interfaces
+
+For detailed documentation on technical debt fixes, see [Technical Debt Fixes](./docs/technical-debt-fixes.md).

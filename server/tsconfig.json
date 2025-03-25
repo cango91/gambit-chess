@@ -15,6 +15,6 @@
       "@gambit-chess/shared": ["../shared/dist"]
     }
   },
-  "include": ["src/**/*", "tests"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts", "dist", "scripts"]
 }

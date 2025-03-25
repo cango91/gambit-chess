@@ -4,7 +4,7 @@ import WebSocket from 'ws';
 import cors from 'cors';
 import { config } from './config';
 import { logger } from './utils/logger';
-import { handleConnection } from './handlers/websocket';
+import { setupWebSocketHandlers } from './services/websocket';
 import { redis, redisClient } from './services/redis';
 
 // Initialize Express app
@@ -20,8 +20,8 @@ const server = http.createServer(app);
 // Create WebSocket server
 const wss = new WebSocket.Server({ server });
 
-// Handle WebSocket connections
-wss.on('connection', handleConnection);
+// Set up WebSocket handlers using the centralized websocket service
+setupWebSocketHandlers(wss);
 
 // Define API routes
 app.get('/health', (req, res) => {

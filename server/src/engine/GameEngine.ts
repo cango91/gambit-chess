@@ -956,15 +956,15 @@ export class GameEngine {
   ): number {
     let bpRegen = gameConfig.BASE_BP_REGEN;
     
-    // Check for tactics
-    const tactics = this.tacticsDetection.detectTactics(
+    // Check for tactics, only considering newly created ones
+    const tacticsResult = this.tacticsDetection.detectTactics(
       playerColor,
       beforeBoard,
       afterBoard
     );
     
-    // Add BP for each tactic
-    for (const tactic of tactics) {
+    // Add BP for each new tactic (not pre-existing ones)
+    for (const tactic of tacticsResult.newTactics) {
       switch (tactic) {
         case 'CHECK':
           bpRegen += gameConfig.TACTICS_BP_REGEN.CHECK;
