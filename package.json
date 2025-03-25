@@ -1,34 +1,29 @@
 {
-  "name": "gambit-chess",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Gambit Chess game monorepo with shared library, client and server",
-  "workspaces": [
-    "shared",
-    "server",
-    "client"
-  ],
-  "scripts": {
-    "build": "yarn workspace @gambit-chess/shared build && yarn workspace @gambit-chess/server build && yarn workspace @gambit-chess/client build",
-    "build:shared": "yarn workspace @gambit-chess/shared build",
-    "build:server": "yarn workspace @gambit-chess/server build",
-    "build:client": "yarn workspace @gambit-chess/client build",
-    "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\"",
-    "dev:server": "yarn workspace @gambit-chess/server dev",
-    "dev:client": "yarn workspace @gambit-chess/client dev",
-    "start": "yarn workspace @gambit-chess/server start",
-    "test": "yarn workspaces run test",
-    "test:shared": "yarn workspace @gambit-chess/shared test",
-    "test:server": "yarn workspace @gambit-chess/server test",
-    "test:client": "yarn workspace @gambit-chess/client test",
-    "docs": "yarn workspaces run docs",
-    "docs:shared": "yarn workspace @gambit-chess/shared docs",
-    "docs:server": "yarn workspace @gambit-chess/server docs",
-    "docs:client": "yarn workspace @gambit-chess/client docs"
-  },
-  "author": "cango91",
-  "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^9.1.2"
+    "name": "gambit-chess",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Gambit Chess game monorepo with shared library, client and server",
+    "workspaces": [
+      "shared",
+      "server",
+      "client"
+    ],
+    "scripts": {
+      "build": "yarn workspace @gambit-chess/shared build && yarn workspace @gambit-chess/server build && yarn workspace @gambit-chess/client build",
+      "build:shared": "yarn workspace @gambit-chess/shared build",
+      "build:server": "yarn workspace @gambit-chess/server build",
+      "build:client": "yarn workspace @gambit-chess/client build",
+      "dev": "yarn workspace @gambit-chess/server dev",
+      "start": "yarn workspace @gambit-chess/server start",
+      "test": "yarn workspaces run test",
+      "test:shared": "yarn workspace @gambit-chess/shared test",
+      "test:server": "yarn workspace @gambit-chess/server test",
+      "test:client": "yarn workspace @gambit-chess/client test",
+      "docs": "yarn workspaces run docs",
+      "docs:shared": "yarn workspace @gambit-chess/shared docs",
+      "docs:server": "yarn workspace @gambit-chess/server docs",
+      "docs:client": "yarn workspace @gambit-chess/client docs"
+    },
+    "author": "cango91",
+    "license": "ISC"
   }
-}

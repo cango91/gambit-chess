@@ -1,275 +1,199 @@
 # Gambit Chess Client
 
-The client-side implementation of the Gambit Chess game, featuring a 3D chessboard and real-time gameplay.
+A modern 3D chess client built with React and Three.js for the Gambit Chess game.
 
-## Architecture
+## Overview
 
-The client follows a modular architecture with clear separation of concerns:
+The client module provides a visually appealing 3D chess experience with real-time gameplay, battle points system, and tactical retreat mechanics. Built using React for UI components and Three.js for 3D rendering.
 
-- **Presentation Layer**: React components for UI rendering
-- **Game Logic**: Chess game state management and rules
-- **Network Layer**: WebSocket communication with the server
-- **State Management**: Recoil for global state management
+## Technical Stack
 
-## Key Features
+- React 18
+- Three.js
+- React Three Fiber
+- React Three Drei
+- Zustand (state management)
+- Socket.IO Client
+- TypeScript
+- Vite
 
-- 3D chessboard with Three.js and React Three Fiber
-- Real-time multiplayer via WebSockets
-- Battle Points system for piece duels
-- Tactical retreats for long-range pieces
-- Game state visualization
-
-## Directory Structure
+## Project Structure
 
 ```
-client/
-├── public/           # Static assets
-│   ├── assets/         # 3D models, textures, etc.
-│   └── index.html      # HTML template
-├── src/              # Source code
-│   ├── components/     # React components
-│   │   ├── 3d/           # 3D-specific components
-│   │   └── ...           # Other UI components
-│   ├── hooks/          # Custom React hooks
-│   ├── services/       # Service modules (API, WebSocket)
-│   ├── store/          # State management (Recoil)
-│   ├── utils/          # Utility functions
-│   ├── App.tsx         # Main application component
-│   └── index.tsx       # Application entry point
-└── webpack.config.js # Webpack configuration
+src/
+├── components/
+│   ├── game/
+│   │   ├── GameBoard.tsx        # 3D chess board
+│   │   ├── ChessPiece.tsx       # 3D piece component
+│   │   ├── GameControls.tsx     # Game control buttons
+│   │   ├── BattlePoints.tsx     # BP display and allocation
+│   │   ├── GameStatus.tsx       # Game state display
+│   │   └── MoveHistory.tsx      # Move history panel
+│   ├── modals/
+│   │   ├── GameOverModal.tsx    # Game end screen
+│   │   ├── DuelModal.tsx        # BP allocation modal
+│   │   └── PromotionModal.tsx   # Pawn promotion modal
+│   └── ui/
+│       ├── Button.tsx           # Reusable button
+│       └── Loading.tsx          # Loading indicator
+├── contexts/
+│   ├── WebSocketContext.tsx     # WebSocket connection
+│   ├── GameContext.tsx          # Game state management
+│   └── SceneContext.tsx         # Three.js scene management
+├── hooks/
+│   ├── useGame.ts              # Game logic hooks
+│   ├── useWebSocket.ts         # WebSocket hooks
+│   └── useScene.ts             # Scene management hooks
+├── models/
+│   ├── ChessBoard.ts           # Board geometry
+│   └── ChessPiece.ts           # Piece geometry
+├── utils/
+│   ├── coordinates.ts          # Board coordinate conversion
+│   ├── animations.ts           # Animation helpers
+│   └── validators.ts           # Move validation
+└── types/
+    └── index.ts                # TypeScript types
 ```
+
+## Implementation Phases
+
+### Phase 1: Core Setup (20%)
+- [x] Project initialization
+- [ ] Dependencies setup
+- [ ] Basic routing
+- [ ] WebSocket connection
+- [ ] Type definitions
+
+### Phase 2: 3D Scene (30%)
+- [ ] Board geometry
+- [ ] Camera setup
+- [ ] Piece loading
+- [ ] Basic piece placement
+- [ ] Piece movement
+- [ ] Visual effects
+
+### Phase 3: Game Logic (20%)
+- [ ] State management
+- [ ] Move validation
+- [ ] Event handling
+- [ ] Turn management
+- [ ] Battle points system
+- [ ] Tactical retreat
+
+### Phase 4: UI Components (20%)
+- [ ] Game controls
+- [ ] Status display
+- [ ] Battle points
+- [ ] Move history
+- [ ] Game over screen
+- [ ] Modals
+
+### Phase 5: Polish (10%)
+- [ ] Animations
+- [ ] Visual effects
+- [ ] Sound effects
+- [ ] Performance optimization
+- [ ] Mobile responsiveness
+
+## Technical Details
+
+### 3D Scene Setup
+
+The chess board is scaled to 1.6m x 1.6m (10x the piece diameter) for better visibility:
+- Board size: 1.6m x 1.6m
+- Square size: 0.2m x 0.2m
+- Piece base diameter: 0.02m (scaled to 0.2m)
+
+### Camera Setup
+
+- Position: (0, 2, 2)
+- Target: (0, 0, 0)
+- FOV: 75 degrees
+- Near: 0.1
+- Far: 1000
+
+### Piece Models
+
+All piece models are in FBX format with a base diameter of 0.02m:
+- White pieces: king_w.fbx, queen_w.fbx, bishop_w.fbx, rook_w.fbx, knight_w.fbx, pawn_w.fbx
+- Black pieces: king_b.fbx, queen_b.fbx, bishop_b.fbx, rook_b.fbx, knight_b.fbx, pawn_b.fbx
+
+### WebSocket Events
+
+The client handles the following events:
+- Client to Server:
+  - create_game
+  - join_game
+  - make_move
+  - allocate_bp
+  - tactical_retreat
+  - request_game_history
+  - spectate_game
+
+- Server to Client:
+  - game_created
+  - game_joined
+  - game_state_updated
+  - duel_started
+  - duel_resolved
+  - tactical_retreat_available
+  - game_history_update
+  - game_over
+  - error
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js (v16+)
-- Yarn package manager
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
+1. Install dependencies:
 ```bash
-cd client
-yarn install
+npm install
 ```
 
-3. Build the shared module:
+2. Start development server:
 ```bash
-cd ../shared
-yarn build
+npm run dev
 ```
 
-4. Start the development server:
+3. Build for production:
 ```bash
-cd ../client
-yarn dev
+npm run build
 ```
 
-## Bundler Configuration
+## Development Guidelines
 
-The client uses Webpack configured to properly handle CommonJS modules from the shared package. This ensures compatibility with the enums and other exports from the shared code.
+1. Use TypeScript for all new files
+2. Follow React functional component patterns
+3. Use hooks for state management and side effects
+4. Implement proper error handling
+5. Add loading states for async operations
+6. Optimize 3D scene performance
+7. Test all game mechanics thoroughly
 
-## 3D Models
+## Performance Considerations
 
-The chess pieces are loaded from FBX files located in `public/assets/models/`. Each piece has a white and black variant with a base diameter of 0.02m.
+1. Use React.memo for pure components
+2. Implement proper cleanup in useEffect
+3. Optimize 3D model loading
+4. Use proper camera controls
+5. Implement proper scene culling
+6. Use proper lighting setup
+7. Optimize WebSocket message handling
 
-## Communication Protocol
+## Testing
 
-The client communicates with the server using WebSocket events as defined in the shared `GameEvents` enum:
+1. Unit tests for game logic
+2. Integration tests for WebSocket
+3. Visual regression tests
+4. Performance benchmarks
+5. Mobile responsiveness tests
 
-- Create/join game
-- Making moves
-- Battle point allocation
-- Tactical retreats
-- Game state updates
-- Duel events
+## Contributing
 
-## Development Notes
+1. Create feature branch
+2. Implement changes
+3. Add tests
+4. Update documentation
+5. Create pull request
 
-- Always use the shared module for game-related types and constants
-- Never import directly from the server module
-- Use the WebSocket hook for all server communication
-- Follow the component hierarchy for 3D objects 
+## License
 
-## Implementation Plan
-
-### 1. Project Structure Setup
-
-1. Create the complete directory structure:
-   - `public/assets/models/` - For 3D chess piece models
-   - `public/assets/textures/` - For board and piece textures
-   - `src/components/3d/` - For Three.js components
-   - `src/components/ui/` - For regular React UI components
-   - `src/hooks/` - For custom React hooks
-   - `src/services/` - For WebSocket and other services
-   - `src/store/` - For Recoil state management
-   - `src/utils/` - For utility functions
-   - `src/types/` - For client-specific type definitions
-
-2. Create essential files:
-   - `public/index.html` - HTML template
-   - `src/index.tsx` - Entry point
-   - `src/App.tsx` - Main component
-
-### 2. Shared Module Integration
-
-Required components from the shared module:
-
-1. **Types and Interfaces**:
-   - `Position` - Chess board coordinates
-   - `PieceType` - Enum for piece types (pawn, knight, etc.)
-   - `PlayerColor` - Enum for player colors (white, black)
-   - `PlayerRole` - Enum for player roles (white, black, spectator)
-   - `PieceDTO` - Data transfer object for pieces
-   - `MoveType` - Types of moves (normal, capture, etc.)
-   - `MoveRequest` - Move request to server
-   - `MoveResult` - Result from server for move
-   - `BPAllocationRequest` - Battle points allocation request
-   - `DuelOutcome` - Enum for duel outcomes
-   - `DuelResult` - Result of a duel
-   - `RetreatOption` - Options for tactical retreat
-   - `TacticalRetreatRequest` - Request for tactical retreat
-   - `GameState` - Enum for game state (active, check, etc.)
-   - `GamePhase` - Enum for game phase (normal, duel, retreat)
-   - `GameStateDTO` - Complete game state from server
-   - `CreateGameRequest` - Request to create a game
-   - `CreateGameResult` - Result from server for game creation
-
-2. **WebSocket Events**:
-   - `GameEvents` - Enum for all WebSocket event types
-   - `WSMessage` - Base interface for WebSocket messages
-   - Various event interfaces (using the new event system, not legacy)
-
-3. **Validation**:
-   - `IsValidMove` - Function to validate moves locally
-   - `CanPieceMoveToPosition` - Function to check valid piece moves
-
-### 3. Core Services Implementation
-
-1. **WebSocket Service** (`src/services/websocket.ts`):
-   - Connection management
-   - Message handling
-   - Event dispatch system
-   - Session management
-   - Reconnection logic
-
-2. **Game Service** (`src/services/game.ts`):
-   - Game state management
-   - Move processing
-   - Battle point management
-   - Duel handling
-   - Tactical retreat processing
-
-3. **Authentication Service** (`src/services/auth.ts`):
-   - Session management
-   - Player identification
-
-### 4. State Management with Recoil
-
-1. **Atoms**:
-   - `gameStateAtom` - Current game state
-   - `sessionAtom` - Player session data
-   - `uiStateAtom` - UI state (selected piece, highlighted squares, etc.)
-   - `notificationAtom` - Game notifications and alerts
-
-2. **Selectors**:
-   - `currentPlayerSelector` - Get current player info
-   - `availableMovesSelector` - Calculate valid moves for selected piece
-   - `gameStatusSelector` - Derive game status from current state
-
-### 5. Custom React Hooks
-
-1. **useWebSocket** - Hook for WebSocket communication
-2. **useGameState** - Hook for accessing game state
-3. **useMove** - Hook for making moves
-4. **useBattlePoints** - Hook for BP allocation and management
-5. **useTacticalRetreat** - Hook for handling retreats
-6. **usePieceSelection** - Hook for piece selection logic
-
-### 6. 3D Implementation with React Three Fiber
-
-1. **Core 3D Components**:
-   - `ChessBoard` - 3D chess board
-   - `ChessPiece` - 3D chess piece with animations
-   - `Highlighter` - Square highlighting for moves
-   - `Scene` - Main 3D scene
-   - `Camera` - Camera controls
-
-2. **Animation System**:
-   - Piece movement animations
-   - Battle animations for duels
-   - Tactical retreat animations
-   - Victory/defeat animations
-
-3. **Interaction System**:
-   - Piece selection
-   - Destination selection
-   - Drag and drop movement
-   - BP allocation interface
-
-### 7. UI Components
-
-1. **Game Interface**:
-   - `GameContainer` - Main game container
-   - `GameControls` - Game control panel
-   - `GameInfo` - Display game information
-   - `MoveHistory` - Show move history
-   - `PlayerInfo` - Show player information and BP
-
-2. **Battle Points System**:
-   - `BPDisplay` - Show current BP
-   - `BPAllocationSlider` - Interface for allocating BP
-   - `TacticalRetreatSelector` - Interface for selecting retreat options
-
-3. **Menus and Navigation**:
-   - `MainMenu` - Game main menu
-   - `GameCreation` - Create or join game interface
-   - `Settings` - Game settings
-
-### 8. Testing Strategy
-
-1. **Unit Tests**:
-   - Test WebSocket message handling
-   - Test state management
-   - Test game logic
-
-2. **Integration Tests**:
-   - Test WebSocket and game service integration
-   - Test UI and state management integration
-
-3. **End-to-End Tests**:
-   - Test complete game flow
-
-### Implementation Timeline
-
-1. **Phase 1: Foundation** (Week 1)
-   - Project structure setup
-   - WebSocket service
-   - Basic state management
-   - Simple 2D board representation
-
-2. **Phase 2: Core Game Logic** (Week 2)
-   - Complete game state handling
-   - Move validation
-   - Battle Points system
-   - Tactical retreat system
-
-3. **Phase 3: 3D Implementation** (Week 3)
-   - 3D board and pieces
-   - Camera controls
-   - Animations
-   - Interaction system
-
-4. **Phase 4: UI Refinement** (Week 4)
-   - Complete UI components
-   - Responsive design
-   - Visual polish
-   - Performance optimization
-
-5. **Phase 5: Testing and Deployment** (Week 5)
-   - Unit and integration tests
-   - Bug fixes
-   - Deployment setup
-   - Documentation 
+MIT 

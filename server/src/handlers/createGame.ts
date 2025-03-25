@@ -18,17 +18,12 @@ export async function handleCreateGame(
   payload: any
 ): Promise<void> {
   try {
-    logger.info('Create game handler invoked', { 
-      sessionId,
-      payload: JSON.stringify(payload)
-    });
-    
-    const { againstAI, aiDifficulty, playerName } = payload || {};
+    const { againstAI, aiDifficulty } = payload || {};
     
     // Generate a unique game ID
     const gameId = uuidv4();
     
-    logger.debug('Creating new game', { gameId, sessionId, againstAI, playerName });
+    logger.debug('Creating new game', { gameId, sessionId, againstAI });
     
     // Create a new game engine with the default storage
     const gameEngine = new GameEngine(gameId, defaultGameStateStorage);
@@ -43,21 +38,12 @@ export async function handleCreateGame(
     // Register this session with the game for security validation
     registerSessionWithGame(gameId, sessionId);
     
-    // Prepare response data
-    const responseData = {
+    // Send confirmation to the client
+    sendMessage(ws, 'game_created', {
       gameId,
       success: true,
       playerRole: PlayerRole.PLAYER_WHITE
-    };
-    
-    logger.info('Sending game_created response', { 
-      gameId, 
-      sessionId,
-      response: JSON.stringify(responseData)
     });
-    
-    // Send confirmation to the client
-    sendMessage(ws, 'game_created', responseData);
     
     // If against AI, send the current game state immediately
     if (againstAI) {
@@ -65,7 +51,7 @@ export async function handleCreateGame(
       sendMessage(ws, 'game_state', gameState);
     }
     
-    logger.info('Game created successfully', { gameId, sessionId, againstAI });
+    logger.info('Game created', { gameId, sessionId, againstAI });
   } catch (error) {
     logger.error('Error creating game', { error, sessionId });
     sendMessage(ws, 'error', {
