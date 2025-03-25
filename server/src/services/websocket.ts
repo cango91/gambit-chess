@@ -105,6 +105,10 @@ export function setupWebSocketHandlers(wss: WebSocket.Server): void {
         // Route to appropriate handler based on message type
         switch (type) {
           case 'create_game':
+            logger.info('Received create_game request', { 
+              sessionId,
+              payload: JSON.stringify(payload)
+            });
             await handleCreateGame(ws, sessionId, payload);
             break;
             
