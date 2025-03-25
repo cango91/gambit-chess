@@ -10,4 +10,3 @@ This directory contains documentation for the `handlers` module.
 - [joinGame](joinGame.md)
 - [move](move.md)
 - [tacticalRetreat](tacticalRetreat.md)
-- [websocket](websocket.md)

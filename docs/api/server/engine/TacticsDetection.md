@@ -14,6 +14,16 @@ Available chess tactics that can generate BP
  */
 ```
 
+### TacticsDetectionResult (InterfaceDeclaration)
+
+Result of tactics detection including which tactics are new vs. pre-existing
+
+```typescript
+/**
+ * Result of tactics detection including which tactics are new vs. pre-existing
+ */
+```
+
 ### TacticsDetection (ClassDeclaration)
 
 Class responsible for detecting chess tactics that generate BP bonuses
@@ -26,21 +36,42 @@ Class responsible for detecting chess tactics that generate BP bonuses
 
 ### detectTactics (MethodDeclaration)
 
-Detect tactics in the given board state
+Detect tactics in the given board state, distinguishing betweennewly created tactics and pre-existing ones
 
 **Tags:**
 
 - @param playerColor Color of the player who made the move
    * @param beforeBoard Board state before the move
    * @param afterBoard Board state after the move
+   * @returns Object containing new tactics and pre-existing tactics
+
+```typescript
+/**
+   * Detect tactics in the given board state, distinguishing between
+   * newly created tactics and pre-existing ones
+   * 
+   * @param playerColor Color of the player who made the move
+   * @param beforeBoard Board state before the move
+   * @param afterBoard Board state after the move
+   * @returns Object containing new tactics and pre-existing tactics
+   */
+```
+
+### detectAllTactics (MethodDeclaration)
+
+Detect all tactics currently on the board
+
+**Tags:**
+
+- @param board The board to analyze
+   * @param playerColor The player whose tactics to detect
    * @returns Array of detected tactics
 
 ```typescript
 /**
-   * Detect tactics in the given board state
-   * @param playerColor Color of the player who made the move
-   * @param beforeBoard Board state before the move
-   * @param afterBoard Board state after the move
+   * Detect all tactics currently on the board
+   * @param board The board to analyze
+   * @param playerColor The player whose tactics to detect
    * @returns Array of detected tactics
    */
 ```
@@ -80,22 +111,21 @@ Check if there's a skewer on the boardA skewer is similar to a pin, but the mor
 
 ### hasDiscoveredAttack (MethodDeclaration)
 
-Check if there's a discovered attackA discovered attack occurs when a piece moves to reveal an attack by another piece
+Check if there's a discovered attack on the board
 
 ```typescript
 /**
-   * Check if there's a discovered attack
-   * A discovered attack occurs when a piece moves to reveal an attack by another piece
+   * Check if there's a discovered attack on the board
    */
 ```
 
-### wasDirect (MethodDeclaration)
+### isDiscoveredCheck (MethodDeclaration)
 
-Check if the check was direct (made by the moved piece) or discovered
+Check if a move resulted in a discovered check
 
 ```typescript
 /**
-   * Check if the check was direct (made by the moved piece) or discovered
+   * Check if a move resulted in a discovered check
    */
 ```
 
@@ -127,5 +157,20 @@ Check if a piece at position 'from' can capture a piece at position 'to'
 /**
    * Check if a piece at position 'from' can capture a piece at position 'to'
    */
+```
+
+## Module Documentation
+
+```json
+{
+  name: "TacticsDetection",
+  purpose: "Detects chess tactics that generate BP bonuses",
+  implementationStatus: "Complete",
+  moduleType: "Server",
+  improvements: [
+    "Added temporal tracking to determine new tactics vs. pre-existing ones",
+    "Improved detection to avoid double-counting tactics across multiple turns"
+  ]
+}
 ```
 
