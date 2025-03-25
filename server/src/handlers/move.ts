@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import { logger } from '../utils/logger';
 import { GameEngine } from '../engine/GameEngine';
-import { sendMessage, findConnectionBySessionId, notifyGameParticipants } from '../services/websocket';
+import { sendMessage, findConnectionBySessionId } from '../services/websocket';
 import { MoveRequest, PieceType, Position } from '@gambit-chess/shared';
 import { defaultGameStateStorage } from '../storage';
 
@@ -101,21 +101,6 @@ async function sendUpdatedGameState(
     
     // Notify opponent with their game state view
     await notifyOpponentGameState(gameId, sessionId, gameEngine);
-    
-    // Notify spectators about the move with move_result message
-    // We keep move details here but not BP allocation or other sensitive info
-    const moveDetails = {
-      gameId,
-      success: true,
-      lastMove: gameState.lastMove
-    };
-    
-    // Notify all spectators about the move
-    await notifyGameParticipants(gameId, 'move_result', moveDetails, sessionId);
-    
-    // Note: We don't send full game state to spectators here because
-    // the GameEngine.createGameStateDTO() needs a specific sessionId.
-    // Instead, we only send move information that's public.
   } catch (err) {
     logger.error('Error sending updated game state', { error: err, gameId });
   }
