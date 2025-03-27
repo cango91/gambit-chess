@@ -11,7 +11,7 @@ When a player attempts to capture an opponent's piece with a valid chess move, i
 **How the Duel Works:**
 
 1.  **Resource:** Each player has a pool of **Battle Points**.
-2.  **Allocation Phase:** Both the attacking player and the defending player secretly allocate a portion of their current BP to the duel. Each piece has a **BP Capacity** which is the same as their classic chess piece value by default(1 for pawn, 3 for bishop, etc., the server settings can configure these values). The Maximum BP any piece can have is **10** (server can configure this value) however, allocating BP beyond the piece's capacity doubles the BP cost (i.e. a pawn being attacked by a Queen is guaranteed to be defended if the defending player spends 19BP on it)
+2.  **Allocation Phase:** Both the attacking player and the defending player secretly allocate a portion of their current BP to the duel. Each piece has a **BP Capacity** which is the same as their classic chess piece value by default (1 for pawn, 3 for bishop, etc.). The server settings can configure these values. The Maximum BP any piece can have is **10** (server can configure this value); however, allocating BP beyond the piece's capacity doubles the BP cost (i.e. a pawn being attacked by a Queen is guaranteed to be defended if the defending player spends 19BP on it).
 3.  **Revelation:** Once both players (or the AI opponent) have made their allocation, the amounts are revealed.
 4.  **Resolution:** The piece whose player allocated more BP to the duel wins.
     * **Attacker Wins:** The capture is successful. The defending piece is removed from the board, and the attacking piece moves to its square. The BP spent by both pieces in the duel is deducted from their respective remaining pools.
