@@ -1,165 +1,154 @@
+# Gambit Chess: Shared Module
 
+This module contains the shared types, utilities, and constants used by both the client and server components of Gambit Chess.
 
-Read file: package.json
+## Key Components
 
-Read file: shared/package.json
-# Gambit Chess Shared Module
+- **Types**: Core type definitions for the game
+- **DTOs (Data Transfer Objects)**: Structures for client-server communication
+- **Constants**: Configuration values and game parameters
+- **Chess Utilities**: Chess piece movement patterns and validation
+- **Position Utilities**: Board position manipulation and validation
+- **Tactical Retreat Calculator**: Implements tactical retreat mechanics
+- **Notation System**: Standard chess notation with Gambit Chess extensions
 
-## Overview
-The Gambit Chess Shared Module provides the core domain logic and types for the Gambit Chess application. This module acts as a bridge between client and server components, ensuring consistent game rules, move validation, and state management across the entire application.
-
-## Features
-
-### Core Chess Logic
-- 🎮 Complete chess move validation
-- ♟️ Comprehensive piece movement rules
-- ⚡ Check and checkmate detection
-- 👑 Special moves (castling, en passant, promotion)
-
-### Gambit Chess Mechanics
-- ⚔️ Duel system with battle point allocation
-- 🛡️ Tactical retreat rules and validation
-- 🐴 Knight retreat path calculation
-- 🎲 Battle point cost determination
-
-### Utilities
-- 📝 Chess notation conversion and parsing
-- 🧩 Board position and piece utilities
-- 🔄 Game state transformation helpers
-
-## Workspace Structure
-
-This module is part of a monorepo using npm workspaces. The project structure includes:
+## Directory Structure
 
 ```
-gambit-chess/
-├── shared/    - This module (common code)
-├── client/    - Frontend application
-├── server/    - Backend server
-└── package.json - Root workspace configuration
-```
-
-## Installation & Setup
-
-If not already available, install `yarn` globally
-
-```bash
-npm install yarn -g
-```
-
-From the root directory:
-
-```bash
-# Install all dependencies across workspaces
-yarn
-```
-
-## Scripts
-
-The following scripts can be run from the root directory:
-
-```bash
-# Build all modules
-yarn build
-
-# Build only shared module
-yarn build:shared
-
-# Run tests across all modules
-yarn test
-
-# Run only shared module tests
-yarn test:shared
-
-# Generate documentation
-yarn docs
-
-# Generate only shared module documentation
-yarn docs:shared
+shared/
+├── src/
+│   ├── chess/         # Chess movement patterns and validation
+│   ├── constants/     # Shared constants and configuration values
+│   ├── dtos/          # Data Transfer Objects for communication
+│   ├── notation/      # Chess notation utilities
+│   ├── tactical/      # Tactical retreat implementation
+│   ├── tests/         # Test files
+│   ├── types/         # Type definitions 
+│   ├── utils/         # Utility functions
+│   └── index.ts       # Main entry point
+├── dist/              # Compiled output
+├── scripts/           # Build and generation scripts
+├── package.json       # Package configuration
+└── tsconfig.json      # TypeScript configuration
 ```
 
 ## Usage
 
-### Importing in client or server workspaces
-Since this is a workspace package, you can import it directly:
-
 ```typescript
-// From client or server code
-import { Board, PieceType, MoveValidator } from '@gambit-chess/shared';
+// Import shared components
+import { 
+  Position, 
+  Move, 
+  isValidPosition,
+  calculateTacticalRetreats,
+  PIECE_VALUES
+} from '@gambit-chess/shared';
 ```
 
-### Examples
+## Building
 
-#### Creating a board
-```typescript
-import { BoardImpl, PieceFactoryImpl, PieceType, PlayerColor } from '@gambit-chess/shared';
+```bash
+# Build the shared module
+yarn build
 
-const pieceFactory = new PieceFactoryImpl();
-const board = new BoardImpl([
-  pieceFactory.createNewPiece(PieceType.KING, PlayerColor.WHITE, { x: 4, y: 0 }),
-  pieceFactory.createNewPiece(PieceType.PAWN, PlayerColor.WHITE, { x: 4, y: 1 }),
-  pieceFactory.createNewPiece(PieceType.ROOK, PlayerColor.BLACK, { x: 0, y: 7 }),
-]);
+# Run tests
+yarn test
 ```
 
-#### Validating moves
-```typescript
-import { MoveValidator } from '@gambit-chess/shared';
+## Domain Boundaries
 
-// Returns a MoveType or throws an error if invalid
-const moveType = MoveValidator.validateMove(
-  board,
-  { x: 4, y: 1 }, // from
-  { x: 4, y: 3 }  // to
-);
+This shared library strictly adheres to domain boundaries as defined in the project specifications:
+
+- Contains only pure utility functions
+- Provides type definitions used by both client and server
+- Does not import from client or server code
+- Contains no state management or side effects 
+
+### Game State Progression
+
+**Important**: Game state progression logic (checkmate detection, stalemate detection, draw conditions, game termination) is **intentionally not implemented** in the shared layer. This functionality belongs exclusively to the server domain, which serves as the authoritative source of truth for game state.
+
+The shared layer provides:
+- Chess piece movement validation
+- Board state representation
+- Check detection for move validation
+- Tactical retreat calculation
+
+But explicitly does not include:
+- Checkmate detection
+- Stalemate detection
+- Draw condition evaluation
+- Game termination logic
+- Player turn management
+
+This separation ensures proper domain boundaries and prevents duplication of critical game logic.
+
+## Installation
+
+```bash
+yarn install
 ```
 
-#### Working with notation
-```typescript
-import { positionToNotation, notationToPosition } from '@gambit-chess/shared';
+## Development
 
-// Convert between chess notation and coordinates
-const notation = positionToNotation({ x: 4, y: 1 }); // "e2"
-const position = notationToPosition("e2"); // { x: 4, y: 1 }
+```bash
+yarn dev
 ```
 
-#### Duel and Tactical Retreat
-```typescript
-import { DuelRules, TacticalRetreatRules } from '@gambit-chess/shared';
+## Testing
 
-// Validate battle point allocation
-const isValid = DuelRules.validateBPAllocation(piece, allocatedBP);
+Run all tests:
 
-// Calculate maximum BP capacity for a piece
-const maxBP = DuelRules.getMaxBattlePoints(pieceType);
-
-// Calculate tactical retreat BP cost
-const cost = TacticalRetreatRules.calculateRetreatBPCost(piece, fromPosition, toPosition);
+```bash
+yarn test
 ```
 
-## Architecture
+Run tests in watch mode:
 
-The shared module follows a clean separation of concerns:
+```bash
+yarn test:watch
+```
 
-- `models/` - Core data structures like Board and Pieces
-- `types/` - TypeScript interfaces and enums
-- `rules/` - Game rule implementations
-- `validation/` - Move and check validation
-- `utils/` - Helper functions
+Run tests with coverage:
+
+```bash
+yarn test:coverage
+```
+
+The coverage report will be available at `coverage/lcov-report/index.html`. You can open it in a browser to see detailed coverage information.
 
 ## Documentation
 
-All components are documented according to JSDoc standards. The module uses a documentation export pattern to ensure up-to-date API documentation:
+Generate documentation:
 
-```typescript
-export const __documentation = {
-  name: "ModuleName",
-  purpose: "Description of module purpose",
-  publicAPI: { /* ... */ },
-  implementationStatus: "Complete"
-};
+```bash
+yarn docs
 ```
 
----
+## Knight Retreat Table
 
-© Gambit Chess 2025
+The knight retreat table is pre-calculated during build time to optimize performance. The table contains all possible knight retreat options for any starting position and attack position.
+
+### Generation
+
+The knight retreat table is generated by `scripts/generateKnightRetreatTable.js` and is executed as part of the prebuild script.
+
+### Usage
+
+To use the knight retreat table, import the utility functions from `constants/knightRetreatUtils`:
+
+```typescript
+import { getKnightRetreats } from '../constants/knightRetreatUtils';
+
+// Get knight retreat options
+const options = getKnightRetreats(startX, startY, attackX, attackY);
+```
+
+## Domain Boundaries
+
+This shared library strictly adheres to domain boundaries as defined in the project specifications:
+
+- Contains only pure utility functions
+- Provides type definitions used by both client and server
+- Does not import from client or server code
+- Contains no state management or side effects 
