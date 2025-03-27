@@ -1,0 +1,87 @@
+---
+description: Actions to take when the "Perform session hand-off" command is received
+globs: 
+alwaysApply: false
+---
+
+# Session Handoff: "Perform session hand-off"
+
+## Trigger
+When the user inputs the exact phrase "Perform session hand-off" at any point during a Cursor session.
+
+## Required Actions
+
+### 1. Document Session Progress
+Create or update a session documentation file in `.cursor/sessions/` that includes:
+
+```markdown
+## Session Summary
+
+**Date**: YYYY-MM-DD
+**Focus**: [Component(s) worked on]
+**Status**: [Progress made]
+
+### Implemented Components
+- [Component Name]: [Status] - [Brief description]
+- ...
+
+### Key Decisions
+- [Decision]: [Rationale]
+- ...
+
+### Known Limitations
+- [Limitation]: [Possible future resolution]
+- ...
+
+### Next Priority Tasks
+- [Task]: [Expected complexity]
+- ...
+```
+
+### 2. Update Implementation Status
+1. Check the `TECH_DEBT_PREVENTION.md` Component Ownership Matrix
+2. Update the implementation status of any components worked on
+3. Ensure documentation accurately reflects the current state of the code
+
+### 3. Document Technical Debt
+If any technical debt was identified or created during the session, document it according to the format in `TECH_DEBT_PREVENTION.md`:
+
+```markdown
+## Technical Debt Item
+
+**Category**: [Architectural|Implementation|Duplication|Testing|Documentation]
+**Component**: Affected component
+**Priority**: [High|Medium|Low]
+**Estimated Effort**: [Small|Medium|Large]
+
+### Description
+Detailed description of the technical debt item
+
+### Impact
+Consequences of not addressing this debt
+
+### Resolution Approach
+Proposed approach to resolve this debt
+
+### Created
+Date when this debt was identified
+```
+
+### 4. Update API Documentation
+If any APIs or interfaces were modified or created:
+1. Update relevant JSDoc comments in the code
+2. Ensure the interface definitions match the implementation
+
+### 5. Generate Summary Report
+Provide a concise summary to the user including:
+1. What was accomplished in the session
+2. Current project state
+3. Next priority tasks 
+4. Any critical issues or blockers
+
+## Implementation Notes
+- Always create the `.cursor/sessions/` directory if it doesn't exist
+- Session files should follow the naming pattern `YYYY-MM-DD-session-summary.md`
+- Check for and create the latest session file
+- If multiple session files exist for the current date, append a numeric suffix
+- Always commit session documentation to maintain project history 

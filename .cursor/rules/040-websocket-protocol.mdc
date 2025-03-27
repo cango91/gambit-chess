@@ -1,0 +1,129 @@
+---
+description: WebSocket protocol implementation standards for real-time communication
+globs: **/websocket.ts, **/socket.ts, **/*WebSocket*.ts
+---
+
+# WebSocket Protocol Standards
+
+## 1. Connection Management
+
+### 1.1 Initialization
+- Establish secure WebSocket connections (WSS)
+- Implement handshake and authentication flow
+- Generate and validate session tokens
+- Handle connection failures gracefully
+
+### 1.2 Reconnection
+- Implement automatic reconnection with exponential backoff
+- Maintain session state during disconnections
+- Resume game state after reconnection
+- Handle reconnection timeouts
+
+### 1.3 Heartbeat
+- Implement ping/pong mechanism
+- Detect stale connections
+- Clean up resources for disconnected clients
+- Log connection status changes
+
+## 2. Message Structure
+
+### 2.1 Message Format
+```typescript
+interface WebSocketMessage {
+  type: string;         // Event type
+  payload: unknown;     // Type-specific payload
+  id?: string;          // Optional message ID for request-response pattern
+  timestamp: number;    // Server timestamp
+  sequence?: number;    // Sequence number for ordering
+}
+```
+
+### 2.2 Type-Safe Messages
+- Define specific interfaces for each message type
+- Use discriminated unions for type safety
+- Validate message structure on receipt
+- Implement proper serialization/deserialization
+
+## 3. Event Types
+
+### 3.1 Server-to-Client Events
+- `gameState.update`: Send filtered game state updates
+- `duel.initiated`: Notify of capture attempt and duel
+- `duel.awaitingAllocation`: Request BP allocation
+- `duel.outcome`: Send duel resolution results
+- `retreat.options`: Provide tactical retreat options
+- `game.check`, `game.checkmate`, `game.draw`: Game status events
+- `bp.update`: Update player's BP pool (player-specific)
+- `error.*`: Error notifications
+- `chat.message`: Broadcast chat messages
+- `spectator.*`: Spectator-related events
+
+### 3.2 Client-to-Server Events
+- `move.execute`: Request to move a piece
+- `duel.allocate`: Submit BP allocation
+- `retreat.select`: Choose tactical retreat position
+- `game.resign`, `game.offerDraw`, `game.respondDraw`: Game actions
+- `connection.ping`: Connection health check
+- `chat.send`: Send chat message
+- `spectator.join`: Join as spectator
+- `player.setName`: Set player name
+
+## 4. State Synchronization
+
+### 4.1 Update Types
+- Full state updates: Complete game state (filtered)
+- Delta updates: Only changed portions of state
+- Event-based updates: Notifications of specific events
+
+### 4.2 Update Protocol
+- Send full state on connection/reconnection
+- Use delta updates during normal gameplay
+- Include sequence numbers for ordering
+- Include timestamps for synchronization
+- Implement state reconciliation for conflicts
+
+## 5. Error Handling
+
+### 5.1 Error Types
+- Validation errors: Invalid moves or actions
+- Authorization errors: Unauthorized actions
+- Connection errors: Network or protocol issues
+- Server errors: Internal processing failures
+
+### 5.2 Error Responses
+```typescript
+interface ErrorResponse {
+  code: string;         // Error code
+  message: string;      // Human-readable message
+  details?: unknown;    // Additional details (when appropriate)
+  requestId?: string;   // ID of the request that caused the error
+}
+```
+
+## 6. Security Considerations
+
+### 6.1 Authentication
+- Validate session tokens for all messages
+- Regenerate tokens periodically
+- Implement per-session rate limiting
+- Track connection metadata for suspicious activity
+
+### 6.2 Information Protection
+- Filter sensitive information based on player role
+- Never leak opponent's BP pool values
+- Validate all incoming messages
+- Sanitize user-generated content (chat messages, names)
+
+## 7. Testing WebSocket Implementation
+
+### 7.1 Unit Tests
+- Test message serialization/deserialization
+- Test event handlers and processors
+- Test reconnection logic
+- Test error handling
+
+### 7.2 Integration Tests
+- Test full communication flow
+- Test state synchronization
+- Test game session lifecycle
+- Test disconnection and reconnection scenarios 

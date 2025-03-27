@@ -1,0 +1,149 @@
+---
+description: React component implementation standards and best practices
+globs: **/*.tsx, **/*.jsx
+---
+
+# React Component Standards
+
+## 1. Component Structure
+
+### 1.1 Functional Components
+- Use functional components with hooks rather than class components
+- Implement proper prop interfaces for type safety
+- Follow single responsibility principle
+- Decompose complex components into smaller ones
+
+```typescript
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
+}
+
+const Button = ({ 
+  label, 
+  onClick, 
+  disabled = false, 
+  variant = 'primary' 
+}: ButtonProps) => {
+  return (
+    <button 
+      className={`btn btn-${variant}`} 
+      onClick={onClick} 
+      disabled={disabled}
+    >
+      {label}
+    </button>
+  );
+};
+```
+
+### 1.2 Component Organization
+- Group related components in directories
+- Use index.ts barrel files for exports
+- Follow consistent naming conventions
+- Separate component logic from rendering
+
+## 2. State Management
+
+### 2.1 Hooks
+- Use useState for simple component state
+- Use useReducer for complex state logic
+- Use useContext for shared state across components
+- Create custom hooks for reusable stateful logic
+- Use proper dependency arrays in useEffect and useMemo
+
+### 2.2 State Structure
+- Define state interfaces
+- Use immutable patterns for state updates
+- Keep minimal state in components
+- Use context for application-level state
+- Avoid prop drilling
+
+## 3. Chess-Specific Components
+
+### 3.1 Chess Board Component
+- Implement responsive design for different screen sizes
+- Support both drag-and-drop and click-to-select-click-to-move
+- Allow orientation change (white/black perspective)
+- Show valid move highlights
+- Animate piece movements
+- Support mobile touch events
+
+### 3.2 Battle Points UI Components
+- Display BP pools for the player
+- Show "?" for opponent's BP
+- Implement BP allocation interface during duels
+- Animate BP changes (regeneration, spending)
+- Provide clear visual feedback for duel outcomes
+
+### 3.3 Tactical Retreat UI
+- Highlight valid retreat positions
+- Display BP cost for each retreat option
+- Use distinct visual styling for retreat mode
+- Provide easy selection mechanism
+- Show clear confirmation for selected retreat
+
+## 4. Performance Optimization
+
+### 4.1 Rendering Optimization
+- Use React.memo for expensive components
+- Use useMemo for computed values
+- Use useCallback for event handlers
+- Avoid unnecessary re-renders
+- Implement virtualization for long lists
+
+### 4.2 Asset Loading
+- Optimize image loading with proper sizing
+- Implement lazy loading for non-critical components
+- Use code splitting for route-based components
+- Preload critical assets
+- Include width and height attributes on images
+
+## 5. Accessibility
+
+### 5.1 A11y Standards
+- Implement proper semantic HTML
+- Use appropriate ARIA attributes
+- Ensure keyboard navigation
+- Maintain sufficient color contrast
+- Test with screen readers
+- Support reduced motion preferences
+
+### 5.2 Chess-Specific A11y
+- Provide text alternatives for board positions
+- Support keyboard-based piece movement
+- Announce game state changes (check, etc.)
+- Provide text notifications for BP changes
+- Ensure all game mechanics are accessible
+
+## 6. Mobile Considerations
+
+### 6.1 Responsive Design
+- Use mobile-first approach
+- Test on various device sizes
+- Implement touch-friendly UI elements
+- Use appropriate touch targets (min 44px)
+- Handle orientation changes gracefully
+
+### 6.2 Mobile Performance
+- Minimize bundle size
+- Optimize for lower-powered devices
+- Reduce animation complexity on mobile
+- Implement progressive enhancement
+- Test on actual devices
+
+## 7. UI Component Testing
+
+### 7.1 Unit Tests
+- Test component rendering
+- Test state changes
+- Test user interactions
+- Test accessibility
+
+### 7.2 Component Stories
+- Create Storybook stories for components
+- Document component props and usage
+- Include responsive variants
+- Include accessibility checks 
