@@ -1,231 +1,223 @@
 /**
- * Knight Retreat Table Generator (Build-time Tool)
- * 
+ * Knight Retreat Table Generator
+ *
  * This script generates a pre-computed lookup table for knight retreats in chess.
- * It runs during the build process to create compressed data that is used at runtime.
+ * The generated table maps from position and attack coordinates to valid retreat options.
  * 
- * Generated files:
- * - src/constants/knightRetreatTable.json (reference file)
- * - src/constants/knightRetreatData.ts (compressed data)
+ * The output is a TypeScript module with the compressed lookup table data.
  */
 
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 
-// Position type definition for clarity
-// { x: number, y: number }
+// Constants
+const BOARD_SIZE = 8;
+const MAX_RETREAT_COST = 7; // Maximum moves a knight would need (unlikely to exceed 4 in practice)
 
-// Knight move directions (8 possible L-shapes)
+// Knight move directions
 const KNIGHT_MOVES = [
-  { x: 1, y: 2 }, { x: 2, y: 1 },
-  { x: 2, y: -1 }, { x: 1, y: -2 },
-  { x: -1, y: -2 }, { x: -2, y: -1 },
-  { x: -2, y: 1 }, { x: -1, y: 2 }
+  [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+  [1, -2], [1, 2], [2, -1], [2, 1]
 ];
 
 /**
- * Checks if a position is within the chessboard bounds
+ * Validates if a position is within board boundaries
  */
-function isValidPosition(position) {
-  return position.x >= 0 && position.x < 8 && position.y >= 0 && position.y < 8;
+function isValidPosition(x, y) {
+  return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
 }
 
 /**
  * Calculates the minimum number of knight moves needed to go from start to end
- * This is an implementation of the knight's shortest path algorithm
+ * Uses breadth-first search (BFS)
  */
-function calculateKnightDistance(start, end) {
-  // If same position, distance is 0
-  if (start.x === end.x && start.y === end.y) {
+function calculateKnightDistance(startX, startY, endX, endY) {
+  // If already at target, cost is 0
+  if (startX === endX && startY === endY) {
     return 0;
   }
+
+  // Track visited positions and their distances
+  const visited = new Array(BOARD_SIZE)
+    .fill(0)
+    .map(() => new Array(BOARD_SIZE).fill(false));
   
-  // Initialize visited array and queue for BFS
-  const visited = Array(8).fill(0).map(() => Array(8).fill(false));
-  const queue = [];
-  
-  // Start BFS
-  queue.push([start, 0]);
-  visited[start.y][start.x] = true;
-  
+  // BFS queue with [x, y, distance]
+  const queue = [[startX, startY, 0]];
+  visited[startY][startX] = true;
+
   while (queue.length > 0) {
-    const [current, distance] = queue.shift();
-    
-    // Check all 8 possible knight moves
-    for (const move of KNIGHT_MOVES) {
-      const nextPos = { x: current.x + move.x, y: current.y + move.y };
-      
-      // Check if position is valid and not visited
-      if (isValidPosition(nextPos) && !visited[nextPos.y][nextPos.x]) {
-        // If this is the target, return the distance
-        if (nextPos.x === end.x && nextPos.y === end.y) {
-          return distance + 1;
-        }
-        
-        // Mark as visited and add to queue
-        visited[nextPos.y][nextPos.x] = true;
-        queue.push([nextPos, distance + 1]);
+    const [x, y, distance] = queue.shift();
+
+    // Check all knight moves
+    for (const [dx, dy] of KNIGHT_MOVES) {
+      const nextX = x + dx;
+      const nextY = y + dy;
+
+      // Skip invalid positions or already visited
+      if (!isValidPosition(nextX, nextY) || visited[nextY][nextX]) {
+        continue;
       }
+
+      // If found target, return distance
+      if (nextX === endX && nextY === endY) {
+        return distance + 1;
+      }
+
+      // Mark as visited and add to queue
+      visited[nextY][nextX] = true;
+      queue.push([nextX, nextY, distance + 1]);
     }
   }
-  
-  // Should never reach here if positions are valid
+
+  // Impossible to reach (should never happen on a standard board)
   return -1;
 }
 
 /**
- * Generates a compact numeric key from starting position and attack position
- * Format: 12 bits total (3 bits each for startX, startY, attackX, attackY)
+ * Gets all valid attack positions for a knight at a given position
  */
-function generateCompactKey(start, attack) {
-  return (start.x << 9) | (start.y << 6) | (attack.x << 3) | attack.y;
-}
-
-/**
- * Creates a bit-packed representation of position and cost
- * Format: 
- * - x: 3 bits (bits 6-8), shifted left by 6
- * - y: 3 bits (bits 3-5), shifted left by 3
- * - cost: 3 bits (bits 0-2), no shift
- * Total: 9 bits
- */
-function packRetreatOption(position, cost) {
-  return (position.x << 6) | (position.y << 3) | (cost & 0x7);
-}
-
-/**
- * Gets all valid attack positions for a knight at the given position
- */
-function getKnightAttackPositions(position) {
-  return KNIGHT_MOVES
-    .map(move => ({ x: position.x + move.x, y: position.y + move.y }))
-    .filter(isValidPosition);
-}
-
-/**
- * Gets all squares in the rectangle formed by the knight's L path
- */
-function getRetreatRectangle(start, attack) {
-  // Determine the direction of attack
-  const dx = attack.x - start.x;
-  const dy = attack.y - start.y;
+function getKnightAttackPositions(x, y) {
+  const positions = [];
   
-  // The rectangle is formed by the two possible L paths
-  // First, determine the corner points of the rectangle
-  const corners = [
-    start, // Original position
-    attack, // Attack position
-    { x: start.x, y: attack.y }, // Corner 1
-    { x: attack.x, y: start.y }  // Corner 2
-  ];
-  
-  // Get all positions within this rectangle
-  const retreatPositions = [];
-  
-  // Determine bounds of the rectangle
-  const minX = Math.min(...corners.map(p => p.x));
-  const maxX = Math.max(...corners.map(p => p.x));
-  const minY = Math.min(...corners.map(p => p.y));
-  const maxY = Math.max(...corners.map(p => p.y));
-  
-  // Add all positions in the rectangle
-  for (let x = minX; x <= maxX; x++) {
-    for (let y = minY; y <= maxY; y++) {
-      retreatPositions.push({ x, y });
+  for (const [dx, dy] of KNIGHT_MOVES) {
+    const attackX = x + dx;
+    const attackY = y + dy;
+    
+    if (isValidPosition(attackX, attackY)) {
+      positions.push([attackX, attackY]);
     }
   }
   
-  // Remove the attack position (knight can't retreat to where it tried to capture)
-  return retreatPositions.filter(pos => !(pos.x === attack.x && pos.y === attack.y));
+  return positions;
 }
 
 /**
- * Main function to generate the lookup table
+ * Gets all valid retreat options for a knight from start position to attack position
+ * Returns array of [x, y, cost] for each valid retreat position
  */
-function generateKnightRetreatTable() {
-  const table = {};
-  let totalScenarios = 0;
+function getKnightRetreatOptions(startX, startY, attackX, attackY) {
+  // A retreat position must be:
+  // 1. In rectangle defined by start and attack positions
+  // 2. Not equal to the attack position (can't retreat to where you're attacking)
   
-  // For each position on the board
-  for (let startX = 0; startX < 8; startX++) {
-    for (let startY = 0; startY < 8; startY++) {
-      const startPos = { x: startX, y: startY };
+  // Define the bounding rectangle
+  const minX = Math.min(startX, attackX);
+  const maxX = Math.max(startX, attackX);
+  const minY = Math.min(startY, attackY);
+  const maxY = Math.max(startY, attackY);
+  
+  const validRetreats = [];
+  
+  // Check all positions in the bounding rectangle
+  for (let x = minX; x <= maxX; x++) {
+    for (let y = minY; y <= maxY; y++) {
+      // Skip the attack position
+      if (x === attackX && y === attackY) {
+        continue;
+      }
       
-      // Get all possible attack positions
-      const attackPositions = getKnightAttackPositions(startPos);
+      // Calculate cost (moves needed) from start to this retreat position
+      const cost = calculateKnightDistance(startX, startY, x, y);
       
-      // For each attack position
-      for (const attackPos of attackPositions) {
-        // Get retreat rectangle
-        const retreatPositions = getRetreatRectangle(startPos, attackPos);
-        
-        // Calculate costs for each retreat position
-        const retreatOptions = [];
-        
-        for (const retreatPos of retreatPositions) {
-          // Calculate cost (minimum knight moves required)
-          const cost = calculateKnightDistance(startPos, retreatPos);
-          
-          // No need to cap cost at 3 anymore - we now use 3 bits (0-7)
-          // We expect costs to be 0, 2, 3, or 4 for knights
-          
-          // Pack position and cost
-          const packedOption = packRetreatOption(retreatPos, cost);
-          retreatOptions.push(packedOption);
-        }
-        
-        // Store in table using compact key
-        const key = generateCompactKey(startPos, attackPos);
-        table[key] = retreatOptions;
-        totalScenarios++;
+      // Add valid retreat options (cost < MAX_RETREAT_COST)
+      if (cost >= 0 && cost < MAX_RETREAT_COST) {
+        validRetreats.push([x, y, cost]);
       }
     }
   }
   
-  console.log(`Generated table with ${totalScenarios} retreat scenarios.`);
-  console.log(`Total retreat options: ${Object.values(table).flat().length}`);
+  return validRetreats;
+}
+
+/**
+ * Generates a compact key for the knight retreat table lookup
+ */
+function generateRetreatKey(startX, startY, attackX, attackY) {
+  return (startX << 9) | (startY << 6) | (attackX << 3) | attackY;
+}
+
+/**
+ * Packs a retreat option into a compact bit representation
+ * Format: x (3 bits) | y (3 bits) | cost (3 bits)
+ */
+function packRetreatOption(x, y, cost) {
+  return (x << 6) | (y << 3) | (cost & 0x7);
+}
+
+/**
+ * Main function to generate the knight retreat table
+ */
+function generateKnightRetreatTable() {
+  const table = {};
+  
+  // Iterate through all positions on the board
+  for (let startX = 0; startX < BOARD_SIZE; startX++) {
+    for (let startY = 0; startY < BOARD_SIZE; startY++) {
+      // Get all possible knight attack positions from this start
+      const attackPositions = getKnightAttackPositions(startX, startY);
+      
+      // For each attack position, calculate valid retreat options
+      for (const [attackX, attackY] of attackPositions) {
+        // Get retreat options
+        const retreatOptions = getKnightRetreatOptions(startX, startY, attackX, attackY);
+        
+        // Pack each retreat option
+        const packedOptions = retreatOptions.map(([x, y, cost]) => packRetreatOption(x, y, cost));
+        
+        // Add to table with compact key
+        const key = generateRetreatKey(startX, startY, attackX, attackY);
+        table[key] = packedOptions;
+      }
+    }
+  }
   
   return table;
 }
 
-// Main execution
-try {
-  console.log('Generating knight retreat table...');
-  const retreatTable = generateKnightRetreatTable();
-  console.log(`Generated knight retreat table with ${Object.keys(retreatTable).length} entries`);
+/**
+ * Compress data using gzip and encode as base64 string
+ */
+function compressData(data) {
+  const jsonString = JSON.stringify(data);
+  const compressed = zlib.gzipSync(jsonString);
+  return compressed.toString('base64');
+}
 
-  // Save reference JSON file
-  // const outputJsonPath = path.join(__dirname, '..', 'src', 'constants', 'knightRetreatTable.json');
-  // fs.writeFileSync(outputJsonPath, JSON.stringify(retreatTable, null, 2));
-  // console.log(`Saved reference file to ${outputJsonPath}`);
-
-  // Compress the data
-  const jsonData = JSON.stringify(retreatTable);
-  const compressedData = zlib.gzipSync(jsonData);
-  const base64Data = compressedData.toString('base64');
+/**
+ * Save the compressed knight retreat table to a TypeScript file
+ */
+function saveCompressedData(table) {
+  const compressedData = compressData(table);
   
-  // Create compressed data module
-  const tsOutputPath = path.join(__dirname, '..', 'src', 'constants', 'knightRetreatData.ts');
-  const tsContent = `/**
- * Knight Retreat Table - Auto-generated
+  // Template for the TypeScript file with only data
+  const template = `/**
+ * Knight Retreat Table Data
  * 
  * This file contains the compressed knight retreat lookup table data.
- * It was automatically generated by the knightRetreatGenerator script.
- * DO NOT EDIT THIS FILE MANUALLY.
+ * This file is auto-generated by the prebuild script from
+ * scripts/generateKnightRetreatTable.js
+ * 
+ * DO NOT EDIT THIS FILE MANUALLY
  */
 
 /**
- * Compressed knight retreat table data as a base64 string.
- * This data is a gzipped JSON string of the knight retreat lookup table.
+ * Compressed knight retreat lookup table as a base64 string.
+ * Contains pre-calculated retreat options for knight pieces.
  */
-export const compressedKnightRetreatTable = "${base64Data}";
+export const compressedKnightRetreatTable = "${compressedData}";
 `;
-  fs.writeFileSync(tsOutputPath, tsContent);
-  console.log(`Saved compressed data module to ${tsOutputPath}`);
 
-  console.log('Knight retreat table generation completed successfully!');
-} catch (error) {
-  console.error('Error generating knight retreat table:', error);
-  process.exit(1);
-} 
+  // Path to output file in the constants directory
+  const outputPath = path.resolve(__dirname, '../src/constants/knightRetreatData.ts');
+  
+  // Write file
+  fs.writeFileSync(outputPath, template, 'utf8');
+  console.log(`Generated knight retreat table with ${Object.keys(table).length} entries`);
+  console.log(`Saved to: ${outputPath}`);
+}
+
+// Generate and save the knight retreat table
+const knightRetreatTable = generateKnightRetreatTable();
+saveCompressedData(knightRetreatTable); 

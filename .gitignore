@@ -4,3 +4,10 @@
 **/package
 **/logs
 **/coverage
+
+node_modules
+dist
+.env
+.DS_Store
+.cursor
+yarn-error.log

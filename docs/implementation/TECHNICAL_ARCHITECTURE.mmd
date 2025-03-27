@@ -1,0 +1,173 @@
+graph TD
+    subgraph Client["Client Domain"]
+        UI[UI Components]
+        ChessBoard[Chess Board Renderer]
+        ChessPieceRenderer[Chess Piece Renderer]
+        MoveHighlighter[Move Highlighter]
+        BPAllocationUI[BP Allocation Interface]
+        RetreatUI[Tactical Retreat UI]
+        TimerDisplay[Chess Timer Display]
+        
+        ClientState[Client Game State]
+        ClientPrediction[State Prediction]
+        Reconciliation[State Reconciliation]
+        
+        Animations[Game Animations]
+        
+        WebSocketClient[WebSocket Client]
+        
+        ChatUI[Chat Interface]
+        ChatMessageList[Chat Message List]
+        PlayerNameInput[Player Name Input]
+        SpectatorList[Spectator List]
+        
+        UI --> ChessBoard
+        UI --> BPAllocationUI
+        UI --> RetreatUI
+        UI --> TimerDisplay
+        UI --> ChatUI
+        UI --> PlayerNameInput
+        UI --> SpectatorList
+        ChessBoard --> ChessPieceRenderer
+        ChessBoard --> MoveHighlighter
+        ClientState --> ChessBoard
+        ClientState --> BPAllocationUI
+        ClientState --> RetreatUI
+        ClientState --> TimerDisplay
+        ClientState --> ChatMessageList
+        ClientState --> SpectatorList
+        WebSocketClient --> ClientState
+        ClientState --> ClientPrediction
+        ClientPrediction --> ClientState
+        ClientState --> Reconciliation
+        Reconciliation --> ClientState
+        UI --> Animations
+        Animations --> ChessBoard
+        ChatUI --> WebSocketClient
+    end
+    
+    subgraph Server["Server Domain"]
+        WebSocketServer[WebSocket Server]
+        Authentication[Player Authentication]
+        
+        GameController[Game Controller]
+        
+        GameState[Authoritative Game State]
+        MoveValidator[Move Validator]
+        DuelResolver[Duel Resolver]
+        BPManager[BP Manager]
+        BPRegenerator[BP Regenerator]
+        TacticsDetector[Tactics Detector]
+        TimerController[Timer Controller]
+        
+        StateManager[Game State Manager]
+        VisibilityFilter[Player Visibility Filter]
+        
+        CheckDetector[Check Detector]
+        CheckmateDetector[Checkmate Detector]
+        DrawDetector[Draw Detector]
+        
+        PlayerManager[Player Manager]
+        SpectatorManager[Spectator Manager]
+        ChatManager[Chat Manager]
+        ContentFilter[Content Filter]
+        
+        AI[AI Opponent]
+        
+        WebSocketServer --> Authentication
+        WebSocketServer --> GameController
+        GameController --> GameState
+        GameController --> MoveValidator
+        GameController --> DuelResolver
+        GameController --> BPManager
+        BPManager --> BPRegenerator
+        BPRegenerator --> TacticsDetector
+        TacticsDetector --> GameState
+        GameController --> TimerController
+        GameState --> StateManager
+        StateManager --> VisibilityFilter
+        VisibilityFilter --> WebSocketServer
+        MoveValidator --> CheckDetector
+        CheckDetector --> CheckmateDetector
+        CheckDetector --> DrawDetector
+        AI --> GameController
+        WebSocketServer --> ChatManager
+        ChatManager --> ContentFilter
+        WebSocketServer --> PlayerManager
+        WebSocketServer --> SpectatorManager
+        VisibilityFilter --> SpectatorManager
+    end
+    
+    WebSocketClient <--> WebSocketServer
+    
+    subgraph Shared["Shared Domain"]
+        DTOs[Data Transfer Objects]
+        Types[Type Definitions]
+        
+        PieceTypes[Chess Piece Types]
+        Position[Position Utilities]
+        
+        MovementPatterns[Piece Movement Patterns]
+        
+        KnightRetreatTable[Knight Retreat Table]
+        TacticalRetreatCalculator[Tactical Retreat Calculator]
+        
+        CheckDetector[Check Detector]
+        
+        NotationSystem[Chess Notation System]
+        GambitNotation[Gambit Chess Notation]
+        PGNConverter[PGN Converter]
+        
+        PlayerDTO[Player Data Model]
+        ChatMessageDTO[Chat Message Model]
+        SpectatorDTO[Spectator Data Model]
+        
+        DTOs -.-> Types
+        DTOs -.-> PieceTypes
+        DTOs -.-> Position
+        DTOs -.-> PlayerDTO
+        DTOs -.-> ChatMessageDTO
+        DTOs -.-> SpectatorDTO
+        MovementPatterns -.-> PieceTypes
+        MovementPatterns -.-> Position
+        CheckDetector -.-> MovementPatterns
+        CheckDetector -.-> PieceTypes
+        CheckDetector -.-> Position
+        TacticalRetreatCalculator -.-> Position
+        TacticalRetreatCalculator -.-> MovementPatterns
+        TacticalRetreatCalculator -.-> KnightRetreatTable
+        NotationSystem -.-> PieceTypes
+        NotationSystem -.-> Position
+        GambitNotation -.-> NotationSystem
+        PGNConverter -.-> GambitNotation
+    end
+    
+    %% Client to Shared connections
+    MoveHighlighter --> MovementPatterns
+    MoveHighlighter --> CheckDetector
+    RetreatUI --> TacticalRetreatCalculator
+    WebSocketClient --> DTOs
+    ClientState --> Types
+    ClientState --> PieceTypes
+    ChatMessageList --> ChatMessageDTO
+    SpectatorList --> SpectatorDTO
+    
+    %% Server to Shared connections
+    MoveValidator --> MovementPatterns
+    GameState --> Types
+    GameState --> PieceTypes
+    CheckDetector --> CheckDetector
+    DuelResolver --> TacticalRetreatCalculator
+    WebSocketServer --> DTOs
+    PlayerManager --> PlayerDTO
+    ChatManager --> ChatMessageDTO
+    SpectatorManager --> SpectatorDTO
+
+    %% Data Flow Highlights
+    classDef clientCore fill:#d6eaf8,stroke:#2874a6,stroke-width:2px
+    classDef serverCore fill:#d5f5e3,stroke:#1e8449,stroke-width:2px
+    classDef sharedCore fill:#fcf3cf,stroke:#d4ac0d,stroke-width:2px
+    
+    class UI,ChessBoard,ChessPieceRenderer,MoveHighlighter,BPAllocationUI,RetreatUI,TimerDisplay,Animations,ChatUI,ChatMessageList,PlayerNameInput,SpectatorList clientCore
+    class WebSocketServer,GameController,GameState,MoveValidator,DuelResolver,BPManager,BPRegenerator,TacticsDetector,TimerController,PlayerManager,SpectatorManager,ChatManager,ContentFilter serverCore
+    class DTOs,Types,PieceTypes,Position,MovementPatterns,KnightRetreatTable,TacticalRetreatCalculator,NotationSystem,GambitNotation,PGNConverter,PlayerDTO,ChatMessageDTO,SpectatorDTO sharedCore
