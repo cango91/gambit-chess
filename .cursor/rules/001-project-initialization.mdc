@@ -1,0 +1,50 @@
+---
+description: Actions to take when the "Familiarize yourself with the project" command is received
+globs: 
+alwaysApply: false
+---
+
+# Project Initialization: "Familiarize yourself with the project"
+
+## Trigger
+When the user inputs the exact phrase "Familiarize yourself with the project" at the beginning of a new Cursor session.
+
+## Required Actions
+
+### 1. Read Core Documentation
+Systematically read through these documents in order:
+1. `docs/GAME_RULES.md` - To understand the game mechanics
+2. `docs/JAM_RULES.md` - For game jam requirements
+3. `docs/implementation/DOMAIN_BOUNDARIES.md` - For architectural boundaries
+4. `docs/implementation/INFORMATION_ARCHITECTURE.md` - For data ownership and visibility rules
+5. `docs/implementation/TECHNICAL_ARCHITECTURE.mmd` - For component relationships
+6. `docs/implementation/STATE_SYNC.md` - For state synchronization approach
+7. `docs/implementation/SECURITY_MODEL.md` - For security considerations
+8. `docs/implementation/TECH_DEBT_PREVENTION.md` - For maintaining code quality
+9. `docs/implementation/CHESS_NOTATION_REQUIREMENTS.md` - For chess notation specifics
+
+### 2. Examine Project Structure
+1. Check package.json for dependencies and scripts
+2. Examine workspace structure and relationships
+3. Identify implemented components in each workspace
+4. Check the implementation status of different modules
+
+### 3. Resume Previous Work
+1. Look for session documentation from previous AI sessions
+2. Read the most recent session handoff notes
+3. Identify current project state and pending tasks
+4. Note any technical debt items that need attention
+
+### 4. Respond to User
+After completing the above steps:
+1. Summarize your understanding of the project
+2. Identify the current implementation state 
+3. List the next logical tasks to work on
+4. Ask clarifying questions if needed
+
+## Important Principles
+- Do not make ANY code changes during this familiarization step
+- Prioritize understanding domain boundaries between server/client/shared
+- Note the visibility rules for sensitive information like BP pools
+- Understand the session handoff protocol for continuity
+- Pay special attention to the technical debt prevention guidelines 

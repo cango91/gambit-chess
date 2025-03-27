@@ -1,0 +1,107 @@
+---
+description: Rules enforcing strict domain boundaries between client, server, and shared code
+globs: **/*.ts, **/*.tsx, **/*.js, **/*.jsx
+---
+
+# Domain Boundary Enforcement
+
+## 1. Core Domain Principles
+
+### 1.1 Server Domain
+The server is the single source of truth for all game state and must:
+- Maintain complete game state including hidden information
+- Validate all game rules and enforce them
+- Control all game progression
+- Manage all timing and randomness
+- Keep track of move history and tactical advantages
+- Filter information before sending to clients
+
+### 1.2 Client Domain
+The client is responsible for presentation and user interaction only:
+- Render the visible game state
+- Collect user inputs
+- Provide visual feedback and animations
+- Implement non-authoritative validation for UX
+- Display only information the player should see
+- Never trust information sent from client to server
+
+### 1.3 Shared Domain
+The shared domain contains only:
+- Data Transfer Objects (DTOs)
+- Type definitions
+- Pure utility functions with no side effects
+- Constants that never change for balancing
+
+## 2. Code Boundaries
+
+### 2.1. Server-Only Code
+- All authoritative game logic
+- All complete game state
+- All BP pool management
+- All tactical advantage detection
+- All information filtering
+- All rule enforcement
+
+### 2.2 Client-Only Code
+- All UI components
+- All rendering logic
+- All animation code
+- All user input handling
+- All client-side validation (for UX only)
+- All client-state management
+
+### 2.3 Shared-Only Code
+- All DTOs
+- Common type definitions
+- Pure utility functions
+- Chess movement patterns
+- Tactical retreat calculations
+
+## 3. Information Boundaries
+
+### 3.1 Hidden Information
+Must NEVER be sent to unauthorized clients:
+- Other player's BP pool values
+- Other player's BP regeneration amounts
+- Other player's BP allocation during duel (until revealed)
+- De novo tactical advantage calculations
+- Server-side validation details
+
+### 3.2 Visible Information
+May be sent to all clients:
+- Current board position
+- Whose turn it is
+- Check status
+- Game result
+- Move history
+- Remaining time for both players
+- Duel outcome after resolution
+- Chat messages
+- Spectator list
+
+### 3.3 Player-Specific Information
+Only visible to the specific player:
+- That player's BP pool
+- That player's BP regeneration amounts
+- Valid moves for that player's pieces
+- BP allocation options for that player
+- Tactical retreat options after a failed capture
+
+## 4. Implementation Guidelines
+
+### 4.1 Directory Structure
+Maintain strict separation of code by domain:
+- `/shared/src/` - Only shared code
+- `/server/src/` - Only server code
+- `/client/src/` - Only client code
+
+### 4.2 Import Rules
+- Server may import from shared
+- Client may import from shared
+- Shared must NEVER import from server or client
+- Server must NEVER import from client
+- Client must NEVER import from server
+
+### 4.3 Circular Dependencies
+- Never create circular dependencies between domains
+- Prefer compositions over inheritance across domains 

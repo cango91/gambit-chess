@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Gambit Chess Core Principles
+
+## Project Overview
+Gambit Chess is a novel web-based chess variant where capture attempts are resolved through a strategic Battle Points (BP) allocation duel rather than automatically succeeding. This introduces uncertainty, risk management, and tactical decision-making to traditional chess.
+
+## Core Game Mechanics
+- Resource Management Duel system for captures
+- Battle Points (BP) allocation and regeneration
+- Tactical Retreat mechanics for failed capture attempts
+- Standard chess rules otherwise apply
+
+## Architecture Principles
+1. **Server Authority**: Server is the single source of truth for game state
+2. **Client Rendering**: Client is responsible for rendering and input collection
+3. **Shared Utilities**: Pure functions and data types live in shared domain
+4. **Domain Boundaries**: Strict adherence to server/client/shared domain boundaries
+5. **Hidden Information**: Follow information visibility rules (BP pools, tactical advantages)
+
+## Technology Stack
+- TypeScript for all code
+- Node.js and Express for server
+- React for client
+- Redis for temporary state storage
+- SQLite for persistent storage
+- WebSockets for real-time communication
+
+## Key Files & Directories
+- `/docs`: Complete project documentation
+- `/shared`: Shared types, utilities, and data structures
+- `/server`: Server-side game logic and API
+- `/client`: Web client and UI
+- `.cursor/rules`: Cursor IDE rules for AI assistance
+
+## Implementation Requirements
+- Follow principles in DOMAIN_BOUNDARIES.md
+- Maintain information visibility as defined in INFORMATION_ARCHITECTURE.md
+- Document session progress according to TECH_DEBT_PREVENTION.md
+- Implement security measures from SECURITY_MODEL.md
+
+## Game Jam Requirements
+1. Web accessible without login/signup
+2. Mobile web compatible
+3. Fast loading with no loading screens
+4. 80% AI-generated code 

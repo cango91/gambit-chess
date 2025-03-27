@@ -1,0 +1,107 @@
+---
+description: TypeScript coding standards and best practices for the project
+globs: **/*.ts, **/*.tsx
+---
+
+# TypeScript Standards
+
+## 1. Type Definitions
+
+### 1.1 Interfaces vs Types
+- Prefer `interface` for public API definitions and object shapes
+- Use `type` for unions, intersections, and complex types
+- Extend interfaces rather than recreating them
+- Use descriptive names that indicate purpose
+
+### 1.2 Strong Typing
+- Avoid `any` type - use specific types whenever possible
+- Use `unknown` instead of `any` when type is truly unknown
+- Create union types for variables with multiple possible types
+- Define function parameter and return types explicitly
+- Use generics for reusable components and functions
+
+### 1.3 Enums and Constants
+- Use const enums for values that won't change
+- Prefer string enums over numeric enums
+- Use union types of string literals for small sets of options
+- Document enum values with JSDoc comments
+
+## 2. Null and Undefined Handling
+
+### 2.1 Null vs Undefined
+- Use undefined for unintentional absence of value
+- Use null for intentional absence of value
+- Enable TypeScript's strictNullChecks
+- Always check for null/undefined before using values
+- Use the nullish coalescing operator (??) for defaults
+
+### 2.2 Optional Values
+- Use optional parameters (param?: Type) and properties (prop?: Type)
+- Avoid using | undefined when optional is more appropriate
+- Use default parameters for functions where applicable
+- Document when parameters are optional and why
+
+## 3. Function Declarations
+
+### 3.1 Function Signatures
+- Always declare parameter types
+- Always declare return types
+- Use function overloads for functions with multiple signatures
+- Document complex functions with JSDoc comments
+
+### 3.2 Arrow Functions vs Function Declarations
+- Use arrow functions for callbacks and anonymous functions
+- Use function declarations for named functions and methods
+- Be consistent with style within components
+
+## 4. Component Patterns
+
+### 4.1 React Components
+- Use functional components with hooks
+- Define prop interfaces for all components
+- Use React.FC sparingly - prefer explicit return types
+- Split complex components into smaller, focused ones
+- Use proper naming: PascalCase for components, camelCase for functions
+
+### 4.2 State Management
+- Use TypeScript to strongly type state
+- Define interfaces for all state objects
+- Use discriminated unions for complex state machines
+- Type reducers properly with action types
+
+## 5. Module Organization
+
+### 5.1 Import/Export
+- Use named exports for most definitions
+- Reserve default exports for main component of a file
+- Group and organize imports logically
+- Avoid circular dependencies
+
+### 5.2 Barrel Exports
+- Use index.ts barrel files to simplify imports
+- Export types alongside their implementations
+- Don't re-export external dependencies
+
+## 6. Documentation
+
+### 6.1 JSDoc
+- Document public interfaces and functions with JSDoc
+- Include parameter descriptions and return values
+- Document exceptions and edge cases
+- Provide examples for complex functions
+
+### 6.2 Code Comments
+- Comment complex algorithms and business logic
+- Explain "why" rather than "what" the code does
+- Keep comments up-to-date with code changes
+
+## 7. Error Handling
+
+### 7.1 Error Types
+- Define custom error types for domain-specific errors
+- Use discriminated unions for error states
+- Return errors rather than throwing when appropriate
+
+### 7.2 Result Types
+- Consider using Result<T, E> pattern for operations that can fail
+- Properly type error boundaries and error states 
