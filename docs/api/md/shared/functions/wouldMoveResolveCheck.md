@@ -8,7 +8,7 @@
 
 > **wouldMoveResolveCheck**(`board`, `kingColor`, `from`, `to`): `boolean`
 
-Defined in: chess/checkDetector.ts:394
+Defined in: [chess/checkDetector.ts:394](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L394)
 
 Checks if a move would get a king out of check
 

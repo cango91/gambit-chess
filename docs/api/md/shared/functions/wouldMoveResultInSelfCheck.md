@@ -8,7 +8,7 @@
 
 > **wouldMoveResultInSelfCheck**(`board`, `from`, `to`): `boolean`
 
-Defined in: chess/checkDetector.ts:192
+Defined in: [chess/checkDetector.ts:192](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L192)
 
 Checks if a move would put the moving player's king in check
 This implementation avoids circular dependencies by simulating the move

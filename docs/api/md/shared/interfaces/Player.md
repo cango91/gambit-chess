@@ -6,7 +6,7 @@
 
 # Interface: Player
 
-Defined in: [types/index.ts:157](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L157)
+Defined in: [types/index.ts:157](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L157)
 
 Represents player information
 
@@ -20,7 +20,7 @@ Represents player information
 
 > **color**: [`PieceColor`](../type-aliases/PieceColor.md)
 
-Defined in: [types/index.ts:163](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L163)
+Defined in: [types/index.ts:163](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L163)
 
 Player color
 
@@ -30,7 +30,7 @@ Player color
 
 > **id**: `string`
 
-Defined in: [types/index.ts:159](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L159)
+Defined in: [types/index.ts:159](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L159)
 
 Player unique ID
 
@@ -40,6 +40,6 @@ Player unique ID
 
 > **name**: `string`
 
-Defined in: [types/index.ts:161](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L161)
+Defined in: [types/index.ts:161](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L161)
 
 Player display name

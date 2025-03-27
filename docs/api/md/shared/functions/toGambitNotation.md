@@ -8,7 +8,7 @@
 
 > **toGambitNotation**(`move`, `duel`, `retreat`, `bpRegeneration`, `shouldIncludeBpRegen`): `string`
 
-Defined in: notation/index.ts:188
+Defined in: [notation/index.ts:188](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L188)
 
 Converts a move to Gambit Chess extended notation, including BP allocations and retreats
 

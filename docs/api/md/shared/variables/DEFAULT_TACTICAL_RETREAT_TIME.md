@@ -8,6 +8,6 @@
 
 > `const` **DEFAULT\_TACTICAL\_RETREAT\_TIME**: `number`
 
-Defined in: [constants/index.ts:113](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L113)
+Defined in: [constants/index.ts:113](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L113)
 
 Time allowed for tactical retreat selection (milliseconds) - default value that can be overridden by server configuration

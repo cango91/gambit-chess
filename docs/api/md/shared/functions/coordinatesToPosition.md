@@ -8,7 +8,7 @@
 
 > **coordinatesToPosition**(`x`, `y`): `string`
 
-Defined in: utils/position.ts:55
+Defined in: [utils/position.ts:55](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L55)
 
 Converts numeric coordinates to a position
 

@@ -32,7 +32,7 @@
 							"fileName": "types/index.ts",
 							"line": 139,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L139"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L139"
 						}
 					],
 					"type": {
@@ -51,7 +51,7 @@
 							"fileName": "types/index.ts",
 							"line": 141,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L141"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L141"
 						}
 					],
 					"type": {
@@ -70,7 +70,7 @@
 							"fileName": "types/index.ts",
 							"line": 138,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L138"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L138"
 						}
 					],
 					"type": {
@@ -89,7 +89,7 @@
 							"fileName": "types/index.ts",
 							"line": 140,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L140"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L140"
 						}
 					],
 					"type": {
@@ -114,7 +114,7 @@
 					"fileName": "types/index.ts",
 					"line": 137,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L137"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L137"
 				}
 			]
 		},
@@ -144,7 +144,7 @@
 							"fileName": "types/index.ts",
 							"line": 149,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L149"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L149"
 						}
 					],
 					"type": {
@@ -163,7 +163,7 @@
 							"fileName": "types/index.ts",
 							"line": 150,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L150"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L150"
 						}
 					],
 					"type": {
@@ -182,7 +182,7 @@
 							"fileName": "types/index.ts",
 							"line": 151,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L151"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L151"
 						}
 					],
 					"type": {
@@ -201,7 +201,7 @@
 							"fileName": "types/index.ts",
 							"line": 148,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L148"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L148"
 						}
 					],
 					"type": {
@@ -226,7 +226,7 @@
 					"fileName": "types/index.ts",
 					"line": 147,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L147"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L147"
 				}
 			]
 		},
@@ -255,7 +255,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 43,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L43"
 						}
 					],
 					"signatures": [
@@ -277,7 +278,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 43,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L43"
 								}
 							],
 							"parameters": [
@@ -323,7 +325,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 92,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L92"
 						}
 					],
 					"signatures": [
@@ -356,7 +359,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 92,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L92"
 								}
 							],
 							"parameters": [
@@ -443,7 +447,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 503,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L503"
 						}
 					],
 					"signatures": [
@@ -476,7 +481,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 503,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L503"
 								}
 							],
 							"type": {
@@ -510,7 +516,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 134,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L134"
 						}
 					],
 					"signatures": [
@@ -543,7 +550,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 134,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L134"
 								}
 							],
 							"type": {
@@ -580,7 +588,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 142,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L142"
 						}
 					],
 					"signatures": [
@@ -613,7 +622,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 142,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L142"
 								}
 							],
 							"type": {
@@ -650,7 +660,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 169,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L169"
 						}
 					],
 					"signatures": [
@@ -683,7 +694,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 169,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L169"
 								}
 							],
 							"type": {
@@ -715,7 +727,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 177,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L177"
 						}
 					],
 					"signatures": [
@@ -748,7 +761,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 177,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L177"
 								}
 							],
 							"type": {
@@ -789,7 +803,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 160,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L160"
 						}
 					],
 					"signatures": [
@@ -822,7 +837,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 160,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L160"
 								}
 							],
 							"parameters": [
@@ -886,7 +902,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 126,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L126"
 						}
 					],
 					"signatures": [
@@ -919,7 +936,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 126,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L126"
 								}
 							],
 							"parameters": [
@@ -983,7 +1001,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 151,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L151"
 						}
 					],
 					"signatures": [
@@ -1016,7 +1035,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 151,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L151"
 								}
 							],
 							"parameters": [
@@ -1076,7 +1096,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 378,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L378"
 						}
 					],
 					"signatures": [
@@ -1109,7 +1130,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 378,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L378"
 								}
 							],
 							"parameters": [
@@ -1164,7 +1186,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 189,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L189"
 						}
 					],
 					"signatures": [
@@ -1197,7 +1220,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 189,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L189"
 								}
 							],
 							"parameters": [
@@ -1269,7 +1293,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 390,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L390"
 						}
 					],
 					"signatures": [
@@ -1302,7 +1327,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 390,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L390"
 								}
 							],
 							"parameters": [
@@ -1389,7 +1415,8 @@
 												{
 													"fileName": "chess/board.ts",
 													"line": 392,
-													"character": 4
+													"character": 4,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L392"
 												}
 											],
 											"type": {
@@ -1411,7 +1438,8 @@
 												{
 													"fileName": "chess/board.ts",
 													"line": 393,
-													"character": 4
+													"character": 4,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L393"
 												}
 											],
 											"type": {
@@ -1429,7 +1457,8 @@
 												{
 													"fileName": "chess/board.ts",
 													"line": 391,
-													"character": 4
+													"character": 4,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L391"
 												}
 											],
 											"type": {
@@ -1452,7 +1481,8 @@
 										{
 											"fileName": "chess/board.ts",
 											"line": 390,
-											"character": 72
+											"character": 72,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L390"
 										}
 									]
 								}
@@ -1482,7 +1512,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 112,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L112"
 						}
 					],
 					"signatures": [
@@ -1515,7 +1546,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 112,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L112"
 								}
 							],
 							"parameters": [
@@ -1569,7 +1601,8 @@
 						{
 							"fileName": "chess/board.ts",
 							"line": 529,
-							"character": 9
+							"character": 9,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L529"
 						}
 					],
 					"signatures": [
@@ -1602,7 +1635,8 @@
 								{
 									"fileName": "chess/board.ts",
 									"line": 529,
-									"character": 9
+									"character": 9,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L529"
 								}
 							],
 							"type": {
@@ -1644,7 +1678,8 @@
 				{
 					"fileName": "chess/board.ts",
 					"line": 33,
-					"character": 13
+					"character": 13,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L33"
 				}
 			],
 			"implementedTypes": [
@@ -1695,7 +1730,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 74,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L74"
 						}
 					],
 					"type": {
@@ -1721,7 +1757,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 72,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L72"
 						}
 					],
 					"type": {
@@ -1747,7 +1784,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 76,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L76"
 						}
 					],
 					"type": {
@@ -1770,7 +1808,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 70,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L70"
 				}
 			]
 		},
@@ -1807,7 +1846,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 142,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L142"
 						}
 					],
 					"type": {
@@ -1833,7 +1873,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 140,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L140"
 						}
 					],
 					"type": {
@@ -1855,7 +1896,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 138,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L138"
 				}
 			]
 		},
@@ -1893,7 +1935,7 @@
 							"fileName": "types/index.ts",
 							"line": 185,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L185"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L185"
 						}
 					],
 					"type": {
@@ -1920,7 +1962,7 @@
 							"fileName": "types/index.ts",
 							"line": 181,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L181"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L181"
 						}
 					],
 					"type": {
@@ -1947,7 +1989,7 @@
 							"fileName": "types/index.ts",
 							"line": 183,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L183"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L183"
 						}
 					],
 					"type": {
@@ -1974,7 +2016,7 @@
 							"fileName": "types/index.ts",
 							"line": 187,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L187"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L187"
 						}
 					],
 					"type": {
@@ -1999,7 +2041,7 @@
 					"fileName": "types/index.ts",
 					"line": 179,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L179"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L179"
 				}
 			],
 			"extendedBy": [
@@ -2043,7 +2085,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 150,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L150"
 						}
 					],
 					"type": {
@@ -2072,7 +2115,7 @@
 							"fileName": "types/index.ts",
 							"line": 185,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L185"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L185"
 						}
 					],
 					"type": {
@@ -2106,7 +2149,7 @@
 							"fileName": "types/index.ts",
 							"line": 181,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L181"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L181"
 						}
 					],
 					"type": {
@@ -2140,7 +2183,7 @@
 							"fileName": "types/index.ts",
 							"line": 183,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L183"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L183"
 						}
 					],
 					"type": {
@@ -2174,7 +2217,7 @@
 							"fileName": "types/index.ts",
 							"line": 187,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L187"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L187"
 						}
 					],
 					"type": {
@@ -2204,7 +2247,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 148,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L148"
 				}
 			],
 			"extendedTypes": [
@@ -2250,7 +2294,7 @@
 							"fileName": "types/index.ts",
 							"line": 27,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L27"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L27"
 						}
 					],
 					"type": {
@@ -2279,7 +2323,7 @@
 							"fileName": "types/index.ts",
 							"line": 31,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L31"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L31"
 						}
 					],
 					"type": {
@@ -2308,7 +2352,7 @@
 							"fileName": "types/index.ts",
 							"line": 33,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L33"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L33"
 						}
 					],
 					"type": {
@@ -2335,7 +2379,7 @@
 							"fileName": "types/index.ts",
 							"line": 29,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L29"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L29"
 						}
 					],
 					"type": {
@@ -2362,7 +2406,7 @@
 							"fileName": "types/index.ts",
 							"line": 25,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L25"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L25"
 						}
 					],
 					"type": {
@@ -2390,7 +2434,7 @@
 					"fileName": "types/index.ts",
 					"line": 23,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L23"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L23"
 				}
 			]
 		},
@@ -2428,7 +2472,7 @@
 							"fileName": "types/index.ts",
 							"line": 115,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L115"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L115"
 						}
 					],
 					"type": {
@@ -2457,7 +2501,7 @@
 							"fileName": "types/index.ts",
 							"line": 117,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L117"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L117"
 						}
 					],
 					"type": {
@@ -2484,7 +2528,7 @@
 							"fileName": "types/index.ts",
 							"line": 119,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L119"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L119"
 						}
 					],
 					"type": {
@@ -2511,7 +2555,7 @@
 							"fileName": "types/index.ts",
 							"line": 121,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L121"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L121"
 						}
 					],
 					"type": {
@@ -2538,7 +2582,7 @@
 					"fileName": "types/index.ts",
 					"line": 113,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L113"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L113"
 				}
 			]
 		},
@@ -2575,7 +2619,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 98,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L98"
 						}
 					],
 					"type": {
@@ -2601,7 +2646,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 100,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L100"
 						}
 					],
 					"type": {
@@ -2627,7 +2673,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 96,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L96"
 						}
 					],
 					"type": {
@@ -2653,7 +2700,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 102,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L102"
 						}
 					],
 					"type": {
@@ -2677,7 +2725,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 94,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L94"
 				}
 			]
 		},
@@ -2714,7 +2763,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 116,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L116"
 						}
 					],
 					"type": {
@@ -2740,7 +2790,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 118,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L118"
 						}
 					],
 					"type": {
@@ -2766,7 +2817,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 110,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L110"
 						}
 					],
 					"type": {
@@ -2792,7 +2844,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 114,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L114"
 						}
 					],
 					"type": {
@@ -2827,7 +2880,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 112,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L112"
 						}
 					],
 					"type": {
@@ -2854,7 +2908,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 108,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L108"
 				}
 			]
 		},
@@ -2891,7 +2946,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 174,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L174"
 						}
 					],
 					"type": {
@@ -2917,7 +2973,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 176,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L176"
 						}
 					],
 					"type": {
@@ -2939,7 +2996,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 172,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L172"
 				}
 			]
 		},
@@ -2976,7 +3034,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 21,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L21"
 						}
 					],
 					"type": {
@@ -3002,7 +3061,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 17,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L17"
 						}
 					],
 					"type": {
@@ -3039,7 +3099,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 15,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L15"
 						}
 					],
 					"type": {
@@ -3067,7 +3128,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 23,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L23"
 						}
 					],
 					"type": {
@@ -3095,7 +3157,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 19,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L19"
 						}
 					],
 					"type": {
@@ -3132,7 +3195,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 25,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L25"
 						}
 					],
 					"type": {
@@ -3158,7 +3222,8 @@
 				{
 					"fileName": "types/moveTypes.ts",
 					"line": 13,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L13"
 				}
 			]
 		},
@@ -3195,7 +3260,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 24,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L24"
 						}
 					],
 					"type": {
@@ -3221,7 +3287,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 26,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L26"
 						}
 					],
 					"type": {
@@ -3247,7 +3314,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 28,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L28"
 						}
 					],
 					"type": {
@@ -3273,7 +3341,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 32,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L32"
 						}
 					],
 					"type": {
@@ -3299,7 +3368,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 30,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L30"
 						}
 					],
 					"type": {
@@ -3325,7 +3395,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 22,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L22"
 						}
 					],
 					"type": {
@@ -3351,7 +3422,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 20,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L20"
 				}
 			]
 		},
@@ -3388,7 +3460,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 42,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L42"
 						}
 					],
 					"type": {
@@ -3425,7 +3498,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 40,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L40"
 						}
 					],
 					"type": {
@@ -3453,7 +3527,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 34,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L34"
 						}
 					],
 					"type": {
@@ -3479,7 +3554,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 22,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L22"
 						}
 					],
 					"type": {
@@ -3505,7 +3581,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 32,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L32"
 						}
 					],
 					"type": {
@@ -3531,7 +3608,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 30,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L30"
 						}
 					],
 					"type": {
@@ -3557,7 +3635,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 24,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L24"
 						}
 					],
 					"type": {
@@ -3585,7 +3664,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 28,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L28"
 						}
 					],
 					"type": {
@@ -3616,7 +3696,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 48,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L48"
 						}
 					],
 					"type": {
@@ -3649,7 +3730,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 36,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L36"
 						}
 					],
 					"type": {
@@ -3677,7 +3759,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 44,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L44"
 						}
 					],
 					"type": {
@@ -3703,7 +3786,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 50,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L50"
 						}
 					],
 					"type": {
@@ -3734,7 +3818,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 46,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L46"
 						}
 					],
 					"type": {
@@ -3760,7 +3845,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 26,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L26"
 						}
 					],
 					"type": {
@@ -3788,7 +3874,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 38,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L38"
 						}
 					],
 					"type": {
@@ -3823,7 +3910,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 20,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L20"
 				}
 			]
 		},
@@ -3853,7 +3941,7 @@
 							"fileName": "types/index.ts",
 							"line": 70,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L70"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L70"
 						}
 					],
 					"signatures": [
@@ -3876,7 +3964,7 @@
 									"fileName": "types/index.ts",
 									"line": 70,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L70"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L70"
 								}
 							],
 							"type": {
@@ -3899,7 +3987,7 @@
 							"fileName": "types/index.ts",
 							"line": 44,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L44"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L44"
 						}
 					],
 					"signatures": [
@@ -3922,7 +4010,7 @@
 									"fileName": "types/index.ts",
 									"line": 44,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L44"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L44"
 								}
 							],
 							"type": {
@@ -3948,7 +4036,7 @@
 							"fileName": "types/index.ts",
 							"line": 50,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L50"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L50"
 						}
 					],
 					"signatures": [
@@ -3971,7 +4059,7 @@
 									"fileName": "types/index.ts",
 									"line": 50,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L50"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L50"
 								}
 							],
 							"type": {
@@ -3997,7 +4085,7 @@
 							"fileName": "types/index.ts",
 							"line": 73,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L73"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L73"
 						}
 					],
 					"signatures": [
@@ -4020,7 +4108,7 @@
 									"fileName": "types/index.ts",
 									"line": 73,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L73"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L73"
 								}
 							],
 							"type": {
@@ -4041,7 +4129,7 @@
 							"fileName": "types/index.ts",
 							"line": 76,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L76"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L76"
 						}
 					],
 					"signatures": [
@@ -4064,7 +4152,7 @@
 									"fileName": "types/index.ts",
 									"line": 76,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L76"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L76"
 								}
 							],
 							"type": {
@@ -4094,7 +4182,7 @@
 							"fileName": "types/index.ts",
 							"line": 53,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L53"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L53"
 						}
 					],
 					"signatures": [
@@ -4117,7 +4205,7 @@
 									"fileName": "types/index.ts",
 									"line": 53,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L53"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L53"
 								}
 							],
 							"parameters": [
@@ -4162,7 +4250,7 @@
 							"fileName": "types/index.ts",
 							"line": 41,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L41"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L41"
 						}
 					],
 					"signatures": [
@@ -4185,7 +4273,7 @@
 									"fileName": "types/index.ts",
 									"line": 41,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L41"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L41"
 								}
 							],
 							"parameters": [
@@ -4230,7 +4318,7 @@
 							"fileName": "types/index.ts",
 							"line": 47,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L47"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L47"
 						}
 					],
 					"signatures": [
@@ -4253,7 +4341,7 @@
 									"fileName": "types/index.ts",
 									"line": 47,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L47"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L47"
 								}
 							],
 							"parameters": [
@@ -4294,7 +4382,7 @@
 							"fileName": "types/index.ts",
 							"line": 59,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L59"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L59"
 						}
 					],
 					"signatures": [
@@ -4317,7 +4405,7 @@
 									"fileName": "types/index.ts",
 									"line": 59,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L59"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L59"
 								}
 							],
 							"parameters": [
@@ -4353,7 +4441,7 @@
 							"fileName": "types/index.ts",
 							"line": 56,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L56"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L56"
 						}
 					],
 					"signatures": [
@@ -4376,7 +4464,7 @@
 									"fileName": "types/index.ts",
 									"line": 56,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L56"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L56"
 								}
 							],
 							"parameters": [
@@ -4421,7 +4509,7 @@
 							"fileName": "types/index.ts",
 							"line": 62,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L62"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L62"
 						}
 					],
 					"signatures": [
@@ -4444,7 +4532,7 @@
 									"fileName": "types/index.ts",
 									"line": 62,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L62"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L62"
 								}
 							],
 							"parameters": [
@@ -4508,7 +4596,7 @@
 													"fileName": "types/index.ts",
 													"line": 64,
 													"character": 4,
-													"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L64"
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L64"
 												}
 											],
 											"type": {
@@ -4531,7 +4619,7 @@
 													"fileName": "types/index.ts",
 													"line": 65,
 													"character": 4,
-													"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L65"
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L65"
 												}
 											],
 											"type": {
@@ -4552,7 +4640,7 @@
 													"fileName": "types/index.ts",
 													"line": 66,
 													"character": 4,
-													"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L66"
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L66"
 												}
 											],
 											"type": {
@@ -4571,7 +4659,7 @@
 													"fileName": "types/index.ts",
 													"line": 63,
 													"character": 4,
-													"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L63"
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L63"
 												}
 											],
 											"type": {
@@ -4596,7 +4684,7 @@
 											"fileName": "types/index.ts",
 											"line": 62,
 											"character": 65,
-											"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L62"
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L62"
 										}
 									]
 								}
@@ -4628,7 +4716,7 @@
 					"fileName": "types/index.ts",
 					"line": 39,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L39"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L39"
 				}
 			],
 			"implementedBy": [
@@ -4664,7 +4752,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 40,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L40"
 						}
 					],
 					"signatures": [
@@ -4678,7 +4767,8 @@
 								{
 									"fileName": "chess/checkDetector.ts",
 									"line": 40,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L40"
 								}
 							],
 							"type": {
@@ -4700,7 +4790,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 38,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L38"
 						}
 					],
 					"signatures": [
@@ -4714,7 +4805,8 @@
 								{
 									"fileName": "chess/checkDetector.ts",
 									"line": 38,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L38"
 								}
 							],
 							"parameters": [
@@ -4758,7 +4850,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 36,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L36"
 						}
 					],
 					"signatures": [
@@ -4772,7 +4865,8 @@
 								{
 									"fileName": "chess/checkDetector.ts",
 									"line": 36,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L36"
 								}
 							],
 							"parameters": [
@@ -4816,7 +4910,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 37,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L37"
 						}
 					],
 					"signatures": [
@@ -4830,7 +4925,8 @@
 								{
 									"fileName": "chess/checkDetector.ts",
 									"line": 37,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L37"
 								}
 							],
 							"parameters": [
@@ -4870,7 +4966,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 39,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L39"
 						}
 					],
 					"signatures": [
@@ -4884,7 +4981,8 @@
 								{
 									"fileName": "chess/checkDetector.ts",
 									"line": 39,
-									"character": 2
+									"character": 2,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L39"
 								}
 							],
 							"parameters": [
@@ -4930,7 +5028,8 @@
 												{
 													"fileName": "chess/checkDetector.ts",
 													"line": 39,
-													"character": 44
+													"character": 44,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L39"
 												}
 											],
 											"type": {
@@ -4951,7 +5050,8 @@
 										{
 											"fileName": "chess/checkDetector.ts",
 											"line": 39,
-											"character": 42
+											"character": 42,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L39"
 										}
 									]
 								}
@@ -4976,7 +5076,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 35,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L35"
 				}
 			],
 			"implementedBy": [
@@ -5023,7 +5124,7 @@
 							"fileName": "types/index.ts",
 							"line": 95,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L95"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L95"
 						}
 					],
 					"type": {
@@ -5054,7 +5155,7 @@
 							"fileName": "types/index.ts",
 							"line": 99,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L99"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L99"
 						}
 					],
 					"type": {
@@ -5092,7 +5193,7 @@
 							"fileName": "types/index.ts",
 							"line": 101,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L101"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L101"
 						}
 					],
 					"type": {
@@ -5121,7 +5222,7 @@
 							"fileName": "types/index.ts",
 							"line": 103,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L103"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L103"
 						}
 					],
 					"type": {
@@ -5150,7 +5251,7 @@
 							"fileName": "types/index.ts",
 							"line": 105,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L105"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L105"
 						}
 					],
 					"type": {
@@ -5177,7 +5278,7 @@
 							"fileName": "types/index.ts",
 							"line": 89,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L89"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L89"
 						}
 					],
 					"type": {
@@ -5204,7 +5305,7 @@
 							"fileName": "types/index.ts",
 							"line": 93,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L93"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L93"
 						}
 					],
 					"type": {
@@ -5235,7 +5336,7 @@
 							"fileName": "types/index.ts",
 							"line": 97,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L97"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L97"
 						}
 					],
 					"type": {
@@ -5264,7 +5365,7 @@
 							"fileName": "types/index.ts",
 							"line": 91,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L91"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L91"
 						}
 					],
 					"type": {
@@ -5293,7 +5394,7 @@
 							"fileName": "types/index.ts",
 							"line": 107,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L107"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L107"
 						}
 					],
 					"type": {
@@ -5324,7 +5425,7 @@
 					"fileName": "types/index.ts",
 					"line": 87,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L87"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L87"
 				}
 			]
 		},
@@ -5361,7 +5462,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 60,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L60"
 						}
 					],
 					"type": {
@@ -5387,7 +5489,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 58,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L58"
 						}
 					],
 					"type": {
@@ -5413,7 +5516,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 64,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L64"
 						}
 					],
 					"type": {
@@ -5439,7 +5543,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 62,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L62"
 						}
 					],
 					"type": {
@@ -5463,7 +5568,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 56,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L56"
 				}
 			]
 		},
@@ -5500,7 +5606,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 67,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L67"
 						}
 					],
 					"type": {
@@ -5528,7 +5635,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 69,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L69"
 						}
 					],
 					"type": {
@@ -5552,7 +5660,8 @@
 				{
 					"fileName": "types/moveTypes.ts",
 					"line": 65,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L65"
 				}
 			]
 		},
@@ -5591,7 +5700,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 53,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L53"
 						}
 					],
 					"type": {
@@ -5619,7 +5729,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 47,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L47"
 						}
 					],
 					"type": {
@@ -5647,7 +5758,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 43,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L43"
 						}
 					],
 					"type": {
@@ -5675,7 +5787,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 55,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L55"
 						}
 					],
 					"type": {
@@ -5703,7 +5816,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 49,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L49"
 						}
 					],
 					"type": {
@@ -5731,7 +5845,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 45,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L45"
 						}
 					],
 					"type": {
@@ -5759,7 +5874,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 57,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L57"
 						}
 					],
 					"type": {
@@ -5787,7 +5903,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 51,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L51"
 						}
 					],
 					"type": {
@@ -5815,7 +5932,8 @@
 				{
 					"fileName": "types/moveTypes.ts",
 					"line": 41,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L41"
 				}
 			],
 			"indexSignatures": [
@@ -5837,7 +5955,8 @@
 						{
 							"fileName": "types/moveTypes.ts",
 							"line": 59,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L59"
 						}
 					],
 					"parameters": [
@@ -5903,7 +6022,7 @@
 							"fileName": "types/index.ts",
 							"line": 163,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L163"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L163"
 						}
 					],
 					"type": {
@@ -5932,7 +6051,7 @@
 							"fileName": "types/index.ts",
 							"line": 159,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L159"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L159"
 						}
 					],
 					"type": {
@@ -5959,7 +6078,7 @@
 							"fileName": "types/index.ts",
 							"line": 161,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L161"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L161"
 						}
 					],
 					"type": {
@@ -5983,7 +6102,7 @@
 					"fileName": "types/index.ts",
 					"line": 157,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L157"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L157"
 				}
 			],
 			"extendedBy": [
@@ -6030,7 +6149,7 @@
 							"fileName": "types/index.ts",
 							"line": 163,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L163"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L163"
 						}
 					],
 					"type": {
@@ -6063,7 +6182,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 158,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L158"
 						}
 					],
 					"type": {
@@ -6092,7 +6212,7 @@
 							"fileName": "types/index.ts",
 							"line": 159,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L159"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L159"
 						}
 					],
 					"type": {
@@ -6126,7 +6246,7 @@
 							"fileName": "types/index.ts",
 							"line": 161,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L161"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L161"
 						}
 					],
 					"type": {
@@ -6155,7 +6275,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 156,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L156"
 				}
 			],
 			"extendedTypes": [
@@ -6201,7 +6322,7 @@
 							"fileName": "types/index.ts",
 							"line": 131,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L131"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L131"
 						}
 					],
 					"type": {
@@ -6228,7 +6349,7 @@
 							"fileName": "types/index.ts",
 							"line": 129,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L129"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L129"
 						}
 					],
 					"type": {
@@ -6251,7 +6372,7 @@
 					"fileName": "types/index.ts",
 					"line": 127,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L127"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L127"
 				}
 			]
 		},
@@ -6288,7 +6409,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 84,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L84"
 						}
 					],
 					"type": {
@@ -6314,7 +6436,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 86,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L86"
 						}
 					],
 					"type": {
@@ -6340,7 +6463,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 88,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L88"
 						}
 					],
 					"type": {
@@ -6363,7 +6487,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 82,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L82"
 				}
 			]
 		},
@@ -6400,7 +6525,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 132,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L132"
 						}
 					],
 					"type": {
@@ -6429,7 +6555,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 126,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L126"
 						}
 					],
 					"type": {
@@ -6455,7 +6582,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 128,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L128"
 						}
 					],
 					"type": {
@@ -6481,7 +6609,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 130,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L130"
 						}
 					],
 					"type": {
@@ -6508,7 +6637,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 124,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L124"
 				}
 			]
 		},
@@ -6546,7 +6676,7 @@
 							"fileName": "types/index.ts",
 							"line": 171,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L171"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L171"
 						}
 					],
 					"type": {
@@ -6573,7 +6703,7 @@
 							"fileName": "types/index.ts",
 							"line": 173,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L173"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L173"
 						}
 					],
 					"type": {
@@ -6596,7 +6726,7 @@
 					"fileName": "types/index.ts",
 					"line": 169,
 					"character": 17,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L169"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L169"
 				}
 			],
 			"extendedBy": [
@@ -6640,7 +6770,8 @@
 						{
 							"fileName": "dtos/index.ts",
 							"line": 166,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L166"
 						}
 					],
 					"type": {
@@ -6669,7 +6800,7 @@
 							"fileName": "types/index.ts",
 							"line": 171,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L171"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L171"
 						}
 					],
 					"type": {
@@ -6703,7 +6834,7 @@
 							"fileName": "types/index.ts",
 							"line": 173,
 							"character": 2,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L173"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L173"
 						}
 					],
 					"type": {
@@ -6731,7 +6862,8 @@
 				{
 					"fileName": "dtos/index.ts",
 					"line": 164,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L164"
 				}
 			],
 			"extendedTypes": [
@@ -6768,7 +6900,8 @@
 						{
 							"fileName": "tactical/retreat.ts",
 							"line": 39,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L39"
 						}
 					],
 					"type": {
@@ -6786,7 +6919,8 @@
 						{
 							"fileName": "tactical/retreat.ts",
 							"line": 38,
-							"character": 2
+							"character": 2,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L38"
 						}
 					],
 					"type": {
@@ -6808,7 +6942,8 @@
 				{
 					"fileName": "tactical/retreat.ts",
 					"line": 37,
-					"character": 17
+					"character": 17,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L37"
 				}
 			]
 		},
@@ -6830,7 +6965,8 @@
 				{
 					"fileName": "types/moveTypes.ts",
 					"line": 31,
-					"character": 12
+					"character": 12,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L31"
 				}
 			],
 			"type": {
@@ -6862,7 +6998,7 @@
 					"fileName": "types/index.ts",
 					"line": 82,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L82"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L82"
 				}
 			],
 			"type": {
@@ -6897,7 +7033,8 @@
 				{
 					"fileName": "types/moveTypes.ts",
 					"line": 36,
-					"character": 12
+					"character": 12,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L36"
 				}
 			],
 			"type": {
@@ -6927,7 +7064,7 @@
 					"fileName": "types/index.ts",
 					"line": 13,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L13"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L13"
 				}
 			],
 			"type": {
@@ -6963,7 +7100,7 @@
 					"fileName": "types/index.ts",
 					"line": 18,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L18"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L18"
 				}
 			],
 			"type": {
@@ -7015,7 +7152,7 @@
 					"fileName": "types/index.ts",
 					"line": 8,
 					"character": 12,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L8"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L8"
 				}
 			],
 			"type": {
@@ -7044,7 +7181,7 @@
 					"fileName": "constants/index.ts",
 					"line": 10,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L10"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L10"
 				}
 			],
 			"type": {
@@ -7074,7 +7211,7 @@
 					"fileName": "constants/knightRetreatData.ts",
 					"line": 15,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/knightRetreatData.ts#L15"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/knightRetreatData.ts#L15"
 				}
 			],
 			"type": {
@@ -7104,7 +7241,7 @@
 					"fileName": "constants/index.ts",
 					"line": 45,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L45"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L45"
 				}
 			],
 			"type": {
@@ -7134,7 +7271,7 @@
 					"fileName": "constants/index.ts",
 					"line": 33,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L33"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L33"
 				}
 			],
 			"type": {
@@ -7157,7 +7294,7 @@
 									"fileName": "constants/index.ts",
 									"line": 18,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L18"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L18"
 								}
 							],
 							"type": {
@@ -7177,7 +7314,7 @@
 									"fileName": "constants/index.ts",
 									"line": 21,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L21"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L21"
 								}
 							],
 							"type": {
@@ -7197,7 +7334,7 @@
 									"fileName": "constants/index.ts",
 									"line": 17,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L17"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L17"
 								}
 							],
 							"type": {
@@ -7217,7 +7354,7 @@
 									"fileName": "constants/index.ts",
 									"line": 16,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L16"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L16"
 								}
 							],
 							"type": {
@@ -7237,7 +7374,7 @@
 									"fileName": "constants/index.ts",
 									"line": 20,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L20"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L20"
 								}
 							],
 							"type": {
@@ -7257,7 +7394,7 @@
 									"fileName": "constants/index.ts",
 									"line": 19,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L19"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L19"
 								}
 							],
 							"type": {
@@ -7285,7 +7422,7 @@
 							"fileName": "constants/index.ts",
 							"line": 33,
 							"character": 37,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L33"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L33"
 						}
 					]
 				}
@@ -7313,7 +7450,7 @@
 					"fileName": "constants/index.ts",
 					"line": 88,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L88"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L88"
 				}
 			],
 			"type": {
@@ -7343,7 +7480,7 @@
 					"fileName": "constants/index.ts",
 					"line": 108,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L108"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L108"
 				}
 			],
 			"type": {
@@ -7373,7 +7510,7 @@
 					"fileName": "constants/index.ts",
 					"line": 40,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L40"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L40"
 				}
 			],
 			"type": {
@@ -7403,7 +7540,7 @@
 					"fileName": "constants/index.ts",
 					"line": 27,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L27"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L27"
 				}
 			],
 			"type": {
@@ -7433,7 +7570,7 @@
 					"fileName": "constants/index.ts",
 					"line": 123,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L123"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L123"
 				}
 			],
 			"type": {
@@ -7463,7 +7600,7 @@
 					"fileName": "constants/index.ts",
 					"line": 55,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L55"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L55"
 				}
 			],
 			"type": {
@@ -7493,7 +7630,7 @@
 					"fileName": "constants/index.ts",
 					"line": 118,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L118"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L118"
 				}
 			],
 			"type": {
@@ -7523,7 +7660,7 @@
 					"fileName": "constants/index.ts",
 					"line": 113,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L113"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L113"
 				}
 			],
 			"type": {
@@ -7553,7 +7690,7 @@
 					"fileName": "constants/index.ts",
 					"line": 100,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L100"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L100"
 				}
 			],
 			"type": {
@@ -7576,7 +7713,7 @@
 									"fileName": "constants/index.ts",
 									"line": 102,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L102"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L102"
 								}
 							],
 							"type": {
@@ -7596,7 +7733,7 @@
 									"fileName": "constants/index.ts",
 									"line": 101,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L101"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L101"
 								}
 							],
 							"type": {
@@ -7620,7 +7757,7 @@
 							"fileName": "constants/index.ts",
 							"line": 100,
 							"character": 36,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L100"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L100"
 						}
 					]
 				}
@@ -7647,7 +7784,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 15,
-					"character": 13
+					"character": 13,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L15"
 				}
 			],
 			"type": {
@@ -7677,7 +7815,7 @@
 					"fileName": "constants/index.ts",
 					"line": 94,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L94"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L94"
 				}
 			],
 			"type": {
@@ -7707,7 +7845,7 @@
 					"fileName": "constants/index.ts",
 					"line": 15,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L15"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L15"
 				}
 			],
 			"type": {
@@ -7730,7 +7868,7 @@
 									"fileName": "constants/index.ts",
 									"line": 18,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L18"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L18"
 								}
 							],
 							"type": {
@@ -7750,7 +7888,7 @@
 									"fileName": "constants/index.ts",
 									"line": 21,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L21"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L21"
 								}
 							],
 							"type": {
@@ -7770,7 +7908,7 @@
 									"fileName": "constants/index.ts",
 									"line": 17,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L17"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L17"
 								}
 							],
 							"type": {
@@ -7790,7 +7928,7 @@
 									"fileName": "constants/index.ts",
 									"line": 16,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L16"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L16"
 								}
 							],
 							"type": {
@@ -7810,7 +7948,7 @@
 									"fileName": "constants/index.ts",
 									"line": 20,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L20"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L20"
 								}
 							],
 							"type": {
@@ -7830,7 +7968,7 @@
 									"fileName": "constants/index.ts",
 									"line": 19,
 									"character": 2,
-									"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L19"
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L19"
 								}
 							],
 							"type": {
@@ -7858,7 +7996,7 @@
 							"fileName": "constants/index.ts",
 							"line": 15,
 							"character": 28,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L15"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L15"
 						}
 					]
 				}
@@ -7875,7 +8013,8 @@
 				{
 					"fileName": "tactical/retreat.ts",
 					"line": 51,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L51"
 				}
 			],
 			"signatures": [
@@ -7908,7 +8047,8 @@
 						{
 							"fileName": "tactical/retreat.ts",
 							"line": 51,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L51"
 						}
 					],
 					"parameters": [
@@ -8029,7 +8169,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 256,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L256"
 				}
 			],
 			"signatures": [
@@ -8062,7 +8203,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 256,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L256"
 						}
 					],
 					"parameters": [
@@ -8143,7 +8285,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 55,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L55"
 				}
 			],
 			"signatures": [
@@ -8176,7 +8319,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 55,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L55"
 						}
 					],
 					"parameters": [
@@ -8237,7 +8381,7 @@
 					"fileName": "constants/index.ts",
 					"line": 74,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L74"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L74"
 				}
 			],
 			"signatures": [
@@ -8260,7 +8404,7 @@
 							"fileName": "constants/index.ts",
 							"line": 74,
 							"character": 40,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L74"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L74"
 						}
 					],
 					"parameters": [
@@ -8305,7 +8449,7 @@
 					"fileName": "constants/index.ts",
 					"line": 82,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L82"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L82"
 				}
 			],
 			"signatures": [
@@ -8328,7 +8472,7 @@
 							"fileName": "constants/index.ts",
 							"line": 82,
 							"character": 50,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L82"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L82"
 						}
 					],
 					"parameters": [
@@ -8362,7 +8506,7 @@
 					"fileName": "constants/index.ts",
 					"line": 68,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L68"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L68"
 				}
 			],
 			"signatures": [
@@ -8385,7 +8529,7 @@
 							"fileName": "constants/index.ts",
 							"line": 68,
 							"character": 37,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L68"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L68"
 						}
 					],
 					"parameters": [
@@ -8430,7 +8574,7 @@
 					"fileName": "constants/index.ts",
 					"line": 50,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L50"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L50"
 				}
 			],
 			"signatures": [
@@ -8453,7 +8597,7 @@
 							"fileName": "constants/index.ts",
 							"line": 50,
 							"character": 36,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L50"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L50"
 						}
 					],
 					"parameters": [
@@ -8487,7 +8631,7 @@
 					"fileName": "constants/index.ts",
 					"line": 60,
 					"character": 13,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L60"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L60"
 				}
 			],
 			"signatures": [
@@ -8510,7 +8654,7 @@
 							"fileName": "constants/index.ts",
 							"line": 60,
 							"character": 39,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L60"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L60"
 						}
 					],
 					"parameters": [
@@ -8554,7 +8698,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 108,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L108"
 				}
 			],
 			"signatures": [
@@ -8596,7 +8741,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 108,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L108"
 						}
 					],
 					"parameters": [
@@ -8639,7 +8785,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 108,
-											"character": 68
+											"character": 68,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L108"
 										}
 									],
 									"type": {
@@ -8659,7 +8806,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 108,
-											"character": 51
+											"character": 51,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L108"
 										}
 									],
 									"type": {
@@ -8683,7 +8831,8 @@
 								{
 									"fileName": "chess/fen.ts",
 									"line": 108,
-									"character": 49
+									"character": 49,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L108"
 								}
 							]
 						}
@@ -8701,7 +8850,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 91,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L91"
 				}
 			],
 			"signatures": [
@@ -8734,7 +8884,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 91,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L91"
 						}
 					],
 					"parameters": [
@@ -8777,7 +8928,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 145,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L145"
 				}
 			],
 			"signatures": [
@@ -8819,7 +8971,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 145,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L145"
 						}
 					],
 					"parameters": [
@@ -8865,7 +9018,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 325,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L325"
 				}
 			],
 			"signatures": [
@@ -8898,7 +9052,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 325,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L325"
 						}
 					],
 					"parameters": [
@@ -8935,7 +9090,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 334,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L334"
 												}
 											],
 											"type": {
@@ -8955,7 +9111,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 335,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L335"
 												}
 											],
 											"type": {
@@ -8977,7 +9134,8 @@
 																{
 																	"fileName": "chess/fen.ts",
 																	"line": 338,
-																	"character": 4
+																	"character": 4,
+																	"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L338"
 																}
 															],
 															"type": {
@@ -8995,7 +9153,8 @@
 																{
 																	"fileName": "chess/fen.ts",
 																	"line": 339,
-																	"character": 4
+																	"character": 4,
+																	"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L339"
 																}
 															],
 															"type": {
@@ -9013,7 +9172,8 @@
 																{
 																	"fileName": "chess/fen.ts",
 																	"line": 336,
-																	"character": 4
+																	"character": 4,
+																	"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L336"
 																}
 															],
 															"type": {
@@ -9031,7 +9191,8 @@
 																{
 																	"fileName": "chess/fen.ts",
 																	"line": 337,
-																	"character": 4
+																	"character": 4,
+																	"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L337"
 																}
 															],
 															"type": {
@@ -9055,7 +9216,8 @@
 														{
 															"fileName": "chess/fen.ts",
 															"line": 335,
-															"character": 12
+															"character": 12,
+															"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L335"
 														}
 													]
 												}
@@ -9071,7 +9233,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 341,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L341"
 												}
 											],
 											"type": {
@@ -9098,7 +9261,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 343,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L343"
 												}
 											],
 											"type": {
@@ -9116,7 +9280,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 342,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L342"
 												}
 											],
 											"type": {
@@ -9134,7 +9299,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 333,
-													"character": 2
+													"character": 2,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L333"
 												}
 											],
 											"type": {
@@ -9165,7 +9331,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 332,
-											"character": 3
+											"character": 3,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L332"
 										}
 									]
 								}
@@ -9189,7 +9356,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 289,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L289"
 				}
 			],
 			"signatures": [
@@ -9222,7 +9390,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 289,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L289"
 						}
 					],
 					"parameters": [
@@ -9317,7 +9486,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 158,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L158"
 				}
 			],
 			"signatures": [
@@ -9350,7 +9520,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 158,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L158"
 						}
 					],
 					"parameters": [
@@ -9417,7 +9588,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 75,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L75"
 				}
 			],
 			"signatures": [
@@ -9450,7 +9622,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 75,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L75"
 						}
 					],
 					"parameters": [
@@ -9510,7 +9683,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 132,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L132"
 				}
 			],
 			"signatures": [
@@ -9543,7 +9717,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 132,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L132"
 						}
 					],
 					"parameters": [
@@ -9612,7 +9787,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 21,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L21"
 				}
 			],
 			"signatures": [
@@ -9645,7 +9821,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 21,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L21"
 						}
 					],
 					"parameters": [
@@ -9700,7 +9877,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 135,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L135"
 				}
 			],
 			"signatures": [
@@ -9733,7 +9911,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 135,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L135"
 						}
 					],
 					"parameters": [
@@ -9796,7 +9975,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 191,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L191"
 				}
 			],
 			"signatures": [
@@ -9829,7 +10009,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 191,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L191"
 						}
 					],
 					"parameters": [
@@ -9873,7 +10054,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 172,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L172"
 				}
 			],
 			"signatures": [
@@ -9906,7 +10088,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 172,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L172"
 						}
 					],
 					"parameters": [
@@ -9950,7 +10133,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 49,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L49"
 				}
 			],
 			"signatures": [
@@ -9983,7 +10167,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 49,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L49"
 						}
 					],
 					"parameters": [
@@ -10047,7 +10232,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 117,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L117"
 				}
 			],
 			"signatures": [
@@ -10080,7 +10266,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 117,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L117"
 						}
 					],
 					"parameters": [
@@ -10140,7 +10327,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 103,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L103"
 				}
 			],
 			"signatures": [
@@ -10173,7 +10361,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 103,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L103"
 						}
 					],
 					"parameters": [
@@ -10233,7 +10422,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 89,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L89"
 				}
 			],
 			"signatures": [
@@ -10266,7 +10456,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 89,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L89"
 						}
 					],
 					"parameters": [
@@ -10326,7 +10517,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 245,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L245"
 				}
 			],
 			"signatures": [
@@ -10359,7 +10551,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 245,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L245"
 						}
 					],
 					"parameters": [
@@ -10402,7 +10595,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 134,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L134"
 				}
 			],
 			"signatures": [
@@ -10435,7 +10629,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 134,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L134"
 						}
 					],
 					"parameters": [
@@ -10495,7 +10690,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 180,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L180"
 				}
 			],
 			"signatures": [
@@ -10528,7 +10724,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 180,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L180"
 						}
 					],
 					"parameters": [
@@ -10608,7 +10805,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 113,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L113"
 				}
 			],
 			"signatures": [
@@ -10641,7 +10839,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 113,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L113"
 						}
 					],
 					"parameters": [
@@ -10701,7 +10900,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 63,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L63"
 				}
 			],
 			"signatures": [
@@ -10734,7 +10934,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 63,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L63"
 						}
 					],
 					"parameters": [
@@ -10853,7 +11054,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 214,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L214"
 				}
 			],
 			"signatures": [
@@ -10886,7 +11088,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 214,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L214"
 						}
 					],
 					"parameters": [
@@ -11027,7 +11230,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 13,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L13"
 				}
 			],
 			"signatures": [
@@ -11060,7 +11264,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 13,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L13"
 						}
 					],
 					"parameters": [
@@ -11101,7 +11306,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 164,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L164"
 				}
 			],
 			"signatures": [
@@ -11134,7 +11340,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 164,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L164"
 						}
 					],
 					"parameters": [
@@ -11194,7 +11401,8 @@
 				{
 					"fileName": "chess/movement.ts",
 					"line": 149,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L149"
 				}
 			],
 			"signatures": [
@@ -11227,7 +11435,8 @@
 						{
 							"fileName": "chess/movement.ts",
 							"line": 149,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L149"
 						}
 					],
 					"parameters": [
@@ -11287,7 +11496,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 126,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L126"
 				}
 			],
 			"signatures": [
@@ -11329,7 +11539,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 126,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L126"
 						}
 					],
 					"parameters": [
@@ -11372,7 +11583,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 41,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L41"
 				}
 			],
 			"signatures": [
@@ -11414,7 +11626,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 41,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L41"
 						}
 					],
 					"parameters": [
@@ -11457,7 +11670,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 248,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L248"
 				}
 			],
 			"signatures": [
@@ -11490,7 +11704,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 248,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L248"
 						}
 					],
 					"parameters": [
@@ -11533,7 +11748,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 250,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L250"
 										}
 									],
 									"type": {
@@ -11553,7 +11769,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 251,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L251"
 										}
 									],
 									"type": {
@@ -11575,7 +11792,8 @@
 														{
 															"fileName": "chess/fen.ts",
 															"line": 254,
-															"character": 4
+															"character": 4,
+															"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L254"
 														}
 													],
 													"type": {
@@ -11593,7 +11811,8 @@
 														{
 															"fileName": "chess/fen.ts",
 															"line": 255,
-															"character": 4
+															"character": 4,
+															"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L255"
 														}
 													],
 													"type": {
@@ -11611,7 +11830,8 @@
 														{
 															"fileName": "chess/fen.ts",
 															"line": 252,
-															"character": 4
+															"character": 4,
+															"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L252"
 														}
 													],
 													"type": {
@@ -11629,7 +11849,8 @@
 														{
 															"fileName": "chess/fen.ts",
 															"line": 253,
-															"character": 4
+															"character": 4,
+															"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L253"
 														}
 													],
 													"type": {
@@ -11653,7 +11874,8 @@
 												{
 													"fileName": "chess/fen.ts",
 													"line": 251,
-													"character": 12
+													"character": 12,
+													"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L251"
 												}
 											]
 										}
@@ -11669,7 +11891,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 257,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L257"
 										}
 									],
 									"type": {
@@ -11696,7 +11919,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 259,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L259"
 										}
 									],
 									"type": {
@@ -11714,7 +11938,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 258,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L258"
 										}
 									],
 									"type": {
@@ -11732,7 +11957,8 @@
 										{
 											"fileName": "chess/fen.ts",
 											"line": 249,
-											"character": 2
+											"character": 2,
+											"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L249"
 										}
 									],
 									"type": {
@@ -11763,7 +11989,8 @@
 								{
 									"fileName": "chess/fen.ts",
 									"line": 248,
-									"character": 50
+									"character": 50,
+									"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L248"
 								}
 							]
 						}
@@ -11781,7 +12008,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 407,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L407"
 				}
 			],
 			"signatures": [
@@ -11814,7 +12042,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 407,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L407"
 						}
 					],
 					"parameters": [
@@ -11861,7 +12090,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 346,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L346"
 				}
 			],
 			"signatures": [
@@ -11894,7 +12124,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 346,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L346"
 						}
 					],
 					"parameters": [
@@ -11944,7 +12175,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 208,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L208"
 				}
 			],
 			"signatures": [
@@ -11977,7 +12209,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 208,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L208"
 						}
 					],
 					"parameters": [
@@ -12023,7 +12256,8 @@
 				{
 					"fileName": "chess/fen.ts",
 					"line": 134,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L134"
 				}
 			],
 			"signatures": [
@@ -12056,7 +12290,8 @@
 						{
 							"fileName": "chess/fen.ts",
 							"line": 134,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L134"
 						}
 					],
 					"parameters": [
@@ -12120,7 +12355,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 65,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L65"
 				}
 			],
 			"signatures": [
@@ -12162,7 +12398,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 65,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L65"
 						}
 					],
 					"parameters": [
@@ -12205,7 +12442,8 @@
 				{
 					"fileName": "utils/position.ts",
 					"line": 32,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L32"
 				}
 			],
 			"signatures": [
@@ -12238,7 +12476,8 @@
 						{
 							"fileName": "utils/position.ts",
 							"line": 32,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/utils/position.ts#L32"
 						}
 					],
 					"parameters": [
@@ -12288,7 +12527,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 242,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L242"
 				}
 			],
 			"signatures": [
@@ -12321,7 +12561,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 242,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L242"
 						}
 					],
 					"parameters": [
@@ -12425,7 +12666,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 92,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L92"
 				}
 			],
 			"signatures": [
@@ -12467,7 +12709,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 92,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L92"
 						}
 					],
 					"parameters": [
@@ -12510,7 +12753,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 188,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L188"
 				}
 			],
 			"signatures": [
@@ -12543,7 +12787,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 188,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L188"
 						}
 					],
 					"parameters": [
@@ -12688,7 +12933,8 @@
 				{
 					"fileName": "notation/index.ts",
 					"line": 498,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L498"
 				}
 			],
 			"signatures": [
@@ -12721,7 +12967,8 @@
 						{
 							"fileName": "notation/index.ts",
 							"line": 498,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L498"
 						}
 					],
 					"parameters": [
@@ -12842,7 +13089,7 @@
 					"fileName": "validation/index.ts",
 					"line": 188,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L188"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L188"
 				}
 			],
 			"signatures": [
@@ -12876,7 +13123,7 @@
 							"fileName": "validation/index.ts",
 							"line": 188,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L188"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L188"
 						}
 					],
 					"parameters": [
@@ -12932,7 +13179,7 @@
 					"fileName": "validation/index.ts",
 					"line": 100,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L100"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L100"
 				}
 			],
 			"signatures": [
@@ -12966,7 +13213,7 @@
 							"fileName": "validation/index.ts",
 							"line": 100,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L100"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L100"
 						}
 					],
 					"parameters": [
@@ -13021,7 +13268,7 @@
 					"fileName": "validation/index.ts",
 					"line": 277,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L277"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L277"
 				}
 			],
 			"signatures": [
@@ -13055,7 +13302,7 @@
 							"fileName": "validation/index.ts",
 							"line": 277,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L277"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L277"
 						}
 					],
 					"parameters": [
@@ -13111,7 +13358,7 @@
 					"fileName": "validation/index.ts",
 					"line": 130,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L130"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L130"
 				}
 			],
 			"signatures": [
@@ -13145,7 +13392,7 @@
 							"fileName": "validation/index.ts",
 							"line": 130,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L130"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L130"
 						}
 					],
 					"parameters": [
@@ -13200,7 +13447,7 @@
 					"fileName": "validation/index.ts",
 					"line": 291,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L291"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L291"
 				}
 			],
 			"signatures": [
@@ -13234,7 +13481,7 @@
 							"fileName": "validation/index.ts",
 							"line": 291,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L291"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L291"
 						}
 					],
 					"parameters": [
@@ -13290,7 +13537,7 @@
 					"fileName": "validation/index.ts",
 					"line": 218,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L218"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L218"
 				}
 			],
 			"signatures": [
@@ -13324,7 +13571,7 @@
 							"fileName": "validation/index.ts",
 							"line": 218,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L218"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L218"
 						}
 					],
 					"parameters": [
@@ -13380,7 +13627,7 @@
 					"fileName": "validation/index.ts",
 					"line": 234,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L234"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L234"
 				}
 			],
 			"signatures": [
@@ -13414,7 +13661,7 @@
 							"fileName": "validation/index.ts",
 							"line": 234,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L234"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L234"
 						}
 					],
 					"parameters": [
@@ -13470,7 +13717,7 @@
 					"fileName": "validation/index.ts",
 					"line": 69,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L69"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L69"
 				}
 			],
 			"signatures": [
@@ -13504,7 +13751,7 @@
 							"fileName": "validation/index.ts",
 							"line": 69,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L69"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L69"
 						}
 					],
 					"parameters": [
@@ -13559,7 +13806,7 @@
 					"fileName": "validation/index.ts",
 					"line": 49,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L49"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L49"
 				}
 			],
 			"signatures": [
@@ -13593,7 +13840,7 @@
 							"fileName": "validation/index.ts",
 							"line": 49,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L49"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L49"
 						}
 					],
 					"parameters": [
@@ -13650,7 +13897,7 @@
 					"fileName": "validation/index.ts",
 					"line": 59,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L59"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L59"
 				}
 			],
 			"signatures": [
@@ -13684,7 +13931,7 @@
 							"fileName": "validation/index.ts",
 							"line": 59,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L59"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L59"
 						}
 					],
 					"parameters": [
@@ -13741,7 +13988,7 @@
 					"fileName": "validation/index.ts",
 					"line": 140,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L140"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L140"
 				}
 			],
 			"signatures": [
@@ -13775,7 +14022,7 @@
 							"fileName": "validation/index.ts",
 							"line": 140,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L140"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L140"
 						}
 					],
 					"parameters": [
@@ -13831,7 +14078,7 @@
 					"fileName": "validation/index.ts",
 					"line": 172,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L172"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L172"
 				}
 			],
 			"signatures": [
@@ -13865,7 +14112,7 @@
 							"fileName": "validation/index.ts",
 							"line": 172,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L172"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L172"
 						}
 					],
 					"parameters": [
@@ -13921,7 +14168,7 @@
 					"fileName": "validation/index.ts",
 					"line": 120,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L120"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L120"
 				}
 			],
 			"signatures": [
@@ -13955,7 +14202,7 @@
 							"fileName": "validation/index.ts",
 							"line": 120,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L120"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L120"
 						}
 					],
 					"parameters": [
@@ -14010,7 +14257,7 @@
 					"fileName": "validation/index.ts",
 					"line": 39,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L39"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L39"
 				}
 			],
 			"signatures": [
@@ -14044,7 +14291,7 @@
 							"fileName": "validation/index.ts",
 							"line": 39,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L39"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L39"
 						}
 					],
 					"parameters": [
@@ -14101,7 +14348,7 @@
 					"fileName": "validation/index.ts",
 					"line": 308,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L308"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L308"
 				}
 			],
 			"signatures": [
@@ -14135,7 +14382,7 @@
 							"fileName": "validation/index.ts",
 							"line": 308,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L308"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L308"
 						}
 					],
 					"parameters": [
@@ -14191,7 +14438,7 @@
 					"fileName": "validation/index.ts",
 					"line": 29,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L29"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L29"
 				}
 			],
 			"signatures": [
@@ -14225,7 +14472,7 @@
 							"fileName": "validation/index.ts",
 							"line": 29,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L29"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L29"
 						}
 					],
 					"parameters": [
@@ -14280,7 +14527,7 @@
 					"fileName": "validation/index.ts",
 					"line": 203,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L203"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L203"
 				}
 			],
 			"signatures": [
@@ -14314,7 +14561,7 @@
 							"fileName": "validation/index.ts",
 							"line": 203,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L203"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L203"
 						}
 					],
 					"parameters": [
@@ -14370,7 +14617,7 @@
 					"fileName": "validation/index.ts",
 					"line": 251,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L251"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L251"
 				}
 			],
 			"signatures": [
@@ -14404,7 +14651,7 @@
 							"fileName": "validation/index.ts",
 							"line": 251,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L251"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L251"
 						}
 					],
 					"parameters": [
@@ -14460,7 +14707,7 @@
 					"fileName": "validation/index.ts",
 					"line": 80,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L80"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L80"
 				}
 			],
 			"signatures": [
@@ -14494,7 +14741,7 @@
 							"fileName": "validation/index.ts",
 							"line": 80,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L80"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L80"
 						}
 					],
 					"parameters": [
@@ -14549,7 +14796,7 @@
 					"fileName": "validation/index.ts",
 					"line": 324,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L324"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L324"
 				}
 			],
 			"signatures": [
@@ -14583,7 +14830,7 @@
 							"fileName": "validation/index.ts",
 							"line": 324,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L324"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L324"
 						}
 					],
 					"parameters": [
@@ -14639,7 +14886,7 @@
 					"fileName": "validation/index.ts",
 					"line": 110,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L110"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L110"
 				}
 			],
 			"signatures": [
@@ -14673,7 +14920,7 @@
 							"fileName": "validation/index.ts",
 							"line": 110,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L110"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L110"
 						}
 					],
 					"parameters": [
@@ -14728,7 +14975,7 @@
 					"fileName": "validation/index.ts",
 					"line": 90,
 					"character": 16,
-					"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L90"
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L90"
 				}
 			],
 			"signatures": [
@@ -14762,7 +15009,7 @@
 							"fileName": "validation/index.ts",
 							"line": 90,
 							"character": 16,
-							"url": "https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/validation/index.ts#L90"
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L90"
 						}
 					],
 					"parameters": [
@@ -14816,7 +15063,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 267,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L267"
 				}
 			],
 			"signatures": [
@@ -14849,7 +15097,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 267,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L267"
 						}
 					],
 					"parameters": [
@@ -14930,7 +15179,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 394,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L394"
 				}
 			],
 			"signatures": [
@@ -14963,7 +15213,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 394,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L394"
 						}
 					],
 					"parameters": [
@@ -15065,7 +15316,8 @@
 				{
 					"fileName": "chess/checkDetector.ts",
 					"line": 192,
-					"character": 16
+					"character": 16,
+					"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L192"
 				}
 			],
 			"signatures": [
@@ -15098,7 +15350,8 @@
 						{
 							"fileName": "chess/checkDetector.ts",
 							"line": 192,
-							"character": 16
+							"character": 16,
+							"url": "https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/checkDetector.ts#L192"
 						}
 					],
 					"parameters": [

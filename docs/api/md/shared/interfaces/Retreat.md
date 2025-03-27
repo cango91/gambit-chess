@@ -6,7 +6,7 @@
 
 # Interface: Retreat
 
-Defined in: [types/index.ts:127](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L127)
+Defined in: [types/index.ts:127](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L127)
 
 Represents a tactical retreat after a failed capture
 
@@ -16,7 +16,7 @@ Represents a tactical retreat after a failed capture
 
 > **cost**: `number`
 
-Defined in: [types/index.ts:131](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L131)
+Defined in: [types/index.ts:131](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L131)
 
 BP cost of the retreat
 
@@ -26,6 +26,6 @@ BP cost of the retreat
 
 > **to**: `string`
 
-Defined in: [types/index.ts:129](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L129)
+Defined in: [types/index.ts:129](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L129)
 
 Position to retreat to

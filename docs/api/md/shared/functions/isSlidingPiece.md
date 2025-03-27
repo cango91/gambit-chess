@@ -8,7 +8,7 @@
 
 > **isSlidingPiece**(`pieceType`): `boolean`
 
-Defined in: chess/movement.ts:245
+Defined in: [chess/movement.ts:245](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/movement.ts#L245)
 
 Checks if a piece is a sliding piece (bishop, rook, queen)
 

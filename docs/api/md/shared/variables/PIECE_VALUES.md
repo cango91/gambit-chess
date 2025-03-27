@@ -8,7 +8,7 @@
 
 > `const` **PIECE\_VALUES**: `object`
 
-Defined in: [constants/index.ts:15](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L15)
+Defined in: [constants/index.ts:15](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L15)
 
 Chess piece values (classical) - these are fixed constants and should not be changed
 

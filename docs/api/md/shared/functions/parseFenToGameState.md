@@ -8,7 +8,7 @@
 
 > **parseFenToGameState**(`fen`): `object`
 
-Defined in: chess/fen.ts:248
+Defined in: [chess/fen.ts:248](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L248)
 
 Parses a complete FEN string and returns the pieces and game state
 

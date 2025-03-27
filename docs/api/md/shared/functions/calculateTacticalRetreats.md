@@ -8,7 +8,7 @@
 
 > **calculateTacticalRetreats**(`pieceType`, `originalPosition`, `capturePosition`, `boardState`): [`TacticalRetreatOption`](../interfaces/TacticalRetreatOption.md)[]
 
-Defined in: tactical/retreat.ts:51
+Defined in: [tactical/retreat.ts:51](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L51)
 
 Calculates all valid tactical retreat options for a given piece and failed capture attempt.
 

@@ -6,7 +6,7 @@
 
 # Interface: RetreatOptionsDTO
 
-Defined in: dtos/index.ts:124
+Defined in: [dtos/index.ts:124](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L124)
 
 DTO for retreat options notification
 
@@ -16,7 +16,7 @@ DTO for retreat options notification
 
 > **costs**: `number`[]
 
-Defined in: dtos/index.ts:132
+Defined in: [dtos/index.ts:132](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L132)
 
 BP costs for each valid position
 
@@ -26,7 +26,7 @@ BP costs for each valid position
 
 > **gameId**: `string`
 
-Defined in: dtos/index.ts:126
+Defined in: [dtos/index.ts:126](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L126)
 
 Game ID
 
@@ -36,7 +36,7 @@ Game ID
 
 > **piece**: `string`
 
-Defined in: dtos/index.ts:128
+Defined in: [dtos/index.ts:128](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L128)
 
 Piece position that needs to retreat
 
@@ -46,6 +46,6 @@ Piece position that needs to retreat
 
 > **validPositions**: `string`[]
 
-Defined in: dtos/index.ts:130
+Defined in: [dtos/index.ts:130](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L130)
 
 Valid positions to retreat to

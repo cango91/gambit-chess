@@ -6,7 +6,7 @@
 
 # Interface: ExtendedMove
 
-Defined in: types/moveTypes.ts:13
+Defined in: [types/moveTypes.ts:13](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L13)
 
 Extended move information including duel and retreat data
 
@@ -16,7 +16,7 @@ Extended move information including duel and retreat data
 
 > **bpRegeneration**: `number`
 
-Defined in: types/moveTypes.ts:21
+Defined in: [types/moveTypes.ts:21](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L21)
 
 Battle Points regenerated after this move
 
@@ -26,7 +26,7 @@ Battle Points regenerated after this move
 
 > **duel**: `null` \| [`Duel`](Duel.md)
 
-Defined in: types/moveTypes.ts:17
+Defined in: [types/moveTypes.ts:17](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L17)
 
 Duel information if a capture was attempted
 
@@ -36,7 +36,7 @@ Duel information if a capture was attempted
 
 > **move**: [`Move`](Move.md)
 
-Defined in: types/moveTypes.ts:15
+Defined in: [types/moveTypes.ts:15](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L15)
 
 Base move information
 
@@ -46,7 +46,7 @@ Base move information
 
 > **playerColor**: [`PieceColor`](../type-aliases/PieceColor.md)
 
-Defined in: types/moveTypes.ts:23
+Defined in: [types/moveTypes.ts:23](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L23)
 
 Color of the player who made the move
 
@@ -56,7 +56,7 @@ Color of the player who made the move
 
 > **retreat**: `null` \| [`Retreat`](Retreat.md)
 
-Defined in: types/moveTypes.ts:19
+Defined in: [types/moveTypes.ts:19](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L19)
 
 Retreat information if a failed capture resulted in a retreat
 
@@ -66,6 +66,6 @@ Retreat information if a failed capture resulted in a retreat
 
 > **turnNumber**: `number`
 
-Defined in: types/moveTypes.ts:25
+Defined in: [types/moveTypes.ts:25](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L25)
 
 Turn number when this move was made

@@ -8,7 +8,7 @@
 
 > **parseFen**(`fen`): [`FenComponents`](../interfaces/FenComponents.md)
 
-Defined in: chess/fen.ts:41
+Defined in: [chess/fen.ts:41](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L41)
 
 Converts a FEN string to its component parts
 

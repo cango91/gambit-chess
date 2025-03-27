@@ -8,7 +8,7 @@
 
 > **pieceTypeToSAN**(`pieceType`): `string`
 
-Defined in: notation/index.ts:65
+Defined in: [notation/index.ts:65](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L65)
 
 Converts a chess piece type to its Standard Algebraic Notation (SAN) symbol
 Pawns are represented by an empty string in SAN

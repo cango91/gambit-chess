@@ -6,7 +6,7 @@
 
 # Interface: SpectatorDTO
 
-Defined in: dtos/index.ts:164
+Defined in: [dtos/index.ts:164](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L164)
 
 DTO for spectator information
 
@@ -20,7 +20,7 @@ DTO for spectator information
 
 > **gameId**: `string`
 
-Defined in: dtos/index.ts:166
+Defined in: [dtos/index.ts:166](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L166)
 
 Game ID
 
@@ -30,7 +30,7 @@ Game ID
 
 > **id**: `string`
 
-Defined in: [types/index.ts:171](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L171)
+Defined in: [types/index.ts:171](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L171)
 
 Spectator unique ID
 
@@ -44,7 +44,7 @@ Spectator unique ID
 
 > **name**: `string`
 
-Defined in: [types/index.ts:173](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L173)
+Defined in: [types/index.ts:173](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L173)
 
 Spectator display name
 

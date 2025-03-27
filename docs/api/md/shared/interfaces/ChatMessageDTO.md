@@ -6,7 +6,7 @@
 
 # Interface: ChatMessageDTO
 
-Defined in: dtos/index.ts:148
+Defined in: [dtos/index.ts:148](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L148)
 
 DTO for chat message
 
@@ -20,7 +20,7 @@ DTO for chat message
 
 > **gameId**: `string`
 
-Defined in: dtos/index.ts:150
+Defined in: [dtos/index.ts:150](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L150)
 
 Game ID
 
@@ -30,7 +30,7 @@ Game ID
 
 > **message**: `string`
 
-Defined in: [types/index.ts:185](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L185)
+Defined in: [types/index.ts:185](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L185)
 
 Message content
 
@@ -44,7 +44,7 @@ Message content
 
 > **senderId**: `string`
 
-Defined in: [types/index.ts:181](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L181)
+Defined in: [types/index.ts:181](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L181)
 
 Sender ID
 
@@ -58,7 +58,7 @@ Sender ID
 
 > **senderName**: `string`
 
-Defined in: [types/index.ts:183](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L183)
+Defined in: [types/index.ts:183](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L183)
 
 Sender name
 
@@ -72,7 +72,7 @@ Sender name
 
 > **timestamp**: `number`
 
-Defined in: [types/index.ts:187](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L187)
+Defined in: [types/index.ts:187](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L187)
 
 Timestamp of the message
 

@@ -8,7 +8,7 @@
 
 > **generateVisibleGameHistory**(`moves`, `viewerColor`, `gameOver`): [`MoveHistory`](../type-aliases/MoveHistory.md)
 
-Defined in: notation/index.ts:289
+Defined in: [notation/index.ts:289](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/notation/index.ts#L289)
 
 Generates game history with appropriate visibility based on viewer perspective
 Implements information hiding rules for BP allocation and regeneration

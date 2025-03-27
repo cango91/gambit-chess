@@ -6,7 +6,7 @@
 
 # Interface: PGNHeaders
 
-Defined in: types/moveTypes.ts:41
+Defined in: [types/moveTypes.ts:41](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L41)
 
 PGN format header information
 
@@ -20,7 +20,7 @@ PGN format header information
 
 > `optional` **Black**: `string`
 
-Defined in: types/moveTypes.ts:53
+Defined in: [types/moveTypes.ts:53](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L53)
 
 Black player name
 
@@ -30,7 +30,7 @@ Black player name
 
 > `optional` **Date**: `string`
 
-Defined in: types/moveTypes.ts:47
+Defined in: [types/moveTypes.ts:47](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L47)
 
 Date of the game (YYYY.MM.DD)
 
@@ -40,7 +40,7 @@ Date of the game (YYYY.MM.DD)
 
 > `optional` **Event**: `string`
 
-Defined in: types/moveTypes.ts:43
+Defined in: [types/moveTypes.ts:43](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L43)
 
 Event name
 
@@ -50,7 +50,7 @@ Event name
 
 > `optional` **Result**: `string`
 
-Defined in: types/moveTypes.ts:55
+Defined in: [types/moveTypes.ts:55](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L55)
 
 Game result (1-0, 0-1, 1/2-1/2, *)
 
@@ -60,7 +60,7 @@ Game result (1-0, 0-1, 1/2-1/2, *)
 
 > `optional` **Round**: `string`
 
-Defined in: types/moveTypes.ts:49
+Defined in: [types/moveTypes.ts:49](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L49)
 
 Round number
 
@@ -70,7 +70,7 @@ Round number
 
 > `optional` **Site**: `string`
 
-Defined in: types/moveTypes.ts:45
+Defined in: [types/moveTypes.ts:45](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L45)
 
 Site where the game was played
 
@@ -80,7 +80,7 @@ Site where the game was played
 
 > `optional` **TimeControl**: `string`
 
-Defined in: types/moveTypes.ts:57
+Defined in: [types/moveTypes.ts:57](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L57)
 
 Time control
 
@@ -90,6 +90,6 @@ Time control
 
 > `optional` **White**: `string`
 
-Defined in: types/moveTypes.ts:51
+Defined in: [types/moveTypes.ts:51](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L51)
 
 White player name

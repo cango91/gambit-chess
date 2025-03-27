@@ -8,7 +8,7 @@
 
 > `const` **DEFAULT\_BP\_CAPACITIES**: `object`
 
-Defined in: [constants/index.ts:33](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/constants/index.ts#L33)
+Defined in: [constants/index.ts:33](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L33)
 
 Default piece BP capacities (same as classical chess piece values)
 These are default values that can be overridden by server configuration

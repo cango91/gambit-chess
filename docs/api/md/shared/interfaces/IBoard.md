@@ -6,7 +6,7 @@
 
 # Interface: IBoard
 
-Defined in: [types/index.ts:39](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L39)
+Defined in: [types/index.ts:39](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L39)
 
 Board interface that defines core functionality for any board representation
 
@@ -16,7 +16,7 @@ Board interface that defines core functionality for any board representation
 
 > **clone**(): `IBoard`
 
-Defined in: [types/index.ts:70](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L70)
+Defined in: [types/index.ts:70](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L70)
 
 Creates a deep copy of the board
 
@@ -30,7 +30,7 @@ Creates a deep copy of the board
 
 > **getAllPieces**(): [`ChessPiece`](ChessPiece.md)[]
 
-Defined in: [types/index.ts:44](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L44)
+Defined in: [types/index.ts:44](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L44)
 
 Gets all pieces currently on the board
 
@@ -44,7 +44,7 @@ Gets all pieces currently on the board
 
 > **getCapturedPieces**(): [`ChessPiece`](ChessPiece.md)[]
 
-Defined in: [types/index.ts:50](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L50)
+Defined in: [types/index.ts:50](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L50)
 
 Gets all captured pieces
 
@@ -58,7 +58,7 @@ Gets all captured pieces
 
 > **getCurrentTurn**(): `number`
 
-Defined in: [types/index.ts:73](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L73)
+Defined in: [types/index.ts:73](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L73)
 
 Gets the current move/turn number
 
@@ -72,7 +72,7 @@ Gets the current move/turn number
 
 > **getEnPassantTarget**(): `null` \| `string`
 
-Defined in: [types/index.ts:76](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L76)
+Defined in: [types/index.ts:76](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L76)
 
 Checks if a pawn can be captured via en passant at the given position
 
@@ -86,7 +86,7 @@ Checks if a pawn can be captured via en passant at the given position
 
 > **getKingPosition**(`color`): `undefined` \| `string`
 
-Defined in: [types/index.ts:53](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L53)
+Defined in: [types/index.ts:53](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L53)
 
 Gets the position of the king for a specific color
 
@@ -106,7 +106,7 @@ Gets the position of the king for a specific color
 
 > **getPiece**(`position`): `undefined` \| [`ChessPiece`](ChessPiece.md)
 
-Defined in: [types/index.ts:41](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L41)
+Defined in: [types/index.ts:41](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L41)
 
 Gets the piece at a specific position
 
@@ -126,7 +126,7 @@ Gets the piece at a specific position
 
 > **getPiecesByColor**(`color`): [`ChessPiece`](ChessPiece.md)[]
 
-Defined in: [types/index.ts:47](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L47)
+Defined in: [types/index.ts:47](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L47)
 
 Gets all pieces of a specific color
 
@@ -146,7 +146,7 @@ Gets all pieces of a specific color
 
 > **isInCheck**(`color`): `boolean`
 
-Defined in: [types/index.ts:59](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L59)
+Defined in: [types/index.ts:59](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L59)
 
 Checks if the king of a specific color is in check
 
@@ -166,7 +166,7 @@ Checks if the king of a specific color is in check
 
 > **isValidMove**(`from`, `to`): `boolean`
 
-Defined in: [types/index.ts:56](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L56)
+Defined in: [types/index.ts:56](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L56)
 
 Checks if a move is valid according to chess rules
 
@@ -190,7 +190,7 @@ Checks if a move is valid according to chess rules
 
 > **makeMove**(`from`, `to`, `promotion`?): `object`
 
-Defined in: [types/index.ts:62](https://github.com/cango91/gambit-chess/blob/eb72863bad5303683d8e9d112378354ee1ab9ca6/shared/src/types/index.ts#L62)
+Defined in: [types/index.ts:62](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L62)
 
 Makes a move on the board
 

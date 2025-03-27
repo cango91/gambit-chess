@@ -6,7 +6,7 @@
 
 # Interface: FenComponents
 
-Defined in: chess/fen.ts:20
+Defined in: [chess/fen.ts:20](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L20)
 
 Interface for the components of a FEN string
 
@@ -16,7 +16,7 @@ Interface for the components of a FEN string
 
 > **activeColor**: `string`
 
-Defined in: chess/fen.ts:24
+Defined in: [chess/fen.ts:24](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L24)
 
 Active color ('w' for White, 'b' for Black)
 
@@ -26,7 +26,7 @@ Active color ('w' for White, 'b' for Black)
 
 > **castling**: `string`
 
-Defined in: chess/fen.ts:26
+Defined in: [chess/fen.ts:26](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L26)
 
 Castling availability
 
@@ -36,7 +36,7 @@ Castling availability
 
 > **enPassant**: `string`
 
-Defined in: chess/fen.ts:28
+Defined in: [chess/fen.ts:28](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L28)
 
 En passant target square in algebraic notation
 
@@ -46,7 +46,7 @@ En passant target square in algebraic notation
 
 > **fullmoveNumber**: `string`
 
-Defined in: chess/fen.ts:32
+Defined in: [chess/fen.ts:32](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L32)
 
 Fullmove number (starts at 1 and is incremented after Black's move)
 
@@ -56,7 +56,7 @@ Fullmove number (starts at 1 and is incremented after Black's move)
 
 > **halfmoveClock**: `string`
 
-Defined in: chess/fen.ts:30
+Defined in: [chess/fen.ts:30](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L30)
 
 Halfmove clock (number of halfmoves since the last pawn move or capture)
 
@@ -66,6 +66,6 @@ Halfmove clock (number of halfmoves since the last pawn move or capture)
 
 > **piecePlacement**: `string`
 
-Defined in: chess/fen.ts:22
+Defined in: [chess/fen.ts:22](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L22)
 
 Piece placement data

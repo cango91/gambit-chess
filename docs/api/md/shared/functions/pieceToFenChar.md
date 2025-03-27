@@ -8,7 +8,7 @@
 
 > **pieceToFenChar**(`type`, `color`): `string`
 
-Defined in: chess/fen.ts:134
+Defined in: [chess/fen.ts:134](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/fen.ts#L134)
 
 Converts a piece type and color to a FEN character
 
