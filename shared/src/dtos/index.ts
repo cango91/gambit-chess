@@ -174,4 +174,66 @@ export interface ErrorDTO {
   code: string;
   /** Error message */
   message: string;
+}
+
+/**
+ * DTO for game resignation
+ */
+export interface ResignDTO {
+  /** Game ID */
+  gameId: string;
+  /** Sequence number for validation */
+  sequence: number;
+}
+
+/**
+ * DTO for draw offer
+ */
+export interface DrawOfferDTO {
+  /** Game ID */
+  gameId: string;
+  /** Sequence number for validation */
+  sequence: number;
+}
+
+/**
+ * DTO for draw response
+ */
+export interface DrawResponseDTO {
+  /** Game ID */
+  gameId: string;
+  /** Whether the draw was accepted */
+  accept: boolean;
+  /** Sequence number for validation */
+  sequence: number;
+}
+
+/**
+ * DTO for connection ping
+ */
+export interface ConnectionPingDTO {
+  /** Game ID */
+  gameId: string;
+  /** Client timestamp for latency calculation */
+  timestamp: number;
+}
+
+/**
+ * DTO for spectator join request
+ */
+export interface SpectatorJoinDTO {
+  /** Game ID */
+  gameId: string;
+  /** Spectator display name */
+  name: string;
+}
+
+/**
+ * DTO for player name setting
+ */
+export interface PlayerNameDTO {
+  /** Game ID */
+  gameId: string;
+  /** Player display name */
+  name: string;
 } 

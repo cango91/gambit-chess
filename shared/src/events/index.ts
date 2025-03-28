@@ -17,7 +17,13 @@ import {
   SpectatorDTO,
   BPUpdateDTO,
   GameStateDTO,
-  ErrorDTO
+  ErrorDTO,
+  ResignDTO,
+  DrawOfferDTO,
+  DrawResponseDTO,
+  ConnectionPingDTO,
+  SpectatorJoinDTO,
+  PlayerNameDTO
 } from '../dtos';
 import { GamePhase, PieceColor, Position } from '../types';
 
@@ -94,14 +100,10 @@ export interface CheckEvent {
   };
 }
 
-export interface GamePhaseChangeEvent {
-  type: 'game.phaseChange';
-  payload: {
-    gameId: string;
-    phase: GamePhase;
-  };
-}
-
+/**
+ * Game Over Event
+ * Notifies that the game has ended
+ */
 export interface GameOverEvent {
   type: 'game.over';
   payload: {
@@ -165,6 +167,8 @@ export interface ChatMessageEvent {
 /**
  * Game State Events
  * These events handle game state updates
+ * This is the primary mechanism for the server to communicate state changes to clients
+ * The server filters information based on player visibility rules before sending
  */
 export interface GameStateUpdateEvent {
   type: 'gameState.update';
@@ -181,6 +185,52 @@ export interface ErrorEvent {
 }
 
 /**
+ * Game Control Events
+ * These events handle game flow control
+ */
+export interface GameResignEvent {
+  type: 'game.resign';
+  payload: ResignDTO;
+}
+
+export interface GameOfferDrawEvent {
+  type: 'game.offerDraw';
+  payload: DrawOfferDTO;
+}
+
+export interface GameRespondDrawEvent {
+  type: 'game.respondDraw';
+  payload: DrawResponseDTO;
+}
+
+/**
+ * Connection Events
+ * These events handle connection maintenance
+ */
+export interface ConnectionPingEvent {
+  type: 'connection.ping';
+  payload: ConnectionPingDTO;
+}
+
+/**
+ * Player Management Events
+ * These events handle player information
+ */
+export interface PlayerSetNameEvent {
+  type: 'player.setName';
+  payload: PlayerNameDTO;
+}
+
+/**
+ * Spectator Management Events
+ * These events handle spectator joining
+ */
+export interface SpectatorJoinEvent {
+  type: 'spectator.join';
+  payload: SpectatorJoinDTO;
+}
+
+/**
  * Union type of all shared events
  */
 export type SharedEvent =
@@ -192,7 +242,6 @@ export type SharedEvent =
   | RetreatOptionsEvent
   | RetreatSelectionEvent
   | CheckEvent
-  | GamePhaseChangeEvent
   | GameOverEvent
   | PlayerJoinedEvent
   | PlayerLeftEvent
@@ -201,7 +250,13 @@ export type SharedEvent =
   | SpectatorLeftEvent
   | ChatMessageEvent
   | GameStateUpdateEvent
-  | ErrorEvent;
+  | ErrorEvent
+  | GameResignEvent
+  | GameOfferDrawEvent
+  | GameRespondDrawEvent
+  | ConnectionPingEvent
+  | PlayerSetNameEvent
+  | SpectatorJoinEvent;
   
 // Export validation functions
 export * from './validation'; 

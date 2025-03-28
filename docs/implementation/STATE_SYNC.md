@@ -20,35 +20,58 @@
 - **Duel Phases**: Event-based updates for duel progression.
 - **Critical Updates**: Full state updates after potential desynchronization points.
 
-## 2. State Data Structure
+## 2. Server-Side State Management
 
-### 2.1 Game State Components
-- **Board State**: Current position of all pieces.
-- **Game Phase**: Current phase (normal play, duel allocation, tactical retreat).
-- **Turn Information**: Current player, move number.
-- **Timer State**: Remaining time for each player, active timer.
-- **BP Pools**: Current BP pools (filtered by player visibility).
-- **Game Status**: Check status, game result if ended.
-- **Player Information**: Player names and basic information.
-- **Chat Messages**: Recent chat history (filtered based on join time).
-- **Spectator List**: Current spectators viewing the game.
+### 2.1 Authoritative Game State
 
-### 2.2 Delta Structure
-```typescript
-interface StateDelta {
-  sequence: number;          // Monotonically increasing sequence number
-  timestamp: number;         // Server timestamp
-  changedFields: {           // Map of changed paths to new values
-    [path: string]: any;
-  };
-  events: GameEvent[];       // Events that caused this delta
-}
+The server maintains the single source of truth for game state using a service-oriented architecture:
+
+```
+GameManagerService
+├── Current game state (authoritative)
+├── Board state history (for tactical advantage detection)
+├── Player information and connections
+├── BP pools (hidden from opponents)
+└── Game phase tracking
 ```
 
-### 2.3 Versioning
-- **Sequence Numbers**: Each state update includes a monotonically increasing sequence number.
-- **State Version**: Full game state has a version number for reconciliation.
-- **Timestamp**: Server timestamp for ordering and conflict resolution.
+This state is managed by distinct services with clear responsibilities:
+
+- **GameManagerService**: Coordinates overall game state and other services
+- **BoardService**: Manages chess board state and validates moves
+- **BPManagerService**: Handles BP allocation, regeneration, and duel resolution
+- **TacticalDetectorService**: Identifies tactical advantages for BP regeneration
+- **TimerService**: Controls chess timers and enforces time limits
+
+### 2.2 State Transitions
+
+State transitions occur through service method calls rather than internal events:
+
+1. **Client Request**: Client sends a request via WebSocket (e.g., move, BP allocation)
+2. **WebSocket Controller**: Routes request to the appropriate service method
+3. **Service Processing**: Service validates and processes the request
+4. **State Update**: GameManagerService updates the authoritative game state
+5. **State Publication**: Updated state is filtered and published to clients via WebSocket
+
+```
+Client Request → WebSocketController → Service Method Call → 
+State Update → Filtered State → Client Notification
+```
+
+For example, a move request follows this flow:
+```
+move.request → WebSocketController → BoardService.validateAndExecuteMove() → 
+GameManagerService.updateState() → FilterStateByPlayer() → gameState.update to clients
+```
+
+### 2.3 State Persistence
+
+Game state is persisted through a combination of in-memory and Redis storage:
+
+- **Active Game Sessions**: Maintained in memory for performance
+- **Backup State**: Periodically saved to Redis for fault tolerance
+- **Recovery**: Game state can be reconstructed from Redis if needed
+- **Historical Data**: Completed games archived to database
 
 ## 3. Latency Handling
 

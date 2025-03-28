@@ -1,173 +1,105 @@
 graph TD
-    subgraph Client["Client Domain"]
-        UI[UI Components]
-        ChessBoard[Chess Board Renderer]
-        ChessPieceRenderer[Chess Piece Renderer]
-        MoveHighlighter[Move Highlighter]
-        BPAllocationUI[BP Allocation Interface]
-        RetreatUI[Tactical Retreat UI]
-        TimerDisplay[Chess Timer Display]
+    %% Client-Server Communication
+    ClientApp[Client Application] <--> |WebSocket| Server[Server]
+    
+    %% Client Components
+    subgraph "Client"
+        ClientApp --> Rendering[Rendering Engine]
+        ClientApp --> InputHandler[Input Handler]
+        ClientApp --> ClientState[Client State]
+        ClientApp --> NetworkLayer[Network Layer]
         
-        ClientState[Client Game State]
-        ClientPrediction[State Prediction]
-        Reconciliation[State Reconciliation]
+        NetworkLayer --> MessageHandler[Message Handler]
+        NetworkLayer --> WSConnection[WebSocket Connection]
         
-        Animations[Game Animations]
+        ClientState --> UIState[UI State]
+        ClientState --> GameModel[Game Model]
+        ClientState --> AnimationState[Animation State]
         
-        WebSocketClient[WebSocket Client]
+        Rendering --> Board[Board Renderer]
+        Rendering --> BPDisplay[BP Display]
+        Rendering --> TimerDisplay[Timer Display]
+        Rendering --> DuelUI[Duel Interface]
         
-        ChatUI[Chat Interface]
-        ChatMessageList[Chat Message List]
-        PlayerNameInput[Player Name Input]
-        SpectatorList[Spectator List]
-        
-        UI --> ChessBoard
-        UI --> BPAllocationUI
-        UI --> RetreatUI
-        UI --> TimerDisplay
-        UI --> ChatUI
-        UI --> PlayerNameInput
-        UI --> SpectatorList
-        ChessBoard --> ChessPieceRenderer
-        ChessBoard --> MoveHighlighter
-        ClientState --> ChessBoard
-        ClientState --> BPAllocationUI
-        ClientState --> RetreatUI
-        ClientState --> TimerDisplay
-        ClientState --> ChatMessageList
-        ClientState --> SpectatorList
-        WebSocketClient --> ClientState
-        ClientState --> ClientPrediction
-        ClientPrediction --> ClientState
-        ClientState --> Reconciliation
-        Reconciliation --> ClientState
-        UI --> Animations
-        Animations --> ChessBoard
-        ChatUI --> WebSocketClient
+        InputHandler --> MoveInput[Move Selection]
+        InputHandler --> BPAllocation[BP Allocation]
+        InputHandler --> RetreatSelection[Retreat Selection]
     end
     
-    subgraph Server["Server Domain"]
-        WebSocketServer[WebSocket Server]
-        Authentication[Player Authentication]
+    %% Server Components
+    subgraph "Server"
+        Server --> WebSocketController[WebSocket Controller]
+        Server --> GameManagerService[Game Manager Service]
         
-        GameController[Game Controller]
+        GameManagerService --> BoardService[Board Service]
+        GameManagerService --> BPManagerService[BP Manager Service]
+        GameManagerService --> TacticalDetectorService[Tactical Detector Service]
+        GameManagerService --> TimerService[Timer Service]
         
-        GameState[Authoritative Game State]
-        MoveValidator[Move Validator]
-        DuelResolver[Duel Resolver]
-        BPManager[BP Manager]
-        BPRegenerator[BP Regenerator]
-        TacticsDetector[Tactics Detector]
-        TimerController[Timer Controller]
+        WebSocketController --> AuthHandler[Authentication Handler]
+        WebSocketController --> MessageRouter[Message Router]
+        WebSocketController --> StatePublisher[State Publisher]
         
-        StateManager[Game State Manager]
-        VisibilityFilter[Player Visibility Filter]
+        GameManagerService --> GameSessionRepository[Game Session Repository]
+        GameManagerService --> PlayerManager[Player Manager]
+        GameManagerService --> SpectatorManager[Spectator Manager]
         
-        CheckDetector[Check Detector]
-        CheckmateDetector[Checkmate Detector]
-        DrawDetector[Draw Detector]
-        
-        PlayerManager[Player Manager]
-        SpectatorManager[Spectator Manager]
-        ChatManager[Chat Manager]
-        ContentFilter[Content Filter]
-        
-        AI[AI Opponent]
-        
-        WebSocketServer --> Authentication
-        WebSocketServer --> GameController
-        GameController --> GameState
-        GameController --> MoveValidator
-        GameController --> DuelResolver
-        GameController --> BPManager
-        BPManager --> BPRegenerator
-        BPRegenerator --> TacticsDetector
-        TacticsDetector --> GameState
-        GameController --> TimerController
-        GameState --> StateManager
-        StateManager --> VisibilityFilter
-        VisibilityFilter --> WebSocketServer
-        MoveValidator --> CheckDetector
-        CheckDetector --> CheckmateDetector
-        CheckDetector --> DrawDetector
-        AI --> GameController
-        WebSocketServer --> ChatManager
-        ChatManager --> ContentFilter
-        WebSocketServer --> PlayerManager
-        WebSocketServer --> SpectatorManager
-        VisibilityFilter --> SpectatorManager
+        GameSessionRepository --> RedisRepository[Redis Repository]
+        GameSessionRepository --> DBRepository[Database Repository]
     end
     
-    WebSocketClient <--> WebSocketServer
-    
-    subgraph Shared["Shared Domain"]
-        DTOs[Data Transfer Objects]
-        Types[Type Definitions]
+    %% Shared Components
+    subgraph "Shared"
+        SharedTypes[Shared Types]
+        EventDefinitions[Event Definitions]
+        ChessUtils[Chess Utilities]
+        ValidationUtils[Validation Utilities]
         
-        PieceTypes[Chess Piece Types]
-        Position[Position Utilities]
-        
-        MovementPatterns[Piece Movement Patterns]
-        
-        KnightRetreatTable[Knight Retreat Table]
-        TacticalRetreatCalculator[Tactical Retreat Calculator]
-        
-        CheckDetector[Check Detector]
-        
-        NotationSystem[Chess Notation System]
-        GambitNotation[Gambit Chess Notation]
-        PGNConverter[PGN Converter]
-        
-        PlayerDTO[Player Data Model]
-        ChatMessageDTO[Chat Message Model]
-        SpectatorDTO[Spectator Data Model]
-        
-        DTOs -.-> Types
-        DTOs -.-> PieceTypes
-        DTOs -.-> Position
-        DTOs -.-> PlayerDTO
-        DTOs -.-> ChatMessageDTO
-        DTOs -.-> SpectatorDTO
-        MovementPatterns -.-> PieceTypes
-        MovementPatterns -.-> Position
-        CheckDetector -.-> MovementPatterns
-        CheckDetector -.-> PieceTypes
-        CheckDetector -.-> Position
-        TacticalRetreatCalculator -.-> Position
-        TacticalRetreatCalculator -.-> MovementPatterns
-        TacticalRetreatCalculator -.-> KnightRetreatTable
-        NotationSystem -.-> PieceTypes
-        NotationSystem -.-> Position
-        GambitNotation -.-> NotationSystem
-        PGNConverter -.-> GambitNotation
+        SharedTypes --> EventDefinitions
+        SharedTypes --> DTOs[Data Transfer Objects]
+        ChessUtils --> MovementRules[Movement Rules]
+        ChessUtils --> CheckDetection[Check Detection]
+        ValidationUtils --> InputValidation[Input Validation]
+        ValidationUtils --> EventValidation[Event Validation]
     end
     
-    %% Client to Shared connections
-    MoveHighlighter --> MovementPatterns
-    MoveHighlighter --> CheckDetector
-    RetreatUI --> TacticalRetreatCalculator
-    WebSocketClient --> DTOs
-    ClientState --> Types
-    ClientState --> PieceTypes
-    ChatMessageList --> ChatMessageDTO
-    SpectatorList --> SpectatorDTO
+    %% Component Relationships
+    ClientApp --> SharedTypes
+    ClientApp --> ChessUtils
+    Server --> SharedTypes
+    Server --> ChessUtils
+    Server --> ValidationUtils
     
-    %% Server to Shared connections
-    MoveValidator --> MovementPatterns
-    GameState --> Types
-    GameState --> PieceTypes
-    CheckDetector --> CheckDetector
-    DuelResolver --> TacticalRetreatCalculator
-    WebSocketServer --> DTOs
-    PlayerManager --> PlayerDTO
-    ChatManager --> ChatMessageDTO
-    SpectatorManager --> SpectatorDTO
-
-    %% Data Flow Highlights
-    classDef clientCore fill:#d6eaf8,stroke:#2874a6,stroke-width:2px
-    classDef serverCore fill:#d5f5e3,stroke:#1e8449,stroke-width:2px
-    classDef sharedCore fill:#fcf3cf,stroke:#d4ac0d,stroke-width:2px
+    %% Data Flow
+    ClientState -.-> NetworkLayer
+    MessageHandler -.-> ClientState
     
-    class UI,ChessBoard,ChessPieceRenderer,MoveHighlighter,BPAllocationUI,RetreatUI,TimerDisplay,Animations,ChatUI,ChatMessageList,PlayerNameInput,SpectatorList clientCore
-    class WebSocketServer,GameController,GameState,MoveValidator,DuelResolver,BPManager,BPRegenerator,TacticsDetector,TimerController,PlayerManager,SpectatorManager,ChatManager,ContentFilter serverCore
-    class DTOs,Types,PieceTypes,Position,MovementPatterns,KnightRetreatTable,TacticalRetreatCalculator,NotationSystem,GambitNotation,PGNConverter,PlayerDTO,ChatMessageDTO,SpectatorDTO sharedCore
+    WebSocketController -.-> GameManagerService
+    GameManagerService -.-> BoardService
+    GameManagerService -.-> BPManagerService
+    GameManagerService -.-> TacticalDetectorService
+    GameManagerService -.-> TimerService
+    GameManagerService -.-> StatePublisher
+    
+    %% Repository Connections
+    GameManagerService -.-> RedisRepository
+    RedisRepository -.-> DBRepository
+    
+    %% Service Operations
+    BoardService --> MoveValidation[Move Validation]
+    BoardService --> BoardStateTracking[Board State Tracking]
+    BoardService --> CheckDetection[Check Detection]
+    
+    BPManagerService --> BPAllocationProcessing[BP Allocation Processing]
+    BPManagerService --> DuelResolution[Duel Resolution]
+    BPManagerService --> BPRegeneration[BP Regeneration]
+    
+    TacticalDetectorService --> TacticalAnalysis[Tactical Analysis]
+    TacticalDetectorService --> DeNovoDetection[De Novo Advantage Detection]
+    
+    TimerService --> TimerControl[Timer Control]
+    TimerService --> TimeoutHandling[Timeout Handling]
+    
+    %% Client-Server Interactions
+    WSConnection <-.-> |Client Events| MessageRouter
+    StatePublisher <-.-> |Server Events| MessageHandler

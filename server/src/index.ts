@@ -9,19 +9,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import env from './config/env';
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './types/socket';
 
 // Create Express app
 const app = express();
 const server = http.createServer(app);
 
 // Initialize Socket.IO
-const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->(server, {
+const io = new Server(server, {
   cors: {
     origin: '*', // In production, restrict to specific domains
     methods: ['GET', 'POST'],

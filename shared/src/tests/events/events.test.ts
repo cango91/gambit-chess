@@ -11,7 +11,6 @@ import {
   RetreatOptionsEvent,
   RetreatSelectionEvent,
   CheckEvent,
-  GamePhaseChangeEvent,
   GameOverEvent,
   PlayerJoinedEvent,
   PlayerLeftEvent,
@@ -21,6 +20,12 @@ import {
   ChatMessageEvent,
   GameStateUpdateEvent,
   ErrorEvent,
+  GameResignEvent,
+  GameOfferDrawEvent,
+  GameRespondDrawEvent,
+  ConnectionPingEvent,
+  PlayerSetNameEvent,
+  SpectatorJoinEvent,
   validateMoveRequestEvent,
   validateMoveResultEvent,
   validateDuelInitiatedEvent,
@@ -29,7 +34,6 @@ import {
   validateRetreatOptionsEvent,
   validateRetreatSelectionEvent,
   validateCheckEvent,
-  validateGamePhaseChangeEvent,
   validateGameOverEvent,
   validatePlayerJoinedEvent,
   validatePlayerLeftEvent,
@@ -39,6 +43,12 @@ import {
   validateChatMessageEvent,
   validateGameStateUpdateEvent,
   validateErrorEvent,
+  validateGameResignEvent,
+  validateGameOfferDrawEvent,
+  validateGameRespondDrawEvent,
+  validateConnectionPingEvent,
+  validatePlayerSetNameEvent,
+  validateSpectatorJoinEvent,
   validateSharedEvent
 } from '../../events';
 
@@ -188,20 +198,6 @@ describe('Event Definitions', () => {
       expect(event.payload.gameId).toBe('game123');
       expect(event.payload.kingPosition).toBe('e1');
       expect(event.payload.color).toBe('white');
-    });
-    
-    test('GamePhaseChangeEvent has correct properties', () => {
-      const event: GamePhaseChangeEvent = {
-        type: 'game.phaseChange',
-        payload: {
-          gameId: 'game123',
-          phase: GamePhase.DUEL_ALLOCATION
-        }
-      };
-      
-      expect(event.type).toBe('game.phaseChange');
-      expect(event.payload.gameId).toBe('game123');
-      expect(event.payload.phase).toBe(GamePhase.DUEL_ALLOCATION);
     });
     
     test('GameOverEvent has correct properties', () => {
@@ -516,28 +512,6 @@ describe('Event Validation', () => {
       expect(validateCheckEvent(invalidEvent as any)).toBe(false);
     });
     
-    test('validateGamePhaseChangeEvent validates correctly', () => {
-      const validEvent: GamePhaseChangeEvent = {
-        type: 'game.phaseChange',
-        payload: {
-          gameId: 'game123',
-          phase: GamePhase.DUEL_ALLOCATION
-        }
-      };
-      
-      const invalidEvent = {
-        type: 'game.phaseChange',
-        payload: {
-          gameId: 'game123',
-          // Invalid phase
-          phase: 'not_a_real_phase'
-        }
-      };
-      
-      expect(validateGamePhaseChangeEvent(validEvent)).toBe(true);
-      expect(validateGamePhaseChangeEvent(invalidEvent as any)).toBe(false);
-    });
-    
     test('validateGameOverEvent validates correctly', () => {
       const validEvent: GameOverEvent = {
         type: 'game.over',
@@ -728,36 +702,292 @@ describe('Event Validation', () => {
     });
   });
   
-  describe('validateSharedEvent', () => {
-    test('validates events based on their type', () => {
-      const moveEvent: MoveRequestEvent = {
-        type: 'move.request',
+  describe('Game Control Events', () => {
+    test('GameResignEvent has correct properties', () => {
+      const event: GameResignEvent = {
+        type: 'game.resign',
         payload: {
           gameId: 'game123',
-          from: 'e2',
-          to: 'e4',
-          sequence: 1
+          sequence: 5
         }
       };
       
-      const duelEvent: DuelInitiatedEvent = {
-        type: 'duel.initiated',
+      expect(event.type).toBe('game.resign');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.sequence).toBe(5);
+    });
+    
+    test('GameOfferDrawEvent has correct properties', () => {
+      const event: GameOfferDrawEvent = {
+        type: 'game.offerDraw',
         payload: {
           gameId: 'game123',
-          attackingPiece: 'e4',
-          defendingPiece: 'd5',
-          position: 'd5'
+          sequence: 6
+        }
+      };
+      
+      expect(event.type).toBe('game.offerDraw');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.sequence).toBe(6);
+    });
+    
+    test('GameRespondDrawEvent has correct properties', () => {
+      const event: GameRespondDrawEvent = {
+        type: 'game.respondDraw',
+        payload: {
+          gameId: 'game123',
+          accept: true,
+          sequence: 7
+        }
+      };
+      
+      expect(event.type).toBe('game.respondDraw');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.accept).toBe(true);
+      expect(event.payload.sequence).toBe(7);
+    });
+  });
+
+  describe('Connection Events', () => {
+    test('ConnectionPingEvent has correct properties', () => {
+      const event: ConnectionPingEvent = {
+        type: 'connection.ping',
+        payload: {
+          gameId: 'game123',
+          timestamp: 1617189123456
+        }
+      };
+      
+      expect(event.type).toBe('connection.ping');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.timestamp).toBe(1617189123456);
+    });
+  });
+
+  describe('Player and Spectator Management Events', () => {
+    test('PlayerSetNameEvent has correct properties', () => {
+      const event: PlayerSetNameEvent = {
+        type: 'player.setName',
+        payload: {
+          gameId: 'game123',
+          name: 'New Player Name'
+        }
+      };
+      
+      expect(event.type).toBe('player.setName');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.name).toBe('New Player Name');
+    });
+    
+    test('SpectatorJoinEvent has correct properties', () => {
+      const event: SpectatorJoinEvent = {
+        type: 'spectator.join',
+        payload: {
+          gameId: 'game123',
+          name: 'Spectator 2'
+        }
+      };
+      
+      expect(event.type).toBe('spectator.join');
+      expect(event.payload.gameId).toBe('game123');
+      expect(event.payload.name).toBe('Spectator 2');
+    });
+  });
+
+  describe('Game Control Event Validation', () => {
+    test('validateGameResignEvent validates correctly', () => {
+      const validEvent: GameResignEvent = {
+        type: 'game.resign',
+        payload: {
+          gameId: 'game123',
+          sequence: 5
         }
       };
       
       const invalidEvent = {
-        type: 'unknown.event',
-        payload: {}
+        type: 'game.resign',
+        payload: {
+          // Missing gameId
+          sequence: 5
+        }
       };
       
-      expect(validateSharedEvent(moveEvent)).toBe(true);
-      expect(validateSharedEvent(duelEvent)).toBe(true);
-      expect(validateSharedEvent(invalidEvent as any)).toBe(false);
+      expect(validateGameResignEvent(validEvent)).toBe(true);
+      expect(validateGameResignEvent(invalidEvent as any)).toBe(false);
+    });
+    
+    test('validateGameOfferDrawEvent validates correctly', () => {
+      const validEvent: GameOfferDrawEvent = {
+        type: 'game.offerDraw',
+        payload: {
+          gameId: 'game123',
+          sequence: 6
+        }
+      };
+      
+      const invalidEvent = {
+        type: 'game.offerDraw',
+        payload: {
+          gameId: 'game123',
+          // Negative sequence is invalid
+          sequence: -1
+        }
+      };
+      
+      expect(validateGameOfferDrawEvent(validEvent)).toBe(true);
+      expect(validateGameOfferDrawEvent(invalidEvent as any)).toBe(false);
+    });
+    
+    test('validateGameRespondDrawEvent validates correctly', () => {
+      const validEvent: GameRespondDrawEvent = {
+        type: 'game.respondDraw',
+        payload: {
+          gameId: 'game123',
+          accept: true,
+          sequence: 7
+        }
+      };
+      
+      const invalidEvent = {
+        type: 'game.respondDraw',
+        payload: {
+          gameId: 'game123',
+          // Missing accept field
+          sequence: 7
+        }
+      };
+      
+      expect(validateGameRespondDrawEvent(validEvent)).toBe(true);
+      expect(validateGameRespondDrawEvent(invalidEvent as any)).toBe(false);
+    });
+  });
+  
+  describe('Connection Event Validation', () => {
+    test('validateConnectionPingEvent validates correctly', () => {
+      const validEvent: ConnectionPingEvent = {
+        type: 'connection.ping',
+        payload: {
+          gameId: 'game123',
+          timestamp: 1617189123456
+        }
+      };
+      
+      const invalidEvent = {
+        type: 'connection.ping',
+        payload: {
+          gameId: 'game123',
+          // Negative timestamp is invalid
+          timestamp: -1
+        }
+      };
+      
+      expect(validateConnectionPingEvent(validEvent)).toBe(true);
+      expect(validateConnectionPingEvent(invalidEvent as any)).toBe(false);
+    });
+  });
+  
+  describe('Player and Spectator Management Event Validation', () => {
+    test('validatePlayerSetNameEvent validates correctly', () => {
+      const validEvent: PlayerSetNameEvent = {
+        type: 'player.setName',
+        payload: {
+          gameId: 'game123',
+          name: 'New Player Name'
+        }
+      };
+      
+      const invalidEvent = {
+        type: 'player.setName',
+        payload: {
+          gameId: 'game123',
+          // Name too short
+          name: 'AB'
+        }
+      };
+      
+      expect(validatePlayerSetNameEvent(validEvent)).toBe(true);
+      expect(validatePlayerSetNameEvent(invalidEvent as any)).toBe(false);
+    });
+    
+    test('validateSpectatorJoinEvent validates correctly', () => {
+      const validEvent: SpectatorJoinEvent = {
+        type: 'spectator.join',
+        payload: {
+          gameId: 'game123',
+          name: 'Spectator 2'
+        }
+      };
+      
+      const invalidEvent = {
+        type: 'spectator.join',
+        payload: {
+          // Missing gameId
+          name: 'Spectator 2'
+        }
+      };
+      
+      expect(validateSpectatorJoinEvent(validEvent)).toBe(true);
+      expect(validateSpectatorJoinEvent(invalidEvent as any)).toBe(false);
+    });
+  });
+
+  describe('validateSharedEvent', () => {
+    test('validates new event types correctly', () => {
+      const resignEvent: GameResignEvent = {
+        type: 'game.resign',
+        payload: {
+          gameId: 'game123',
+          sequence: 5
+        }
+      };
+      
+      const drawOfferEvent: GameOfferDrawEvent = {
+        type: 'game.offerDraw',
+        payload: {
+          gameId: 'game123',
+          sequence: 6
+        }
+      };
+      
+      const drawResponseEvent: GameRespondDrawEvent = {
+        type: 'game.respondDraw',
+        payload: {
+          gameId: 'game123',
+          accept: true,
+          sequence: 7
+        }
+      };
+      
+      const connectionPingEvent: ConnectionPingEvent = {
+        type: 'connection.ping',
+        payload: {
+          gameId: 'game123',
+          timestamp: 1617189123456
+        }
+      };
+      
+      const playerSetNameEvent: PlayerSetNameEvent = {
+        type: 'player.setName',
+        payload: {
+          gameId: 'game123',
+          name: 'New Player Name'
+        }
+      };
+      
+      const spectatorJoinEvent: SpectatorJoinEvent = {
+        type: 'spectator.join',
+        payload: {
+          gameId: 'game123',
+          name: 'Spectator 2'
+        }
+      };
+      
+      expect(validateSharedEvent(resignEvent)).toBe(true);
+      expect(validateSharedEvent(drawOfferEvent)).toBe(true);
+      expect(validateSharedEvent(drawResponseEvent)).toBe(true);
+      expect(validateSharedEvent(connectionPingEvent)).toBe(true);
+      expect(validateSharedEvent(playerSetNameEvent)).toBe(true);
+      expect(validateSharedEvent(spectatorJoinEvent)).toBe(true);
     });
   });
 }); 

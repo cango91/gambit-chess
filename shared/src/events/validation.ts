@@ -30,7 +30,6 @@ import {
   RetreatOptionsEvent,
   RetreatSelectionEvent,
   CheckEvent,
-  GamePhaseChangeEvent,
   GameOverEvent,
   PlayerJoinedEvent,
   PlayerLeftEvent,
@@ -124,20 +123,6 @@ export function validateCheckEvent(event: CheckEvent): boolean {
   return validateGameId(payload.gameId) && 
     validatePosition(payload.kingPosition) &&
     validatePieceColor(payload.color);
-}
-
-/**
- * Validates a GamePhaseChangeEvent
- * @param event The event to validate
- * @returns True if the event is valid
- */
-export function validateGamePhaseChangeEvent(event: GamePhaseChangeEvent): boolean {
-  if (event.type !== 'game.phaseChange') return false;
-  
-  const { payload } = event;
-  return validateGameId(payload.gameId) && 
-    typeof payload.phase === 'string' &&
-    ['normal', 'duel_allocation', 'tactical_retreat', 'game_over'].includes(payload.phase);
 }
 
 /**
@@ -239,11 +224,110 @@ export function validateErrorEvent(event: ErrorEvent): boolean {
 }
 
 /**
- * Validates any shared event
+ * Validates a game resign event
  * @param event The event to validate
- * @returns True if the event is valid
+ * @returns Whether the event is valid
  */
-export function validateSharedEvent(event: SharedEvent): boolean {
+export function validateGameResignEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, sequence } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof sequence === 'number' && sequence >= 0
+  );
+}
+
+/**
+ * Validates a game offer draw event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validateGameOfferDrawEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, sequence } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof sequence === 'number' && sequence >= 0
+  );
+}
+
+/**
+ * Validates a game respond draw event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validateGameRespondDrawEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, accept, sequence } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof accept === 'boolean' &&
+    typeof sequence === 'number' && sequence >= 0
+  );
+}
+
+/**
+ * Validates a connection ping event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validateConnectionPingEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, timestamp } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof timestamp === 'number' && timestamp > 0
+  );
+}
+
+/**
+ * Validates a player set name event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validatePlayerSetNameEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, name } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof name === 'string' && name.length >= 3 && name.length <= 20
+  );
+}
+
+/**
+ * Validates a spectator join event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validateSpectatorJoinEvent(event: any): boolean {
+  if (!event || !event.payload) return false;
+  
+  const { gameId, name } = event.payload;
+  
+  return (
+    typeof gameId === 'string' && gameId.length > 0 &&
+    typeof name === 'string' && name.length >= 3 && name.length <= 20
+  );
+}
+
+/**
+ * Validates a shared event
+ * @param event The event to validate
+ * @returns Whether the event is valid
+ */
+export function validateSharedEvent(event: any): boolean {
+  if (!event || !event.type) return false;
+
   switch (event.type) {
     case 'move.request':
       return validateMoveRequestEvent(event as MoveRequestEvent);
@@ -261,8 +345,6 @@ export function validateSharedEvent(event: SharedEvent): boolean {
       return validateRetreatSelectionEvent(event as RetreatSelectionEvent);
     case 'game.check':
       return validateCheckEvent(event as CheckEvent);
-    case 'game.phaseChange':
-      return validateGamePhaseChangeEvent(event as GamePhaseChangeEvent);
     case 'game.over':
       return validateGameOverEvent(event as GameOverEvent);
     case 'player.joined':
@@ -281,6 +363,18 @@ export function validateSharedEvent(event: SharedEvent): boolean {
       return validateGameStateUpdateEvent(event as GameStateUpdateEvent);
     case 'error':
       return validateErrorEvent(event as ErrorEvent);
+    case 'game.resign':
+      return validateGameResignEvent(event);
+    case 'game.offerDraw':
+      return validateGameOfferDrawEvent(event);
+    case 'game.respondDraw':
+      return validateGameRespondDrawEvent(event);
+    case 'connection.ping':
+      return validateConnectionPingEvent(event);
+    case 'player.setName':
+      return validatePlayerSetNameEvent(event);
+    case 'spectator.join':
+      return validateSpectatorJoinEvent(event);
     default:
       return false;
   }

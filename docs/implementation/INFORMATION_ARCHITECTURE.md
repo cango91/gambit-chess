@@ -138,61 +138,91 @@ Client: Displays updated BP value for the player (opponent's remains as "?")
 
 | Event Name | Payload | Description |
 |------------|---------|-------------|
-| `gameState.update` | GameStateDTO | Updated game state after any change (filtered by player visibility) |
-| `duel.initiated` | {attackingPiece, defendingPiece, position} | Notification that a duel has started |
-| `duel.awaitingAllocation` | {remainingBP} | Request for player to allocate BP |
-| `duel.outcome` | {winner, result, attackerAllocation, defenderAllocation} | Result of a duel including both players' actual BP allocations |
-| `retreat.options` | {piece, validPositions[], costs[]} | Available tactical retreat options with associated BP costs |
-| `game.check` | {kingPosition} | Notification that a king is in check |
-| `game.checkmate` | {winner} | Notification of checkmate |
-| `game.draw` | {reason} | Notification of draw |
-| `bp.update` | {currentBP} | BP pool update (sent only to the player who owns the BP) |
-| `error.validation` | {message, code} | Error in move validation |
-| `error.illegal` | {message, code} | Illegal action attempted |
-| `chat.message` | {playerId, playerName, message, timestamp} | Chat message from a player |
-| `spectator.joined` | {spectatorName, spectatorCount} | Notification that a spectator joined |
-| `spectator.left` | {spectatorName, spectatorCount} | Notification that a spectator left |
+| `gameState.update` | GameStateDTO | Complete game state update that includes all relevant information (board state, game phase, turn, timers, etc.). Information is filtered based on player visibility rules before sending. This is the primary mechanism for communicating state changes to clients. |
+| `duel.initiated` | DuelInitiatedDTO | Notification that a duel has started |
+| `duel.outcome` | DuelOutcomeDTO | Result of a duel including both players' actual BP allocations |
+| `retreat.options` | RetreatOptionsDTO | Available tactical retreat options with associated BP costs |
+| `game.check` | {gameId, kingPosition, color} | Notification that a king is in check |
+| `game.over` | {gameId, result, reason} | Notification of game completion (checkmate, draw, etc.) |
+| `player.joined` | PlayerDTO | Notification that a player joined the game |
+| `player.left` | {gameId, playerId} | Notification that a player left the game |
+| `player.reconnected` | {gameId, playerId} | Notification that a player reconnected to the game |
+| `spectator.joined` | SpectatorDTO | Notification that a spectator joined |
+| `spectator.left` | {gameId, spectatorId} | Notification that a spectator left |
+| `chat.message` | ChatMessageDTO | Chat message from a player |
+| `error` | ErrorDTO | Error notification |
+| `move.result` | {success, error?, checkDetected?, captureAttempted?} | Result of a move request |
 
 ### 4.2 Client-to-Server Events
 
 | Event Name | Payload | Description |
 |------------|---------|-------------|
-| `move.execute` | {from, to, piece} | Request to move a piece |
-| `duel.allocate` | {amount} | BP allocation for current duel |
-| `retreat.select` | {position} | Selected tactical retreat position |
-| `game.resign` | {} | Player resigns the game |
-| `game.offerDraw` | {} | Player offers a draw |
-| `game.respondDraw` | {accept: boolean} | Response to draw offer |
-| `connection.ping` | {timestamp} | Connection health check |
-| `chat.send` | {message} | Send a chat message |
-| `spectator.join` | {name} | Request to join as a spectator |
-| `player.setName` | {name} | Set player name |
+| `move.request` | MoveDTO | Request to move a piece |
+| `duel.allocate` | BPAllocationDTO | BP allocation for current duel |
+| `retreat.select` | RetreatDTO | Selected tactical retreat position |
+| `chat.message` | ChatMessageDTO | Send a chat message |
+| `game.resign` | ResignDTO | Player resigns the game |
+| `game.offerDraw` | DrawOfferDTO | Player offers a draw |
+| `game.respondDraw` | DrawResponseDTO | Response to draw offer |
+| `connection.ping` | ConnectionPingDTO | Connection health check |
+| `spectator.join` | SpectatorJoinDTO | Request to join as a spectator |
+| `player.setName` | PlayerNameDTO | Set player name |
 
-### 4.3 Internal Server Events
+## 5 Server Architecture
 
-| Event Name | Purpose |
-|------------|---------|
-| `game.stateChange` | Triggers state validation and persistence |
-| `game.storeBoardState` | Stores pre-move board state for de novo tactical detection |
-| `tactics.analyze` | Analyzes board for new tactical advantages |
-| `player.disconnect` | Handles player disconnection |
-| `player.reconnect` | Handles player reconnection |
-| `spectator.disconnect` | Handles spectator disconnection |
-| `spectator.reconnect` | Handles spectator reconnection |
-| `timer.start` | Starts a player's timer |
-| `timer.pause` | Pauses a player's timer (during duel allocation and tactical retreat) |
-| `timer.resume` | Resumes a player's timer |
-| `timer.switch` | Switches active timer from one player to the other |
-| `timer.timeout` | Handles player running out of time |
-| `game.timeout` | Handles move time limit exceeded |
-| `duel.complete` | Triggers post-duel processing |
-| `bp.regenerate` | Calculates BP regeneration for de novo tactics only |
-| `chat.filter` | Filters chat messages for inappropriate content |
-| `chat.broadcast` | Broadcasts chat message to appropriate recipients |
+The server implementation follows a service-oriented architecture with clear component responsibilities rather than an internal event-driven approach. This provides cleaner control flow, better testability, and more predictable behavior.
 
-## 5. Chess Timer System
+#### Core Components
 
-### 5.1 Timer Operation
+1. **Game Manager Service**
+   - Manages game lifecycle (creation, joining, termination)
+   - Tracks active games in memory with Redis backup
+   - Coordinates game-related operations across services
+   - Filters game state based on player visibility rules
+   - Handles player and spectator connections
+
+2. **WebSocket Controller**
+   - Manages WebSocket connections and message routing
+   - Maps client messages to appropriate service calls
+   - Broadcasts filtered game state updates to clients
+   - Handles authentication and session management
+   - Manages reconnection and disconnection logic
+
+3. **Game Logic Services**
+   - **Board Service**: Manages chess board state and move validation
+   - **BP Manager**: Handles BP pools, allocation, duel resolution, and regeneration
+   - **Tactical Detector**: Identifies tactical advantages for BP regeneration
+   - **Timer Service**: Controls chess timers and enforces time limits
+
+4. **Data Services**
+   - **Redis Repository**: Temporary state storage and recovery
+   - **Database Repository**: Game history and statistics
+
+#### Key Operations
+
+| Operation | Responsibility | Description |
+|-----------|----------------|-------------|
+| Game State Management | Game Manager | Maintaining and updating authoritative game state |
+| State Filtering | Game Manager | Filtering game state based on player visibility rules |
+| Board State Tracking | Board Service | Storing board states for tactical advantage detection |
+| Tactical Analysis | Tactical Detector | Analyzing board for tactical advantages |
+| BP Regeneration | BP Manager | Calculating BP regeneration based on tactical advantages |
+| Duel Resolution | BP Manager | Processing BP allocations and determining outcomes |
+| Timer Management | Timer Service | Starting, pausing, resuming, and switching player timers |
+| Player Management | Game Manager | Handling player connections, disconnections, and reconnections |
+| Spectator Management | Game Manager | Managing spectator access and visibility |
+| Chat Processing | WebSocket Controller | Filtering and broadcasting chat messages |
+
+This architecture ensures:
+- Clear separation of concerns with well-defined responsibilities
+- Stateful game session management for performance
+- Effective enforcement of security and domain boundaries
+- Scalable design for handling multiple concurrent games
+- Maintainable codebase with testable components
+
+## 6. Chess Timer System
+
+### 6.1 Timer Operation
 - Each player has their own chess timer (standard chess clock rules)
 - Only one player's timer runs at any given time
 - Timer switches when a player completes their turn
@@ -202,7 +232,7 @@ Client: Displays updated BP value for the player (opponent's remains as "?")
 - If a player's time expires, they lose the game
 - Standard time controls can be configured (e.g., 5+3, 10+5, etc.)
 
-### 5.2 Timer State Transitions
+### 6.2 Timer State Transitions
 ```
 Game Start → White's Timer Starts
 White Moves → White's Timer Stops → Black's Timer Starts
@@ -211,14 +241,14 @@ After Duel → (If turn changes) Switch Timer → (If same player's turn) Resume
 Player Timeout → Game Ends with Timeout Loss
 ```
 
-## 6. Tactical Retreat System
+## 7. Tactical Retreat System
 
-### 6.1 General Tactical Retreat Rules
+### 7.1 General Tactical Retreat Rules
 - All pieces that lose a duel can retreat
 - Returning to the original position always costs 0 BP
 - Different piece types have different retreat rules and cost calculations
 
-### 6.2 Long-Range Piece Retreat Rules (Bishop, Rook, Queen)
+### 7.2 Long-Range Piece Retreat Rules (Bishop, Rook, Queen)
 - Can retreat along their axis of attack only:
   - Bishop: Along the diagonal used for the attack
   - Rook: Along the rank or file used for the attack
@@ -227,7 +257,7 @@ Player Timeout → Game Ends with Timeout Loss
 - Cannot retreat through other pieces (blocked paths)
 - Cannot retreat to a square occupied by another piece
 
-### 6.3 Knight Retreat Rule Definition
+### 7.3 Knight Retreat Rule Definition
 - A knight that loses a duel (failed capture) has specific retreat options:
   - Return to original position at 0 BP cost (always available)
   - Move to any square within the rectangular area formed by original position and failed capture position, except:
@@ -235,7 +265,7 @@ Player Timeout → Game Ends with Timeout Loss
     - Original position is already covered by the free return rule
   - BP cost equals the minimum number of standard knight moves required to reach that square from original position
 
-### 6.4 Knight Retreat Example
+### 7.4 Knight Retreat Example
 ```
 Knight at a1 attempts to capture at b3 but fails:
 - Rectangle formed is a1-b3, containing: a1, a2, a3, b1, b2, b3
@@ -248,7 +278,7 @@ Knight at a1 attempts to capture at b3 but fails:
   - b3: Invalid (failed capture position)
 ```
 
-### 6.5 Implementation Approach
+### 7.5 Implementation Approach
 ```
 1. Knight Retreats:
    - Pre-compute all possible knight positions and capture attempts at build time
@@ -264,39 +294,15 @@ Knight at a1 attempts to capture at b3 but fails:
    - Both client and server use the same shared calculation
 ```
 
-## 7. De Novo Tactical Detection
+## 8. De Novo Tactical Detection
 
-### 9.1 Player Identification
-- Players provide a display name at the start of a game
-- Names must be 3-20 characters and follow content guidelines
-- Names are visible to opponent and spectators
-- No persistent accounts or authentication required
-- Session-based identity is maintained for the duration of the game
-
-### 9.2 Chat System
-- In-game chat allows communication between players
-- Chat is visible to both players and all spectators
-- Messages are filtered for inappropriate content
-- Chat history is available from the moment a player/spectator joins
-- Previous chat history is not available to new spectators
-- Chat is ephemeral and not persisted after game completion
-
-### 9.3 Spectator Mode
-- Spectators can join ongoing games via shareable link
-- Spectators see the same board state as players
-- Spectators cannot see either player's BP pool (shown as "?")
-- Spectators cannot see BP regeneration amounts during active play
-- Spectator count is visible to both players
-- Spectator join/leave events are announced in chat
-- Spectator mode has a configurable delay (0-60 seconds) to prevent cheating
-
-### 7.1 De Novo Definition
+### 8.1 De Novo Definition
 A tactical advantage is considered "de novo" (newly created) only if:
 - It did not exist in the board state at the beginning of the player's turn
 - It was directly created by the player's move in the current turn
 - Pre-existing tactical advantages that are maintained but not newly created do not qualify
 
-### 7.2 De Novo Implementation Approach
+### 8.2 De Novo Implementation Approach
 ```
 1. Store board state at beginning of player's turn
 2. After move is completed, analyze new board state
@@ -305,15 +311,15 @@ A tactical advantage is considered "de novo" (newly created) only if:
 5. Apply BP regeneration only for these new (de novo) advantages
 ```
 
-### 7.3 Data Flow Diagrams
+## 9. Data Flow Diagrams
 
-#### 7.3.1 Main Game Loop
+### 9.1 Main Game Loop
 ```
 Player Input → Client Validation → Server Validation → 
 Game State Update → State Distribution (with visibility filters) → Client Rendering
 ```
 
-#### 7.3.2 Duel System
+### 9.2. Duel System
 ```
 Capture Attempt → Timer Pause → Duel Initiation → BP Allocation Collection →
 Outcome Determination → Reveal BP Allocations → State Update → 
@@ -321,9 +327,33 @@ Outcome Determination → Reveal BP Allocations → State Update →
 Final State Update → Timer Resume/Switch → Client Animation (with BP allocation values shown)
 ```
 
-#### 7.3.3 BP Regeneration
+### 9.3 BP Regeneration
 ```
 Store Pre-move Board State → Execute Move → Compare Board States →
 Identify De Novo Tactical Advantages Only → BP Value Calculation →
 Pool Update → Filtered Client Notification (only to BP owner)
 ```
+## 10. Social System
+### 10.1 Player Identification
+- Players provide a display name at the start of a game
+- Names must be 3-20 characters and follow content guidelines
+- Names are visible to opponent and spectators
+- No persistent accounts or authentication required
+- Session-based identity is maintained for the duration of the game
+
+### 10.2 Chat System
+- In-game chat allows communication between players
+- Chat is visible to both players and all spectators
+- Messages are filtered for inappropriate content
+- Chat history is available from the moment a player/spectator joins
+- Previous chat history is not available to new spectators
+- Chat is ephemeral and not persisted after game completion
+
+### 10.3 Spectator Mode
+- Spectators can join ongoing games via shareable link
+- Spectators see the same board state as players
+- Spectators cannot see either player's BP pool (shown as "?")
+- Spectators cannot see BP regeneration amounts during active play
+- Spectator count is visible to both players
+- Spectator join/leave events are announced in chat
+- Spectator mode has a configurable delay (0-60 seconds) to prevent cheating
