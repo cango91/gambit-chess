@@ -30,7 +30,7 @@ Systematically read through these documents in order:
 4. Check the implementation status of different modules
 
 ### 3. Resume Previous Work
-1. Look for session documentation from previous AI sessions
+1. Look for session documentation from previous AI sessions under `.cursor/sessions`
 2. Read the most recent session handoff notes
 3. Identify current project state and pending tasks
 4. Note any technical debt items that need attention
