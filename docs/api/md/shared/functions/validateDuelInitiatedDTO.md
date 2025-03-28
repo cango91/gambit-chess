@@ -8,7 +8,7 @@
 
 > **validateDuelInitiatedDTO**(`dto`): `boolean`
 
-Defined in: [validation/index.ts:218](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/validation/index.ts#L218)
+Defined in: [validation/index.ts:218](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/validation/index.ts#L218)
 
 Validates a DuelInitiatedDTO
 

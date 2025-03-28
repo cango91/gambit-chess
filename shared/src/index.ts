@@ -27,4 +27,7 @@ export * from './tactical';
 export * from './notation';
 
 // Export validation utilities
-export * from './validation'; 
+export * from './validation';
+
+// Export event definitions and validation
+export * from './events'; 

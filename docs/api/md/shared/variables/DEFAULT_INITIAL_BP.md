@@ -8,7 +8,7 @@
 
 > `const` **DEFAULT\_INITIAL\_BP**: `39` = `39`
 
-Defined in: [constants/index.ts:40](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/constants/index.ts#L40)
+Defined in: [constants/index.ts:40](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/constants/index.ts#L40)
 
 Default initial BP pool (sum of all piece values for one player)
 8 pawns + 2 knights + 2 bishops + 2 rooks + 1 queen = 8*1 + 2*3 + 2*3 + 2*5 + 1*9 = 39

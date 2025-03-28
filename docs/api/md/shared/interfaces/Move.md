@@ -6,7 +6,7 @@
 
 # Interface: Move
 
-Defined in: [types/index.ts:87](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L87)
+Defined in: [types/index.ts:87](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L87)
 
 Represents a chess move
 
@@ -16,7 +16,7 @@ Represents a chess move
 
 > `optional` **capture**: [`PieceType`](../type-aliases/PieceType.md)
 
-Defined in: [types/index.ts:95](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L95)
+Defined in: [types/index.ts:95](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L95)
 
 Captured piece type (if a capture was attempted)
 
@@ -26,7 +26,7 @@ Captured piece type (if a capture was attempted)
 
 > `optional` **castle**: `"kingside"` \| `"queenside"`
 
-Defined in: [types/index.ts:99](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L99)
+Defined in: [types/index.ts:99](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L99)
 
 If the move is a castle
 
@@ -36,7 +36,7 @@ If the move is a castle
 
 > `optional` **check**: `boolean`
 
-Defined in: [types/index.ts:101](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L101)
+Defined in: [types/index.ts:101](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L101)
 
 If the move results in check
 
@@ -46,7 +46,7 @@ If the move results in check
 
 > `optional` **checkmate**: `boolean`
 
-Defined in: [types/index.ts:103](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L103)
+Defined in: [types/index.ts:103](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L103)
 
 If the move results in checkmate
 
@@ -56,7 +56,7 @@ If the move results in checkmate
 
 > `optional` **enPassant**: `boolean`
 
-Defined in: [types/index.ts:105](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L105)
+Defined in: [types/index.ts:105](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L105)
 
 If the move is an en passant capture
 
@@ -66,7 +66,7 @@ If the move is an en passant capture
 
 > **from**: `string`
 
-Defined in: [types/index.ts:89](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L89)
+Defined in: [types/index.ts:89](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L89)
 
 Starting position
 
@@ -76,7 +76,7 @@ Starting position
 
 > **piece**: [`PieceType`](../type-aliases/PieceType.md)
 
-Defined in: [types/index.ts:93](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L93)
+Defined in: [types/index.ts:93](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L93)
 
 Moving piece type
 
@@ -86,7 +86,7 @@ Moving piece type
 
 > `optional` **promotion**: [`PieceType`](../type-aliases/PieceType.md)
 
-Defined in: [types/index.ts:97](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L97)
+Defined in: [types/index.ts:97](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L97)
 
 Promotion piece (if pawn is promoted)
 
@@ -96,7 +96,7 @@ Promotion piece (if pawn is promoted)
 
 > **to**: `string`
 
-Defined in: [types/index.ts:91](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L91)
+Defined in: [types/index.ts:91](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L91)
 
 Destination position
 
@@ -106,6 +106,6 @@ Destination position
 
 > `optional` **turnNumber**: `number`
 
-Defined in: [types/index.ts:107](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L107)
+Defined in: [types/index.ts:107](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L107)
 
 Turn number when this move was made

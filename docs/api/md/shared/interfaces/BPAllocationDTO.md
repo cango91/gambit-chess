@@ -6,7 +6,7 @@
 
 # Interface: BPAllocationDTO
 
-Defined in: [dtos/index.ts:70](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L70)
+Defined in: [dtos/index.ts:70](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L70)
 
 DTO for BP allocation during duels
 
@@ -16,7 +16,7 @@ DTO for BP allocation during duels
 
 > **amount**: `number`
 
-Defined in: [dtos/index.ts:74](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L74)
+Defined in: [dtos/index.ts:74](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L74)
 
 Amount of BP allocated
 
@@ -26,7 +26,7 @@ Amount of BP allocated
 
 > **gameId**: `string`
 
-Defined in: [dtos/index.ts:72](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L72)
+Defined in: [dtos/index.ts:72](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L72)
 
 Game ID
 
@@ -36,6 +36,6 @@ Game ID
 
 > **sequence**: `number`
 
-Defined in: [dtos/index.ts:76](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L76)
+Defined in: [dtos/index.ts:76](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L76)
 
 Sequence number for validation

@@ -6,7 +6,7 @@
 
 # Interface: TacticalRetreatOption
 
-Defined in: [tactical/retreat.ts:37](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L37)
+Defined in: [tactical/retreat.ts:37](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/tactical/retreat.ts#L37)
 
 Interface for retreat options with position and cost
 
@@ -16,7 +16,7 @@ Interface for retreat options with position and cost
 
 > **cost**: `number`
 
-Defined in: [tactical/retreat.ts:39](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L39)
+Defined in: [tactical/retreat.ts:39](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/tactical/retreat.ts#L39)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [tactical/retreat.ts:39](https://github.com/cango91/gambit-chess/blo
 
 > **to**: `string`
 
-Defined in: [tactical/retreat.ts:38](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/tactical/retreat.ts#L38)
+Defined in: [tactical/retreat.ts:38](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/tactical/retreat.ts#L38)

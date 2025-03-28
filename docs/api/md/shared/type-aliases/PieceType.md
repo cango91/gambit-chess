@@ -8,6 +8,6 @@
 
 > **PieceType** = `"p"` \| `"n"` \| `"b"` \| `"r"` \| `"q"` \| `"k"`
 
-Defined in: [types/index.ts:18](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L18)
+Defined in: [types/index.ts:18](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L18)
 
 Represents piece types

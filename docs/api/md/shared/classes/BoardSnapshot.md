@@ -6,7 +6,7 @@
 
 # Class: BoardSnapshot
 
-Defined in: [chess/board.ts:33](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L33)
+Defined in: [chess/board.ts:33](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L33)
 
 Represents a non-authoritative snapshot of a chess board state
 
@@ -21,7 +21,7 @@ Represents a non-authoritative snapshot of a chess board state
 
 > **new BoardSnapshot**(`setupBoard`): `BoardSnapshot`
 
-Defined in: [chess/board.ts:43](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L43)
+Defined in: [chess/board.ts:43](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L43)
 
 Creates a new board snapshot with optional initial position
 
@@ -43,7 +43,7 @@ Whether to set up the initial position (default: true)
 
 > **addPiece**(`type`, `color`, `position`): [`ChessPiece`](../interfaces/ChessPiece.md)
 
-Defined in: [chess/board.ts:92](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L92)
+Defined in: [chess/board.ts:92](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L92)
 
 Adds a piece to the board
 
@@ -79,7 +79,7 @@ The newly created piece
 
 > **clone**(): `BoardSnapshot`
 
-Defined in: [chess/board.ts:503](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L503)
+Defined in: [chess/board.ts:503](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L503)
 
 Creates a deep copy of the board
 
@@ -99,7 +99,7 @@ A new BoardSnapshot object with the same state
 
 > **getAllPieces**(): [`ChessPiece`](../interfaces/ChessPiece.md)[]
 
-Defined in: [chess/board.ts:134](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L134)
+Defined in: [chess/board.ts:134](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L134)
 
 Gets all pieces currently on the board
 
@@ -119,7 +119,7 @@ Array of all pieces
 
 > **getCapturedPieces**(): [`ChessPiece`](../interfaces/ChessPiece.md)[]
 
-Defined in: [chess/board.ts:142](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L142)
+Defined in: [chess/board.ts:142](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L142)
 
 Gets all captured pieces
 
@@ -139,7 +139,7 @@ Array of captured pieces
 
 > **getCurrentTurn**(): `number`
 
-Defined in: [chess/board.ts:169](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L169)
+Defined in: [chess/board.ts:169](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L169)
 
 Gets the current turn number
 
@@ -159,7 +159,7 @@ The current turn number
 
 > **getEnPassantTarget**(): `null` \| `string`
 
-Defined in: [chess/board.ts:177](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L177)
+Defined in: [chess/board.ts:177](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L177)
 
 Gets the current en passant target position, if any
 
@@ -179,7 +179,7 @@ The en passant target position or null
 
 > **getKingPosition**(`color`): `undefined` \| `string`
 
-Defined in: [chess/board.ts:160](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L160)
+Defined in: [chess/board.ts:160](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L160)
 
 Gets the position of the king for a specific color
 
@@ -207,7 +207,7 @@ Position of the king or undefined if not found
 
 > **getPiece**(`position`): `undefined` \| [`ChessPiece`](../interfaces/ChessPiece.md)
 
-Defined in: [chess/board.ts:126](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L126)
+Defined in: [chess/board.ts:126](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L126)
 
 Gets the piece at a specific position
 
@@ -235,7 +235,7 @@ The piece at that position or undefined if empty
 
 > **getPiecesByColor**(`color`): [`ChessPiece`](../interfaces/ChessPiece.md)[]
 
-Defined in: [chess/board.ts:151](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L151)
+Defined in: [chess/board.ts:151](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L151)
 
 Gets all pieces of a specific color
 
@@ -263,7 +263,7 @@ Array of pieces of the specified color
 
 > **isInCheck**(`color`): `boolean`
 
-Defined in: [chess/board.ts:378](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L378)
+Defined in: [chess/board.ts:378](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L378)
 
 Checks if the king of a specific color is in check
 
@@ -291,7 +291,7 @@ True if the king is in check, false otherwise
 
 > **isValidMove**(`from`, `to`): `boolean`
 
-Defined in: [chess/board.ts:189](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L189)
+Defined in: [chess/board.ts:189](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L189)
 
 Checks if a move is valid according to chess rules
 This includes checking if the move would leave the player's own king in check.
@@ -326,7 +326,7 @@ True if the move is valid, false otherwise
 
 > **makeMove**(`from`, `to`, `promotion`?): `object`
 
-Defined in: [chess/board.ts:390](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L390)
+Defined in: [chess/board.ts:390](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L390)
 
 Makes a move on the board
 
@@ -378,7 +378,7 @@ Object with move information
 
 > **removePiece**(`position`): `undefined` \| [`ChessPiece`](../interfaces/ChessPiece.md)
 
-Defined in: [chess/board.ts:112](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L112)
+Defined in: [chess/board.ts:112](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L112)
 
 Removes a piece from the board
 
@@ -402,7 +402,7 @@ The removed piece or undefined if no piece at that position
 
 > **toString**(): `string`
 
-Defined in: [chess/board.ts:529](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/chess/board.ts#L529)
+Defined in: [chess/board.ts:529](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/chess/board.ts#L529)
 
 Converts the board to a string representation for debugging
 

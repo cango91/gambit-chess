@@ -6,7 +6,7 @@
 
 # Interface: Spectator
 
-Defined in: [types/index.ts:169](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L169)
+Defined in: [types/index.ts:169](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L169)
 
 Represents a spectator
 
@@ -20,7 +20,7 @@ Represents a spectator
 
 > **id**: `string`
 
-Defined in: [types/index.ts:171](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L171)
+Defined in: [types/index.ts:171](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L171)
 
 Spectator unique ID
 
@@ -30,6 +30,6 @@ Spectator unique ID
 
 > **name**: `string`
 
-Defined in: [types/index.ts:173](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/index.ts#L173)
+Defined in: [types/index.ts:173](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/index.ts#L173)
 
 Spectator display name

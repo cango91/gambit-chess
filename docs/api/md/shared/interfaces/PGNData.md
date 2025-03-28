@@ -6,7 +6,7 @@
 
 # Interface: PGNData
 
-Defined in: [types/moveTypes.ts:65](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L65)
+Defined in: [types/moveTypes.ts:65](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/moveTypes.ts#L65)
 
 Complete PGN data structure
 
@@ -16,7 +16,7 @@ Complete PGN data structure
 
 > **headers**: [`PGNHeaders`](PGNHeaders.md)
 
-Defined in: [types/moveTypes.ts:67](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L67)
+Defined in: [types/moveTypes.ts:67](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/moveTypes.ts#L67)
 
 PGN headers
 
@@ -26,6 +26,6 @@ PGN headers
 
 > **moves**: [`MoveHistory`](../type-aliases/MoveHistory.md)
 
-Defined in: [types/moveTypes.ts:69](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/types/moveTypes.ts#L69)
+Defined in: [types/moveTypes.ts:69](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/types/moveTypes.ts#L69)
 
 Move list

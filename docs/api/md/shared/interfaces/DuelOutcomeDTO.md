@@ -6,7 +6,7 @@
 
 # Interface: DuelOutcomeDTO
 
-Defined in: [dtos/index.ts:108](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L108)
+Defined in: [dtos/index.ts:108](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L108)
 
 DTO for duel outcome notification
 
@@ -16,7 +16,7 @@ DTO for duel outcome notification
 
 > **attackerAllocation**: `number`
 
-Defined in: [dtos/index.ts:116](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L116)
+Defined in: [dtos/index.ts:116](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L116)
 
 BP allocated by attacker
 
@@ -26,7 +26,7 @@ BP allocated by attacker
 
 > **defenderAllocation**: `number`
 
-Defined in: [dtos/index.ts:118](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L118)
+Defined in: [dtos/index.ts:118](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L118)
 
 BP allocated by defender
 
@@ -36,7 +36,7 @@ BP allocated by defender
 
 > **gameId**: `string`
 
-Defined in: [dtos/index.ts:110](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L110)
+Defined in: [dtos/index.ts:110](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L110)
 
 Game ID
 
@@ -46,7 +46,7 @@ Game ID
 
 > **result**: `"success"` \| `"failed"`
 
-Defined in: [dtos/index.ts:114](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L114)
+Defined in: [dtos/index.ts:114](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L114)
 
 Result of the duel (success or failed)
 
@@ -56,6 +56,6 @@ Result of the duel (success or failed)
 
 > **winner**: [`PieceColor`](../type-aliases/PieceColor.md)
 
-Defined in: [dtos/index.ts:112](https://github.com/cango91/gambit-chess/blob/b8ea13e4976c99c29d095eae7bc504b86f9add51/shared/src/dtos/index.ts#L112)
+Defined in: [dtos/index.ts:112](https://github.com/cango91/gambit-chess/blob/d79bd73a9b1359341cbe89b368f1eb5b66a60564/shared/src/dtos/index.ts#L112)
 
 Winner of the duel (attacker or defender)
