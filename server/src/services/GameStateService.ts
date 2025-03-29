@@ -394,8 +394,8 @@ export class GameStateService {
    * @returns Whether the retreat was successful
    */
   public processRetreat(
-    position: Position,
-    playerColor: PieceColor
+    playerColor: PieceColor,
+    position: Position
   ): boolean {
     // Check game phase
     if (this.currentPhase !== GamePhase.TACTICAL_RETREAT) {
@@ -442,6 +442,39 @@ export class GameStateService {
     this.currentPhase = GamePhase.NORMAL;
     
     return true;
+  }
+  
+  /**
+   * Processes a tactical retreat with extended return information
+   * @param playerColor Color of the player selecting the retreat
+   * @param retreatPosition Position to retreat to
+   * @returns Result including BP cost of the retreat
+   */
+  public processRetreatWithDetails(
+    playerColor: PieceColor,
+    retreatPosition: Position
+  ): { success: boolean; cost?: number } {
+    // Get retreat options
+    const retreatOptions = this.board.getRetreatOptions();
+    if (!retreatOptions) {
+      return { success: false };
+    }
+    
+    // Validate retreat position
+    if (!this.tacticalRetreatService.isValidRetreatPosition(retreatOptions, retreatPosition)) {
+      return { success: false };
+    }
+    
+    // Get the BP cost for this retreat
+    const cost = this.tacticalRetreatService.getRetreatCost(retreatOptions, retreatPosition);
+    if (cost === undefined) {
+      return { success: false };
+    }
+    
+    // Execute the retreat using the existing method
+    const success = this.processRetreat(playerColor, retreatPosition);
+    
+    return { success, cost };
   }
   
   /**
@@ -530,6 +563,102 @@ export class GameStateService {
         this.currentPhase = GamePhase.GAME_OVER;
       }
     }
+    
+    return true;
+  }
+
+  /**
+   * Starts a game
+   * Initializes timers and game state
+   * @returns Success indicator
+   */
+  public startGame(): boolean {
+    // Ensure we can only start from initial state
+    if (this.currentPhase !== GamePhase.NORMAL || this.moveHistory.length > 0) {
+      return false;
+    }
+    
+    // Start timer for white if time control is enabled
+    if (this.whiteTimeRemaining > 0 && this.blackTimeRemaining > 0) {
+      this.activeTimer = 'white';
+    }
+    
+    return true;
+  }
+
+  /**
+   * Gets the current phase of the game
+   * @returns Current game phase
+   */
+  public getCurrentPhase(): GamePhase {
+    return this.currentPhase;
+  }
+
+  /**
+   * Processes BP allocation for a duel
+   * @param playerColor Color of the player allocating BP
+   * @param bpAmount Amount of BP to allocate
+   * @returns Result including whether the duel is complete
+   */
+  public processBpAllocation(
+    playerColor: PieceColor,
+    bpAmount: number
+  ): { success: boolean; duelComplete: boolean; outcome?: any } {
+    // Process the allocation
+    const success = this.processDuelAllocation(playerColor, bpAmount);
+    
+    if (!success) {
+      return { success: false, duelComplete: false };
+    }
+    
+    // Check if both players have allocated
+    const duel = this.board.getActiveDuel();
+    if (!duel) {
+      return { success: true, duelComplete: false };
+    }
+    
+    const bothAllocated = 
+      duel.attackerAllocation > 0 && 
+      duel.defenderAllocation > 0;
+    
+    if (bothAllocated) {
+      // Resolve the duel
+      const duelResult = this.resolveDuel();
+      return {
+        success: true,
+        duelComplete: true,
+        outcome: duel
+      };
+    }
+    
+    return { success: true, duelComplete: false };
+  }
+
+  /**
+   * Ends the game with a specific result
+   * @param result Game result details
+   * @returns Success indicator
+   */
+  public endGame(result: { result: string; winner?: PieceColor; reason?: string }): boolean {
+    // Only end the game if it's not already over
+    if (this.currentPhase === GamePhase.GAME_OVER) {
+      return false;
+    }
+    
+    // Set game phase to over
+    this.currentPhase = GamePhase.GAME_OVER;
+    
+    // Set game result based on the winner
+    if (result.winner === 'white') {
+      this.gameResult = GameResult.WHITE_WIN;
+    } else if (result.winner === 'black') {
+      this.gameResult = GameResult.BLACK_WIN;
+    } else {
+      this.gameResult = GameResult.DRAW;
+    }
+    
+    // Stop timers
+    this.activeTimer = null;
     
     return true;
   }

@@ -8,8 +8,8 @@ import http from 'http';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
-import env from './config/env';
-import redisService from './services/redis';
+import { env } from './config';
+import { ServiceFactory } from './services/factory';
 
 // Create Express app
 const app = express();
@@ -24,16 +24,11 @@ const io = new Server(server, {
   }
 });
 
-// Connect to Redis
-(async () => {
-  try {
-    await redisService.connect();
-    console.log('Connected to Redis');
-  } catch (error) {
-    console.error('Failed to connect to Redis:', error);
-    process.exit(1);
-  }
-})();
+// Initialize services
+const serviceFactory = ServiceFactory.getInstance();
+
+// Get services (these will be initialized on demand)
+const gameManager = serviceFactory.getGameManager(env.NODE_ENV !== 'test');
 
 // Middleware
 app.use(cors());
@@ -51,7 +46,8 @@ app.get('/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'ok', environment: env.NODE_ENV });
 });
 
-// Socket.IO connection setup is now handled by WebSocketController
+// Socket.IO connection setup will be handled by WebSocketController
+// which will be implemented separately and use the GameManager
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
@@ -62,8 +58,8 @@ process.on('SIGTERM', async () => {
     console.log('HTTP server closed');
   });
   
-  // Disconnect from Redis
-  await redisService.disconnect();
+  // Clean up services
+  await serviceFactory.cleanup();
   
   process.exit(0);
 });
@@ -71,6 +67,7 @@ process.on('SIGTERM', async () => {
 // Start server
 server.listen(env.PORT, () => {
   console.log(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+  console.log(`Game manager initialized with ${env.NODE_ENV !== 'test' ? 'Redis' : 'in-memory'} storage`);
 });
 
 export default server; 

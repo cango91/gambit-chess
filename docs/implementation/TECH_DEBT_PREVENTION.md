@@ -83,21 +83,26 @@
 
 | Component | Purpose | Ownership | Dependencies | Implementation Status |
 |-----------|---------|-----------|--------------|------------------------|
-| GameState | Complete authoritative game state | Server | All DTOs | Planned |
-| MoveValidator | Validates chess moves | Server | GameState | Planned |
-| BPManager | Manages BP pools and allocation | Server | GameState | Planned |
-| DuelResolver | Resolves BP duels | Server | BPManager | Planned |
-| TacticalRetreatCalculator | Calculates retreat options | Server | GameState | Planned |
-| CheckDetector | Detects check conditions | Server, Shared | GameState, ChessPiece, Position, PieceMovementPatterns | Planned |
-| CheckmateDetector | Detects checkmate conditions | Server | CheckDetector | Planned |
-| TimerController | Manages chess timers | Server | None | Planned |
-| TacticalDetector | Detects tactical advantages | Server | GameState | Planned |
-| BPRegenerator | Calculates BP regeneration | Server | TacticalDetector | Planned |
+| GameState | Complete authoritative game state | Server | All DTOs | Implemented |
+| MoveValidator | Validates chess moves | Server | GameState | Implemented |
+| BPManager | Manages BP pools and allocation | Server | GameState | Implemented |
+| DuelResolver | Resolves BP duels | Server | BPManager | Implemented |
+| TacticalRetreatCalculator | Calculates retreat options | Server | GameState | Implemented |
+| CheckDetector | Detects check conditions | Server, Shared | GameState, ChessPiece, Position, PieceMovementPatterns | Implemented |
+| CheckmateDetector | Detects checkmate conditions | Server | CheckDetector | Implemented |
+| TimerController | Manages chess timers | Server | None | Implemented |
+| TacticalDetector | Detects tactical advantages | Server | GameState | Implemented |
+| BPRegenerator | Calculates BP regeneration | Server | TacticalDetector | Implemented |
+| GameManager | Manages game lifecycles | Server | GameState, BPManager, TacticalDetector | Implemented |
+| GameStateService | Handles game state transitions | Server | Board, BPManager | Implemented |
+| ServiceFactory | Manages service dependencies | Server | All services | Implemented |
+| RedisGameRepository | Persists game states in Redis | Server | GameState | Implemented |
+| ConfigModule | Centralized configuration | Server | None | Implemented |
 | GameSessionManager | Manages game sessions | Server | GameState | Planned |
 | WebSocketController | Handles WebSocket communication | Server | None | Planned |
 | PlayerAuthenticator | Authenticates players | Server | None | Planned |
-| PlayerManager | Manages player information | Server | PlayerDTO | Planned |
-| SpectatorManager | Manages spectator sessions | Server | SpectatorDTO | Planned |
+| PlayerManager | Manages player information | Server | PlayerDTO | Implemented |
+| SpectatorManager | Manages spectator sessions | Server | SpectatorDTO | Implemented |
 | ChatManager | Manages chat functionality | Server | ChatMessageDTO | Planned |
 | ContentFilter | Filters chat and player names | Server | None | Planned |
 
