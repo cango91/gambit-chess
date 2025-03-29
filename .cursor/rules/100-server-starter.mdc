@@ -22,6 +22,3 @@ Systematically review the documentation available under one of the following loc
 - `docs/api/html/shared` for html export of all documentation
 
 ### 3. Identify the functions, dtos, events, etc. provided by the shared module that might be relevant for the requirements identified in step 2. Take note of method signatures for quick recall in your implementation.
-
-# IMPORTANT NOTES TO ALWAYS REMEMBER
-- When importing from `shared` workspace in upstream (server/client) workspaces, NEVER use "deep path" imports. All your imports should follow the pattern `import { <class, function, interface> } from '@gambit-chess/shared'`.

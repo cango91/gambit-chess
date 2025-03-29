@@ -48,3 +48,6 @@ Gambit Chess is a novel web-based chess variant where capture attempts are resol
 2. Mobile web compatible
 3. Fast loading with no loading screens
 4. 80% AI-generated code 
+
+# IMPORTANT NOTES TO ALWAYS REMEMBER
+- When importing from `shared` workspace in upstream (server/client) workspaces, NEVER use "deep path" imports. All your imports should follow the pattern `import { <class, function, interface> } from '@gambit-chess/shared'`.
