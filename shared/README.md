@@ -23,8 +23,8 @@ shared/
 │   ├── notation/      # Chess notation utilities
 │   ├── tactical/      # Tactical retreat implementation
 │   ├── tests/         # Test files
-│   ├── types/         # Type definitions 
 │   ├── utils/         # Utility functions
+│   ├── types.ts       # Type definitions 
 │   └── index.ts       # Main entry point
 ├── dist/              # Compiled output
 ├── scripts/           # Build and generation scripts
