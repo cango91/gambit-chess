@@ -5,7 +5,7 @@
  * and PGN related structures to improve type safety throughout the codebase.
  */
 
-import { Move, Duel, Retreat, PieceColor } from './index';
+import { Move, Duel, Retreat, PieceColor } from './types';
 
 /**
  * Extended move information including duel and retreat data

@@ -1,0 +1,24 @@
+---
+description: 
+globs: server/src/*
+alwaysApply: false
+---
+---
+globs: server/src/**/*.ts
+description: Actions to follow before generating any server code or when unsure about existing `shared` module imports' usages.
+---
+# Shared module context
+
+## Triggers
+- When you are asked to IMPLEMENT anything in the `server` workspace for the FIRST TIME IN A SESSION
+- When you are unsure about USAGES of `shared` module imports (functions, events, dtos, et cetera)
+
+## Required Actions
+### 1. Assess the requirements of the current server-side implementation user tasked you with
+### 2. Read `shared` workspace's auto-generated documentation.
+Systematically review the documentation available under one of the following locations:
+- `docs/api/md/shared` for markdown documentation
+- `docs/api/json/shared.json` for json export of all documenation
+- `docs/api/html/shared` for html export of all documentation
+
+### 3. Identify the functions, dtos, events, etc. provided by the shared module that might be relevant for the requirements identified in step 2. Take note of method signatures for quick recall in your implementation.

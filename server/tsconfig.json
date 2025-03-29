@@ -10,7 +10,12 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@gambit-chess/shared": ["../shared/dist"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]

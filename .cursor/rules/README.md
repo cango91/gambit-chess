@@ -34,15 +34,6 @@ Perform session hand-off
 ```
 This triggers the AI to document the session's progress and prepare for the next session.
 
-## Converting to .mdc Files
-
-After reviewing these rules, convert them from `.md` to `.mdc` format manually (as Cursor seems to prevent tools from modifying `.mdc` files directly).
-
-Steps:
-1. Review each rule file
-2. Manually rename from `.md` to `.mdc`
-3. Ensure the frontmatter section is preserved
-
 ## Sessions Directory
 
 The `.cursor/sessions/` directory contains documentation of each AI session, maintaining continuity between development sessions and tracking implementation progress. 

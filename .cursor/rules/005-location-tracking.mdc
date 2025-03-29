@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Actions to follow BEFORE GENERATING ANY COMMANDS IN THIS SESSION
+globs: **/*
+---
+# Location Awareness: First time before generating a command
+
+## Trigger
+When this is the FIRST time you're generating a COMMAND in THIS SESSION.
+
+## Required Actions
+### 1. Check absolute path of the project root
+Before replying with ANY other commands, run `pwd` once and take note of the outputted absolute path
+### 2. Preface ANY AND ALL OF your following generated COMMANDS with `cd <abs_path> && ...` FOR THE REST OF THIS SESSION.

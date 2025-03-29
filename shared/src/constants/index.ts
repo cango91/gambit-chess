@@ -3,6 +3,7 @@
  */
 
 export * from './knightRetreatData';
+export * from './knightRetreatUtils';
 
 /**
  * Board dimensions - this is a fixed constant and should not be changed
