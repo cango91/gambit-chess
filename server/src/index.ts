@@ -10,8 +10,6 @@ import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import env from './config/env';
 import redisService from './services/redis';
-import { GameManagerService } from './services/GameManagerService';
-import { WebSocketController } from './controllers/WebSocketController';
 
 // Create Express app
 const app = express();
@@ -37,12 +35,6 @@ const io = new Server(server, {
   }
 })();
 
-// Initialize services
-const gameManager = new GameManagerService(io);
-
-// Initialize WebSocket controller
-const wsController = new WebSocketController(io, gameManager);
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -57,33 +49,6 @@ app.get('/', (_req: Request, res: Response): void => {
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'ok', environment: env.NODE_ENV });
-});
-
-// API endpoint to create a new game
-app.post('/api/games', (_req: Request, res: Response): void => {
-  const gameId = gameManager.createGame();
-  res.status(201).json({ gameId });
-});
-
-// API endpoint to get game info
-app.get('/api/games/:gameId', (req: Request, res: Response): void => {
-  const { gameId } = req.params;
-  const gameSession = gameManager.getGameSession(gameId);
-  
-  if (!gameSession) {
-    res.status(404).json({ error: 'Game not found' });
-    return;
-  }
-  
-  // Return basic game info (not the full state)
-  const gameState = gameSession.getGameState();
-  res.status(200).json({
-    gameId,
-    phase: gameState.phase,
-    players: gameState.players.length,
-    spectators: gameState.spectators.length,
-    created: gameSession.createdAt
-  });
 });
 
 // Socket.IO connection setup is now handled by WebSocketController

@@ -6,7 +6,7 @@
  */
 
 // Export types
-export * from './types/index';
+export * from './types';
 
 // Export DTOs
 export * from './dtos';
