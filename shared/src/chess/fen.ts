@@ -6,9 +6,8 @@
  * en passant target square, halfmove clock, and fullmove number.
  */
 
-import { ChessPiece, PieceColor, PieceType, Position } from '../types';
-import { positionToCoordinates, coordinatesToPosition, isValidPosition } from '../utils/position';
-
+import { PieceColor } from '..';
+import { ChessPiece, ChessPieceColor, ChessPieceType, ChessPosition } from './types';
 /**
  * Standard starting position in FEN notation
  */
@@ -64,7 +63,7 @@ export function parseFen(fen: string): FenComponents {
   }
   
   // Validate en passant
-  if (enPassant !== '-' && !isValidPosition(enPassant)) {
+  if (enPassant !== '-' && !ChessPosition.isValidPosition(enPassant)) {
     throw new Error('Invalid FEN: invalid en passant target square');
   }
   
@@ -105,22 +104,22 @@ export function fenComponentsToString(components: FenComponents): string {
  * @returns Object with piece type and color
  * @throws Error if the FEN character is invalid
  */
-export function fenCharToPiece(fenChar: string): { type: PieceType; color: PieceColor } {
+export function fenCharToPiece(fenChar: string): { type: ChessPieceType; color: ChessPieceColor } {
   const lowerChar = fenChar.toLowerCase();
-  let type: PieceType;
+  let type: ChessPieceType;
   
   switch (lowerChar) {
-    case 'p': type = 'p'; break;
-    case 'n': type = 'n'; break;
-    case 'b': type = 'b'; break;
-    case 'r': type = 'r'; break;
-    case 'q': type = 'q'; break;
-    case 'k': type = 'k'; break;
+    case 'p': type = ChessPieceType.from('p'); break;
+    case 'n': type = ChessPieceType.from('n'); break;
+    case 'b': type = ChessPieceType.from('b'); break;
+    case 'r': type = ChessPieceType.from('r'); break;
+    case 'q': type = ChessPieceType.from('q'); break;
+    case 'k': type = ChessPieceType.from('k'); break;
     default:
       throw new Error(`Invalid FEN piece character: ${fenChar}`);
   }
   
-  const color: PieceColor = fenChar === lowerChar ? 'black' : 'white';
+  const color: ChessPieceColor = fenChar === lowerChar ? ChessPieceColor.from('b') : ChessPieceColor.from('w');
   
   return { type, color };
 }
@@ -131,9 +130,9 @@ export function fenCharToPiece(fenChar: string): { type: PieceType; color: Piece
  * @param color The piece color
  * @returns FEN character representing the piece
  */
-export function pieceToFenChar(type: PieceType, color: PieceColor): string {
-  const char = type;
-  return color === 'white' ? char.toUpperCase() : char;
+export function pieceToFenChar(type: ChessPieceType, color: ChessPieceColor): string {
+  const char = type.value;
+  return color.equals(ChessPieceColor.from('w')) ? char.toUpperCase() : char;
 }
 
 /**
@@ -165,7 +164,7 @@ export function fenToPieces(piecePlacement: string): ChessPiece[] {
         // Otherwise it's a piece
         try {
           const { type, color } = fenCharToPiece(char);
-          const position = coordinatesToPosition(fileIndex, 7 - rankIndex);
+          const position = ChessPosition.fromCoordinates(fileIndex, 7 - rankIndex);
           
           // Determine if this piece has moved from its starting position
           // This is an estimation based on typical piece starting positions
@@ -173,17 +172,17 @@ export function fenToPieces(piecePlacement: string): ChessPiece[] {
           
           // Check if the piece is in its standard starting position
           if (
-            (type === 'p' && ((color === 'white' && position[1] === '2') || (color === 'black' && position[1] === '7'))) ||
-            (type === 'r' && ((color === 'white' && (position === 'a1' || position === 'h1')) || (color === 'black' && (position === 'a8' || position === 'h8')))) ||
-            (type === 'n' && ((color === 'white' && (position === 'b1' || position === 'g1')) || (color === 'black' && (position === 'b8' || position === 'g8')))) ||
-            (type === 'b' && ((color === 'white' && (position === 'c1' || position === 'f1')) || (color === 'black' && (position === 'c8' || position === 'f8')))) ||
-            (type === 'q' && ((color === 'white' && position === 'd1') || (color === 'black' && position === 'd8'))) ||
-            (type === 'k' && ((color === 'white' && position === 'e1') || (color === 'black' && position === 'e8')))
+            (type.equals(ChessPieceType.from('p')) && ((color.equals(ChessPieceColor.from('w')) && position.value[1] === '2') || (color.equals(ChessPieceColor.from('b')) && position.value[1] === '7'))) ||
+            (type.equals(ChessPieceType.from('r')) && ((color.equals(ChessPieceColor.from('w')) && (position.value === 'a1' || position.value === 'h1')) || (color.equals(ChessPieceColor.from('b')) && (position.value === 'a8' || position.value === 'h8')))) ||
+            (type.equals(ChessPieceType.from('n')) && ((color.equals(ChessPieceColor.from('w')) && (position.value === 'b1' || position.value === 'g1')) || (color.equals(ChessPieceColor.from('b')) && (position.value === 'b8' || position.value === 'g8')))) ||
+            (type.equals(ChessPieceType.from('b')) && ((color.equals(ChessPieceColor.from('w')) && (position.value === 'c1' || position.value === 'f1')) || (color.equals(ChessPieceColor.from('b')) && (position.value === 'c8' || position.value === 'f8')))) ||
+            (type.equals(ChessPieceType.from('q')) && ((color.equals(ChessPieceColor.from('w')) && position.value === 'd1') || (color.equals(ChessPieceColor.from('b')) && position.value === 'd8'))) ||
+            (type.equals(ChessPieceType.from('k')) && ((color.equals(ChessPieceColor.from('w')) && position.value === 'e1') || (color.equals(ChessPieceColor.from('b')) && position.value === 'e8')))
           ) {
             hasMoved = false;
           }
           
-          pieces.push({ type, color, position, hasMoved });
+          pieces.push(new ChessPiece(type, color, position, hasMoved));
           fileIndex++;
         } catch (error: any) {
           throw new Error(`Invalid piece placement: ${error.message}`);
@@ -211,7 +210,10 @@ export function piecesToFen(pieces: ChessPiece[]): string {
   
   // Place pieces on the board
   for (const piece of pieces) {
-    const [x, y] = positionToCoordinates(piece.position);
+    const [x, y] = piece.position?.toCoordinates() ?? [];
+    if (x === undefined || y === undefined) {
+      throw new Error('Invalid piece position');
+    }
     board[7 - y][x] = pieceToFenChar(piece.type, piece.color);
   }
   
@@ -254,7 +256,7 @@ export function parseFenToGameState(fen: string): {
     blackKingside: boolean; 
     blackQueenside: boolean;
   };
-  enPassantTarget: Position | null;
+  enPassantTarget: ChessPosition | null;
   halfmoveClock: number;
   fullmoveNumber: number;
 } {
@@ -262,7 +264,7 @@ export function parseFenToGameState(fen: string): {
   
   const pieces = fenToPieces(components.piecePlacement);
   
-  const activeColor: PieceColor = components.activeColor === 'w' ? 'white' : 'black';
+  const activeColor: ChessPieceColor = components.activeColor === 'w' ? ChessPieceColor.from('w') : ChessPieceColor.from('b');
   
   const castling = {
     whiteKingside: components.castling.includes('K'),
@@ -273,28 +275,28 @@ export function parseFenToGameState(fen: string): {
   
   // Update the hasMoved flags based on castling rights
   for (const piece of pieces) {
-    if (piece.type === 'k') {
-      if (piece.color === 'white' && piece.position === 'e1') {
+    if (piece.type.equals(ChessPieceType.from('k'))) {
+      if (piece.color.equals(ChessPieceColor.from('w')) && piece.position?.value === 'e1') {
         // If white king is on e1 and white has no castling rights, then it has moved
         piece.hasMoved = !(castling.whiteKingside || castling.whiteQueenside);
-      } else if (piece.color === 'black' && piece.position === 'e8') {
+      } else if (piece.color.equals(ChessPieceColor.from('b')) && piece.position?.value === 'e8') {
         // If black king is on e8 and black has no castling rights, then it has moved
         piece.hasMoved = !(castling.blackKingside || castling.blackQueenside);
       }
-    } else if (piece.type === 'r') {
-      if (piece.color === 'white') {
-        if (piece.position === 'a1') {
+    } else if (piece.type.equals(ChessPieceType.from('r'))) {
+      if (piece.color.equals(ChessPieceColor.from('w'))) {
+        if (piece.position?.value === 'a1') {
           // White queenside rook
           piece.hasMoved = !castling.whiteQueenside;
-        } else if (piece.position === 'h1') {
+        } else if (piece.position?.value === 'h1') {
           // White kingside rook
           piece.hasMoved = !castling.whiteKingside;
         }
-      } else if (piece.color === 'black') {
-        if (piece.position === 'a8') {
+      } else if (piece.color.equals(ChessPieceColor.from('b'))) {
+        if (piece.position?.value === 'a8') {
           // Black queenside rook
           piece.hasMoved = !castling.blackQueenside;
-        } else if (piece.position === 'h8') {
+        } else if (piece.position?.value === 'h8') {
           // Black kingside rook
           piece.hasMoved = !castling.blackKingside;
         }
@@ -311,7 +313,7 @@ export function parseFenToGameState(fen: string): {
     pieces,
     activeColor,
     castling,
-    enPassantTarget,
+    enPassantTarget: enPassantTarget ? ChessPosition.from(enPassantTarget) : null,
     halfmoveClock,
     fullmoveNumber
   };
@@ -331,20 +333,20 @@ export function gameStateToFen({
   fullmoveNumber
 }: {
   pieces: ChessPiece[];
-  activeColor: PieceColor;
+  activeColor: ChessPieceColor;
   castling: { 
     whiteKingside: boolean; 
     whiteQueenside: boolean; 
     blackKingside: boolean; 
     blackQueenside: boolean;
   };
-  enPassantTarget: Position | null;
+  enPassantTarget: ChessPosition | null;
   halfmoveClock: number;
   fullmoveNumber: number;
 }): string {
   const piecePlacement = piecesToFen(pieces);
   
-  const colorChar = activeColor === 'white' ? 'w' : 'b';
+  const colorChar = activeColor.equals(ChessPieceColor.from('w')) ? 'w' : 'b';
   
   let castlingString = '';
   if (castling.whiteKingside) castlingString += 'K';

@@ -5,20 +5,12 @@
  * for chess pieces based on the piece type and position.
  */
 
+import { ChessPosition, ChessPieceType, ChessPositionType } from '@/chess/types';
 import { isSlidingPiece } from '../chess/movement';
 import { 
   getKnightRetreatsFromPositions 
 } from '../constants/knightRetreatUtils';
-import { Position, PieceType } from '../types';
-import { 
-  isValidPosition,
-  positionToCoordinates,
-  coordinatesToPosition,
-  isSameFile,
-  isSameRank,
-  isSameDiagonal,
-  getPositionsBetween
-} from '../utils/position';
+import { IChessPiece } from '@/chess/contracts';
 
 // Knight move directions
 const KNIGHT_MOVES = [
@@ -26,45 +18,41 @@ const KNIGHT_MOVES = [
   [1, -2], [1, 2], [2, -1], [2, 1]
 ];
 
-// Sliding piece directions
-const DIAGONALS = [[-1, -1], [-1, 1], [1, -1], [1, 1]]; // Bishop
-const ORTHOGONALS = [[-1, 0], [1, 0], [0, -1], [0, 1]]; // Rook
-const ALL_DIRECTIONS = [...DIAGONALS, ...ORTHOGONALS]; // Queen
-
 /**
- * Interface for retreat options with position and cost
+ * Interface for a single tactical retreat option with position and cost
  */
-export interface Retreat {
-  to: Position;
+export interface RetreatCost {
+  to: ChessPosition;
   cost: number;
 }
 
 /**
  * Calculates all valid tactical retreat options for a given piece and failed capture attempt.
  * 
- * @param pieceType Type of piece that failed the capture
  * @param originalPosition Original position of the piece before capture attempt
  * @param capturePosition Position where capture was attempted
  * @param boardState Map of positions to pieceTypes, used to check if spaces are occupied
+ * Attacker should be on the original position and defender should be on the capture position
  * @returns Array of valid retreat options with positions and BP costs
  */
 export function calculateTacticalRetreats(
-  pieceType: PieceType,
-  originalPosition: Position,
-  capturePosition: Position,
-  boardState: Map<Position, any>
-): Retreat[] {
-  if (!isValidPosition(originalPosition) || !isValidPosition(capturePosition)) {
-    throw new Error('Invalid positions provided for tactical retreat calculation');
+  originalPosition: ChessPosition,
+  capturePosition: ChessPosition,
+  boardState: Map<ChessPosition, IChessPiece>
+): RetreatCost[] {
+  const attacker = boardState.get(originalPosition);
+  const defender = boardState.get(capturePosition);
+  if (!attacker || !defender) {
+    throw new Error('Invalid board state');
   }
-
+  const pieceType = attacker.type;
   // Original position is always a valid retreat option at 0 BP cost
-  const retreats: Retreat[] = [
+  const retreats: RetreatCost[] = [
     { to: originalPosition, cost: 0 }
   ];
 
   // Handle knight retreats differently
-  if (pieceType === 'n') {
+  if (pieceType.value === 'n') {
     return [...retreats, ...calculateKnightRetreats(originalPosition, capturePosition, boardState)];
   }
   
@@ -93,25 +81,25 @@ export function calculateTacticalRetreats(
  * @returns Array of valid retreat options with positions and BP costs
  */
 function calculateSlidingPieceRetreats(
-  pieceType: PieceType,
-  originalPosition: Position,
-  capturePosition: Position,
-  boardState: Map<Position, any>
-): Retreat[] {
-  const retreats: Retreat[] = [];
-  const [origX, origY] = positionToCoordinates(originalPosition);
-  const [capX, capY] = positionToCoordinates(capturePosition);
+  pieceType: ChessPieceType,
+  originalPosition: ChessPosition,
+  capturePosition: ChessPosition,
+  boardState: Map<ChessPosition, IChessPiece>
+): RetreatCost[] {
+  const retreats: RetreatCost[] = [];
+  const [origX, origY] = originalPosition.toCoordinates();
+  const [capX, capY] = capturePosition.toCoordinates();
 
   // Determine the axis of attack
-  const isDiagonal = isSameDiagonal(originalPosition, capturePosition);
-  const isHorizontal = isSameRank(originalPosition, capturePosition);
-  const isVertical = isSameFile(originalPosition, capturePosition);
+  const isDiagonal = originalPosition.isSameDiagonal(capturePosition);
+  const isHorizontal = originalPosition.isSameRank(capturePosition);
+  const isVertical = originalPosition.isSameFile(capturePosition);
 
   // Check if the piece can move along this axis
   const validAxis = (
-    (pieceType === 'b' && isDiagonal) ||
-    (pieceType === 'r' && (isHorizontal || isVertical)) ||
-    (pieceType === 'q' && (isDiagonal || isHorizontal || isVertical))
+    (pieceType.value === 'b' && isDiagonal) ||
+    (pieceType.value === 'r' && (isHorizontal || isVertical)) ||
+    (pieceType.value === 'q' && (isDiagonal || isHorizontal || isVertical))
   );
 
   if (!validAxis) {
@@ -138,7 +126,7 @@ function calculateSlidingPieceRetreats(
   
   for (const position of allPositions) {
     if (position !== originalPosition) {
-      const [posX, posY] = positionToCoordinates(position);
+      const [posX, posY] = position.toCoordinates();
       const distance = Math.max(Math.abs(posX - origX), Math.abs(posY - origY));
       retreats.push({ to: position, cost: distance });
     }
@@ -158,20 +146,20 @@ function calculateSlidingPieceRetreats(
  * @returns Array of valid positions along the axis
  */
 function findPositionsAlongAxis(
-  startPosition: Position,
+  startPosition: ChessPosition,
   dx: number,
   dy: number,
-  boardState: Map<Position, any>,
-  excludePosition?: Position
-): Position[] {
-  const positions: Position[] = [];
-  const [startX, startY] = positionToCoordinates(startPosition);
+  boardState: Map<ChessPosition, IChessPiece>,
+  excludePosition?: ChessPosition
+): ChessPosition[] {
+  const positions: ChessPosition[] = [];
+  const [startX, startY] = startPosition.toCoordinates();
   
   let x = startX + dx;
   let y = startY + dy;
   
   while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-    const position = coordinatesToPosition(x, y);
+    const position = ChessPosition.fromCoordinates(x, y);
     
     // Skip if position is occupied
     if (boardState.has(position)) {
@@ -199,17 +187,13 @@ function findPositionsAlongAxis(
  * @returns Array of valid knight retreat options with positions and BP costs
  */
 function calculateKnightRetreats(
-  originalPosition: Position,
-  capturePosition: Position,
-  boardState: Map<Position, any>
-): Retreat[] {
+  originalPosition: ChessPosition,
+  capturePosition: ChessPosition,
+  boardState: Map<ChessPosition, any>
+): RetreatCost[] {
   // Use the pre-calculated lookup table
-  const retreatOptions = getKnightRetreatsFromPositions(originalPosition, capturePosition);
-  
-  // Filter out occupied positions
-  return retreatOptions
-    .filter(option => option.to !== originalPosition && !boardState.has(option.to))
-    .map(option => ({ to: option.to, cost: option.cost }));
+  return getKnightRetreatsFromPositions(originalPosition, capturePosition);
+
 }
 
 /**
@@ -227,9 +211,9 @@ function getSlidingPieceRetreats(
   startX: number, startY: number,
   attackX: number, attackY: number,
   directions: number[][],
-  boardState: Map<Position, any>
-): Retreat[] {
-  const retreats: Retreat[] = [];
+  boardState: Map<ChessPosition, IChessPiece>
+): RetreatCost[] {
+  const retreats: RetreatCost[] = [];
   
   // Check each direction
   for (const [dx, dy] of directions) {
@@ -238,7 +222,7 @@ function getSlidingPieceRetreats(
     
     // Continue in this direction until board edge or occupied square
     while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-      const position = coordinatesToPosition(x, y);
+      const position = ChessPosition.fromCoordinates(x, y);
       
       // Stop at occupied square
       if (boardState.has(position)) {

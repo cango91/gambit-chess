@@ -7,6 +7,7 @@
   "scripts": {
     "prebuild": "node scripts/generateKnightRetreatTable.js",
     "build": "tsc",
+    "build:clean": "rimraf dist && yarn build",
     "clean": "rimraf dist",
     "dev": "tsc -w",
     "test": "jest --coverage",
@@ -16,7 +17,8 @@
     "docs:html": "typedoc --out ../docs/api/html/shared src/index.ts",
     "docs:json": "typedoc --json ../docs/api/json/shared.json src/index.ts",
     "docs:md": "typedoc --plugin typedoc-plugin-markdown --out ../docs/api/md/shared src/index.ts",
-    "docs": "yarn docs:html && yarn docs:json && yarn docs:md"
+    "docs": "yarn docs:html && yarn docs:json && yarn docs:md",
+    "docs:clean": "rimraf ../docs/api/html/shared ../docs/api/json/shared.json ../docs/api/md/shared"
   },
   "author": "cango91",
   "license": "MIT",

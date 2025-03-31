@@ -5,6 +5,7 @@
  * they adhere to domain boundaries and information architecture.
  */
 
+import { GameEventType } from '..';
 import { 
   validateMoveDTO, 
   validateBPAllocationDTO, 
@@ -17,8 +18,6 @@ import {
   validateSpectatorDTO,
   validateGameStateDTO,
   validateGameId,
-  validatePosition,
-  validatePieceColor,
 } from '../validation';
 
 import {
@@ -29,7 +28,6 @@ import {
   DuelOutcomeEvent,
   RetreatOptionsEvent,
   RetreatSelectionEvent,
-  CheckEvent,
   GameOverEvent,
   PlayerJoinedEvent,
   PlayerLeftEvent,
@@ -39,7 +37,11 @@ import {
   ChatMessageEvent,
   GameStateUpdateEvent,
   ErrorEvent,
-  SharedEvent
+  GameEvent,
+  GameResignEvent,
+  GameOfferDrawEvent,
+  GameRespondDrawEvent,
+  ConnectionPingEvent,
 } from './index';
 
 /**
@@ -48,7 +50,7 @@ import {
  * @returns True if the event is valid
  */
 export function validateMoveRequestEvent(event: MoveRequestEvent): boolean {
-  return event.type === 'move.request' && validateMoveDTO(event.payload);
+  return event.type === GameEventType.MOVE_REQUESTED && validateMoveDTO(event.payload);
 }
 
 /**
@@ -57,7 +59,7 @@ export function validateMoveRequestEvent(event: MoveRequestEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateMoveResultEvent(event: MoveResultEvent): boolean {
-  if (event.type !== 'move.result') return false;
+  if (event.type !== GameEventType.MOVE_RESULT) return false;
   
   const { payload } = event;
   return typeof payload.success === 'boolean' && 
@@ -72,7 +74,7 @@ export function validateMoveResultEvent(event: MoveResultEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateDuelInitiatedEvent(event: DuelInitiatedEvent): boolean {
-  return event.type === 'duel.initiated' && validateDuelInitiatedDTO(event.payload);
+  return event.type === GameEventType.DUEL_INITIATED && validateDuelInitiatedDTO(event.payload);
 }
 
 /**
@@ -81,7 +83,7 @@ export function validateDuelInitiatedEvent(event: DuelInitiatedEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateDuelAllocationEvent(event: DuelAllocationEvent): boolean {
-  return event.type === 'duel.allocate' && validateBPAllocationDTO(event.payload);
+  return event.type === GameEventType.DUEL_ALLOCATE && validateBPAllocationDTO(event.payload);
 }
 
 /**
@@ -90,7 +92,7 @@ export function validateDuelAllocationEvent(event: DuelAllocationEvent): boolean
  * @returns True if the event is valid
  */
 export function validateDuelOutcomeEvent(event: DuelOutcomeEvent): boolean {
-  return event.type === 'duel.outcome' && validateDuelOutcomeDTO(event.payload);
+  return event.type === GameEventType.DUEL_OUTCOME && validateDuelOutcomeDTO(event.payload);
 }
 
 /**
@@ -99,7 +101,7 @@ export function validateDuelOutcomeEvent(event: DuelOutcomeEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateRetreatOptionsEvent(event: RetreatOptionsEvent): boolean {
-  return event.type === 'retreat.options' && validateRetreatOptionsDTO(event.payload);
+  return event.type === GameEventType.RETREAT_OPTIONS && validateRetreatOptionsDTO(event.payload);
 }
 
 /**
@@ -108,33 +110,18 @@ export function validateRetreatOptionsEvent(event: RetreatOptionsEvent): boolean
  * @returns True if the event is valid
  */
 export function validateRetreatSelectionEvent(event: RetreatSelectionEvent): boolean {
-  return event.type === 'retreat.select' && validateRetreatDTO(event.payload);
+  return event.type === GameEventType.RETREAT_SELECTED && validateRetreatDTO(event.payload);
 }
-
-/**
- * Validates a CheckEvent
- * @param event The event to validate
- * @returns True if the event is valid
- */
-export function validateCheckEvent(event: CheckEvent): boolean {
-  if (event.type !== 'game.check') return false;
-  
-  const { payload } = event;
-  return validateGameId(payload.gameId) && 
-    validatePosition(payload.kingPosition) &&
-    validatePieceColor(payload.color);
-}
-
 /**
  * Validates a GameOverEvent
  * @param event The event to validate
  * @returns True if the event is valid
  */
 export function validateGameOverEvent(event: GameOverEvent): boolean {
-  if (event.type !== 'game.over') return false;
+  if (event.type !== GameEventType.GAME_OVER) return false;
   
   const { payload } = event;
-  return validateGameId(payload.gameId) && 
+  return validateGameId(event.gameId) && 
     ['white_win', 'black_win', 'draw'].includes(payload.result) &&
     typeof payload.reason === 'string';
 }
@@ -145,7 +132,7 @@ export function validateGameOverEvent(event: GameOverEvent): boolean {
  * @returns True if the event is valid
  */
 export function validatePlayerJoinedEvent(event: PlayerJoinedEvent): boolean {
-  return event.type === 'player.joined' && validatePlayerDTO(event.payload);
+  return event.type === GameEventType.PLAYER_JOINED && validatePlayerDTO(event.payload);
 }
 
 /**
@@ -154,10 +141,10 @@ export function validatePlayerJoinedEvent(event: PlayerJoinedEvent): boolean {
  * @returns True if the event is valid
  */
 export function validatePlayerLeftEvent(event: PlayerLeftEvent): boolean {
-  if (event.type !== 'player.left') return false;
+  if (event.type !== GameEventType.PLAYER_LEFT) return false;
   
   const { payload } = event;
-  return validateGameId(payload.gameId) && typeof payload.playerId === 'string';
+  return validateGameId(event.gameId) && typeof payload.playerId === 'string';
 }
 
 /**
@@ -166,10 +153,10 @@ export function validatePlayerLeftEvent(event: PlayerLeftEvent): boolean {
  * @returns True if the event is valid
  */
 export function validatePlayerReconnectedEvent(event: PlayerReconnectedEvent): boolean {
-  if (event.type !== 'player.reconnected') return false;
+  if (event.type !== GameEventType.PLAYER_RECONNECTED) return false;
   
   const { payload } = event;
-  return validateGameId(payload.gameId) && typeof payload.playerId === 'string';
+  return validateGameId(event.gameId) && typeof payload.playerId === 'string';
 }
 
 /**
@@ -178,7 +165,7 @@ export function validatePlayerReconnectedEvent(event: PlayerReconnectedEvent): b
  * @returns True if the event is valid
  */
 export function validateSpectatorJoinedEvent(event: SpectatorJoinedEvent): boolean {
-  return event.type === 'spectator.joined' && validateSpectatorDTO(event.payload);
+  return event.type === GameEventType.SPECTATOR_JOINED && validateSpectatorDTO(event.payload);
 }
 
 /**
@@ -187,10 +174,10 @@ export function validateSpectatorJoinedEvent(event: SpectatorJoinedEvent): boole
  * @returns True if the event is valid
  */
 export function validateSpectatorLeftEvent(event: SpectatorLeftEvent): boolean {
-  if (event.type !== 'spectator.left') return false;
+  if (event.type !== GameEventType.SPECTATOR_LEFT) return false;
   
   const { payload } = event;
-  return validateGameId(payload.gameId) && typeof payload.spectatorId === 'string';
+  return validateGameId(event.gameId) && typeof payload.spectatorId === 'string';
 }
 
 /**
@@ -199,7 +186,7 @@ export function validateSpectatorLeftEvent(event: SpectatorLeftEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateChatMessageEvent(event: ChatMessageEvent): boolean {
-  return event.type === 'chat.message' && validateChatMessageDTO(event.payload);
+  return event.type === GameEventType.CHAT_MESSAGE && validateChatMessageDTO(event.payload);
 }
 
 /**
@@ -208,7 +195,7 @@ export function validateChatMessageEvent(event: ChatMessageEvent): boolean {
  * @returns True if the event is valid
  */
 export function validateGameStateUpdateEvent(event: GameStateUpdateEvent): boolean {
-  return event.type === 'gameState.update' && validateGameStateDTO(event.payload);
+  return event.type === GameEventType.GAME_STATE_UPDATE && validateGameStateDTO(event.payload);
 }
 
 /**
@@ -217,7 +204,7 @@ export function validateGameStateUpdateEvent(event: GameStateUpdateEvent): boole
  * @returns True if the event is valid
  */
 export function validateErrorEvent(event: ErrorEvent): boolean {
-  if (event.type !== 'error') return false;
+  if (event.type !== GameEventType.ERROR) return false;
   
   const { payload } = event;
   return typeof payload.code === 'string' && typeof payload.message === 'string';
@@ -228,14 +215,15 @@ export function validateErrorEvent(event: ErrorEvent): boolean {
  * @param event The event to validate
  * @returns Whether the event is valid
  */
-export function validateGameResignEvent(event: any): boolean {
+export function validateGameResignEvent(event: GameResignEvent): boolean {
   if (!event || !event.payload) return false;
   
-  const { gameId, sequence } = event.payload;
+  const { gameId, sequence, payload } = event;
   
   return (
     typeof gameId === 'string' && gameId.length > 0 &&
-    typeof sequence === 'number' && sequence >= 0
+    typeof sequence === 'number' && sequence >= 0 &&
+    validatePlayerDTO(payload)
   );
 }
 
@@ -244,14 +232,15 @@ export function validateGameResignEvent(event: any): boolean {
  * @param event The event to validate
  * @returns Whether the event is valid
  */
-export function validateGameOfferDrawEvent(event: any): boolean {
+export function validateGameOfferDrawEvent(event: GameOfferDrawEvent): boolean {
   if (!event || !event.payload) return false;
   
-  const { gameId, sequence } = event.payload;
+  const { gameId, sequence, payload } = event;
   
   return (
     typeof gameId === 'string' && gameId.length > 0 &&
-    typeof sequence === 'number' && sequence >= 0
+    typeof sequence === 'number' && sequence >= 0 &&
+    validatePlayerDTO(payload)
   );
 }
 
@@ -260,14 +249,14 @@ export function validateGameOfferDrawEvent(event: any): boolean {
  * @param event The event to validate
  * @returns Whether the event is valid
  */
-export function validateGameRespondDrawEvent(event: any): boolean {
+export function validateGameRespondDrawEvent(event: GameRespondDrawEvent): boolean {
   if (!event || !event.payload) return false;
   
-  const { gameId, accept, sequence } = event.payload;
+  const { gameId, sequence, payload } = event;
   
   return (
     typeof gameId === 'string' && gameId.length > 0 &&
-    typeof accept === 'boolean' &&
+    typeof payload.accept === 'boolean' &&
     typeof sequence === 'number' && sequence >= 0
   );
 }
@@ -277,104 +266,68 @@ export function validateGameRespondDrawEvent(event: any): boolean {
  * @param event The event to validate
  * @returns Whether the event is valid
  */
-export function validateConnectionPingEvent(event: any): boolean {
-  if (!event || !event.payload) return false;
+export function validateConnectionPingEvent(event: ConnectionPingEvent): boolean {
+  if (!event) return false;
   
-  const { gameId, timestamp } = event.payload;
+  if (event.type !== GameEventType.CONNECTION_PING) return false;
   
-  return (
-    typeof gameId === 'string' && gameId.length > 0 &&
-    typeof timestamp === 'number' && timestamp > 0
-  );
+  // Payload is optional in ConnectionPingEvent
+  if (event.payload) {
+    return typeof event.payload.timestamp === 'number';
+  }
+  
+  return true;
 }
 
 /**
- * Validates a player set name event
+ * Validates a GameEvent
  * @param event The event to validate
  * @returns Whether the event is valid
  */
-export function validatePlayerSetNameEvent(event: any): boolean {
-  if (!event || !event.payload) return false;
-  
-  const { gameId, name } = event.payload;
-  
-  return (
-    typeof gameId === 'string' && gameId.length > 0 &&
-    typeof name === 'string' && name.length >= 3 && name.length <= 20
-  );
-}
-
-/**
- * Validates a spectator join event
- * @param event The event to validate
- * @returns Whether the event is valid
- */
-export function validateSpectatorJoinEvent(event: any): boolean {
-  if (!event || !event.payload) return false;
-  
-  const { gameId, name } = event.payload;
-  
-  return (
-    typeof gameId === 'string' && gameId.length > 0 &&
-    typeof name === 'string' && name.length >= 3 && name.length <= 20
-  );
-}
-
-/**
- * Validates a shared event
- * @param event The event to validate
- * @returns Whether the event is valid
- */
-export function validateSharedEvent(event: any): boolean {
+export function validateGameEvent(event: GameEvent): boolean {
   if (!event || !event.type) return false;
 
   switch (event.type) {
-    case 'move.request':
+    case GameEventType.MOVE_REQUESTED:
       return validateMoveRequestEvent(event as MoveRequestEvent);
-    case 'move.result':
+    case GameEventType.MOVE_RESULT:
       return validateMoveResultEvent(event as MoveResultEvent);
-    case 'duel.initiated':
+    case GameEventType.DUEL_INITIATED:
       return validateDuelInitiatedEvent(event as DuelInitiatedEvent);
-    case 'duel.allocate':
+    case GameEventType.DUEL_ALLOCATE:
       return validateDuelAllocationEvent(event as DuelAllocationEvent);
-    case 'duel.outcome':
+    case GameEventType.DUEL_OUTCOME:
       return validateDuelOutcomeEvent(event as DuelOutcomeEvent);
-    case 'retreat.options':
+    case GameEventType.RETREAT_OPTIONS:
       return validateRetreatOptionsEvent(event as RetreatOptionsEvent);
-    case 'retreat.select':
+    case GameEventType.RETREAT_SELECTED:
       return validateRetreatSelectionEvent(event as RetreatSelectionEvent);
-    case 'game.check':
-      return validateCheckEvent(event as CheckEvent);
-    case 'game.over':
+    case GameEventType.GAME_OVER:
       return validateGameOverEvent(event as GameOverEvent);
-    case 'player.joined':
+    case GameEventType.PLAYER_JOINED:
       return validatePlayerJoinedEvent(event as PlayerJoinedEvent);
-    case 'player.left':
+    case GameEventType.PLAYER_LEFT:
       return validatePlayerLeftEvent(event as PlayerLeftEvent);
-    case 'player.reconnected':
+    case GameEventType.PLAYER_RECONNECTED:
       return validatePlayerReconnectedEvent(event as PlayerReconnectedEvent);
-    case 'spectator.joined':
+    case GameEventType.SPECTATOR_JOINED:
       return validateSpectatorJoinedEvent(event as SpectatorJoinedEvent);
-    case 'spectator.left':
+    case GameEventType.SPECTATOR_LEFT:
       return validateSpectatorLeftEvent(event as SpectatorLeftEvent);
-    case 'chat.message':
+    case GameEventType.CHAT_MESSAGE:
       return validateChatMessageEvent(event as ChatMessageEvent);
-    case 'gameState.update':
+    case GameEventType.GAME_STATE_UPDATE:
       return validateGameStateUpdateEvent(event as GameStateUpdateEvent);
-    case 'error':
+    case GameEventType.ERROR:
       return validateErrorEvent(event as ErrorEvent);
-    case 'game.resign':
+    case GameEventType.GAME_RESIGN:
       return validateGameResignEvent(event);
-    case 'game.offerDraw':
+    case GameEventType.GAME_OFFER_DRAW:
       return validateGameOfferDrawEvent(event);
-    case 'game.respondDraw':
+    case GameEventType.GAME_RESPOND_DRAW:
       return validateGameRespondDrawEvent(event);
-    case 'connection.ping':
+    case GameEventType.CONNECTION_PING:
       return validateConnectionPingEvent(event);
-    case 'player.setName':
-      return validatePlayerSetNameEvent(event);
-    case 'spectator.join':
-      return validateSpectatorJoinEvent(event);
     default:
       return false;
   }

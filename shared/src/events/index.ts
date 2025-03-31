@@ -7,25 +7,19 @@
 
 import {
   MoveDTO,
-  BPAllocationDTO,
-  RetreatDTO,
+  RetreatSelectionDTO,
   DuelInitiatedDTO,
   DuelOutcomeDTO,
   RetreatOptionsDTO,
   ChatMessageDTO,
   PlayerDTO,
   SpectatorDTO,
-  BPUpdateDTO,
   GameStateDTO,
   ErrorDTO,
-  ResignDTO,
-  DrawOfferDTO,
   DrawResponseDTO,
-  ConnectionPingDTO,
-  SpectatorJoinDTO,
-  PlayerNameDTO
+  BPAllocationDTO,
 } from '../dtos';
-import { GamePhase, PieceColor, Position } from '../types';
+import { GameEventType } from '../types';
 
 /**
  * Event Categories
@@ -35,16 +29,136 @@ import { GamePhase, PieceColor, Position } from '../types';
  */
 
 /**
+ * Base Event Interface
+ * 
+ * This interface defines the base event structure that all shared events must implement.
+ * It ensures type safety and consistency across all event types.
+ */
+interface BaseGameEvent {
+  /** Event type */
+  type: GameEventType;
+  /** Event payload */
+  payload?: any | undefined;
+  /** Game unique identifier (for identification and state reconciliation) */
+  gameId: string;
+  /** Event sequence number (for validation and state reconciliation) */
+  sequence: number;
+  /** Timestamp of the event (for ordering and state reconciliation) */
+  timestamp: number;
+}
+
+/**
+ * Authentication Events
+ * These events handle secure authentication without login requirements
+ */
+export interface AuthChallengeEvent extends BaseGameEvent {
+  type: GameEventType.AUTH_CHALLENGE;
+  payload: {
+    challenge: string;
+    timestamp: number;
+  };
+}
+
+export interface AuthResponseEvent extends BaseGameEvent {
+  type: GameEventType.AUTH_RESPONSE;
+  payload: {
+    challenge: string;
+    signature: string;
+    token: string;
+    timestamp: number;
+  };
+}
+
+export interface AuthResultEvent extends BaseGameEvent {
+  type: GameEventType.AUTH_RESULT;
+  payload: {
+    success: boolean;
+    error?: string;
+    playerId?: string;
+    gameId?: string;
+  };
+}
+
+/**
+ * Session Events
+ * These events handle game session management
+ */
+export interface GameSessionJoinedEvent extends BaseGameEvent {
+  type: GameEventType.SESSION_JOINED;
+  payload: {
+    gameId: string;
+    playerId: string;
+    playerColor: string;
+    initialState: GameStateDTO;
+  };
+}
+
+export interface StateSyncRequestEvent extends BaseGameEvent {
+  type: GameEventType.STATE_SYNC_REQUEST;
+  payload: {
+    lastSequence: number;
+    checksum: string;
+  };
+}
+
+export interface StateSyncResponseEvent extends BaseGameEvent {
+  type: GameEventType.STATE_SYNC_RESPONSE;
+  payload: GameStateDTO & {
+    sequence: number;
+    checksum: string;
+  };
+}
+
+/**
+ * BP Commitment Scheme Events
+ * These events implement a secure commitment scheme for BP allocation
+ */
+export interface BPCommitmentEvent extends BaseGameEvent {
+  type: GameEventType.DUEL_COMMITMENT;
+  payload: {
+    commitment: string;
+  };
+}
+
+export interface BPRevealEvent extends BaseGameEvent {
+  type: GameEventType.DUEL_REVEAL;
+  payload: {
+    allocation: number;
+    nonce: string;
+  };
+}
+
+/**
+ * Connection Status Events
+ * These events handle connection state management
+ */
+export interface ConnectionStatusEvent extends BaseGameEvent {
+  type: GameEventType.CONNECTION_STATUS;
+  payload: {
+    status: 'connected' | 'reconnecting' | 'disconnected';
+    playerId: string;
+  };
+}
+
+export interface ReconnectionEvent extends BaseGameEvent {
+  type: GameEventType.CONNECTION_RECONNECT;
+  payload: {
+    playerId: string;
+    token: string;
+  };
+}
+
+/**
  * Move Events
  * These events handle basic move requests and validation
  */
-export interface MoveRequestEvent {
-  type: 'move.request';
+export interface MoveRequestEvent extends BaseGameEvent {
+  type: GameEventType.MOVE_REQUESTED;
   payload: MoveDTO;
 }
 
-export interface MoveResultEvent {
-  type: 'move.result';
+export interface MoveResultEvent extends BaseGameEvent {
+  type: GameEventType.MOVE_RESULT;
   payload: {
     success: boolean;
     error?: string;
@@ -58,18 +172,18 @@ export interface MoveResultEvent {
  * These events handle duel initiation and allocation
  * Note: Actual BP values are filtered by the server before sending to clients
  */
-export interface DuelInitiatedEvent {
-  type: 'duel.initiated';
+export interface DuelInitiatedEvent extends BaseGameEvent {
+  type: GameEventType.DUEL_INITIATED;
   payload: DuelInitiatedDTO;
 }
 
-export interface DuelAllocationEvent {
-  type: 'duel.allocate';
+export interface DuelAllocationEvent extends BaseGameEvent {
+  type: GameEventType.DUEL_ALLOCATE;
   payload: BPAllocationDTO;
 }
 
-export interface DuelOutcomeEvent {
-  type: 'duel.outcome';
+export interface DuelOutcomeEvent extends BaseGameEvent {
+  type: GameEventType.DUEL_OUTCOME;
   payload: DuelOutcomeDTO;
 }
 
@@ -77,37 +191,27 @@ export interface DuelOutcomeEvent {
  * Retreat Events
  * These events handle tactical retreat options and selection
  */
-export interface RetreatOptionsEvent {
-  type: 'retreat.options';
+export interface RetreatOptionsEvent extends BaseGameEvent {
+  type: GameEventType.RETREAT_OPTIONS;
   payload: RetreatOptionsDTO;
 }
 
-export interface RetreatSelectionEvent {
-  type: 'retreat.select';
-  payload: RetreatDTO;
+export interface RetreatSelectionEvent extends BaseGameEvent {
+  type: GameEventType.RETREAT_SELECTED;
+  payload: RetreatSelectionDTO;
 }
 
 /**
  * Game Status Events
  * These events notify about game status changes
  */
-export interface CheckEvent {
-  type: 'game.check';
-  payload: {
-    gameId: string;
-    kingPosition: Position;
-    color: PieceColor;
-  };
-}
-
 /**
  * Game Over Event
  * Notifies that the game has ended
  */
-export interface GameOverEvent {
-  type: 'game.over';
+export interface GameOverEvent extends BaseGameEvent {
+  type: GameEventType.GAME_OVER;
   payload: {
-    gameId: string;
     result: 'white_win' | 'black_win' | 'draw';
     reason: string;
   };
@@ -117,23 +221,21 @@ export interface GameOverEvent {
  * Player Events
  * These events handle player connections and state
  */
-export interface PlayerJoinedEvent {
-  type: 'player.joined';
+export interface PlayerJoinedEvent extends BaseGameEvent {
+  type: GameEventType.PLAYER_JOINED;
   payload: PlayerDTO;
 }
 
-export interface PlayerLeftEvent {
-  type: 'player.left';
+export interface PlayerLeftEvent extends BaseGameEvent {
+  type: GameEventType.PLAYER_LEFT;
   payload: {
-    gameId: string;
     playerId: string;
   };
 }
 
-export interface PlayerReconnectedEvent {
-  type: 'player.reconnected';
+export interface PlayerReconnectedEvent extends BaseGameEvent {
+  type: GameEventType.PLAYER_RECONNECTED;
   payload: {
-    gameId: string;
     playerId: string;
   };
 }
@@ -142,15 +244,14 @@ export interface PlayerReconnectedEvent {
  * Spectator Events
  * These events handle spectator connections
  */
-export interface SpectatorJoinedEvent {
-  type: 'spectator.joined';
+export interface SpectatorJoinedEvent extends BaseGameEvent {
+  type: GameEventType.SPECTATOR_JOINED;
   payload: SpectatorDTO;
 }
 
-export interface SpectatorLeftEvent {
-  type: 'spectator.left';
+export interface SpectatorLeftEvent extends BaseGameEvent {
+  type: GameEventType.SPECTATOR_LEFT;
   payload: {
-    gameId: string;
     spectatorId: string;
   };
 }
@@ -159,8 +260,8 @@ export interface SpectatorLeftEvent {
  * Chat Events
  * These events handle chat messages
  */
-export interface ChatMessageEvent {
-  type: 'chat.message';
+export interface ChatMessageEvent extends BaseGameEvent {
+  type: GameEventType.CHAT_MESSAGE;
   payload: ChatMessageDTO;
 }
 
@@ -170,8 +271,8 @@ export interface ChatMessageEvent {
  * This is the primary mechanism for the server to communicate state changes to clients
  * The server filters information based on player visibility rules before sending
  */
-export interface GameStateUpdateEvent {
-  type: 'gameState.update';
+export interface GameStateUpdateEvent extends BaseGameEvent {
+  type: GameEventType.GAME_STATE_UPDATE;
   payload: GameStateDTO;
 }
 
@@ -179,8 +280,8 @@ export interface GameStateUpdateEvent {
  * Error Events
  * These events handle error notifications
  */
-export interface ErrorEvent {
-  type: 'error';
+export interface ErrorEvent extends BaseGameEvent {
+  type: GameEventType.ERROR;
   payload: ErrorDTO;
 }
 
@@ -188,18 +289,18 @@ export interface ErrorEvent {
  * Game Control Events
  * These events handle game flow control
  */
-export interface GameResignEvent {
-  type: 'game.resign';
-  payload: ResignDTO;
+export interface GameResignEvent extends BaseGameEvent {
+  type: GameEventType.GAME_RESIGN;
+  payload: PlayerDTO;
 }
 
-export interface GameOfferDrawEvent {
-  type: 'game.offerDraw';
-  payload: DrawOfferDTO;
+export interface GameOfferDrawEvent extends BaseGameEvent {
+  type: GameEventType.GAME_OFFER_DRAW;
+  payload: PlayerDTO;
 }
 
-export interface GameRespondDrawEvent {
-  type: 'game.respondDraw';
+export interface GameRespondDrawEvent extends BaseGameEvent {
+  type: GameEventType.GAME_RESPOND_DRAW;
   payload: DrawResponseDTO;
 }
 
@@ -207,33 +308,25 @@ export interface GameRespondDrawEvent {
  * Connection Events
  * These events handle connection maintenance
  */
-export interface ConnectionPingEvent {
-  type: 'connection.ping';
-  payload: ConnectionPingDTO;
+export interface ConnectionPingEvent extends BaseGameEvent {
+  type: GameEventType.CONNECTION_PING;
+  payload?: {
+    timestamp: number;
+  };
 }
 
-/**
- * Player Management Events
- * These events handle player information
- */
-export interface PlayerSetNameEvent {
-  type: 'player.setName';
-  payload: PlayerNameDTO;
-}
-
-/**
- * Spectator Management Events
- * These events handle spectator joining
- */
-export interface SpectatorJoinEvent {
-  type: 'spectator.join';
-  payload: SpectatorJoinDTO;
+export interface ConnectionPongEvent extends BaseGameEvent {
+  type: GameEventType.CONNECTION_PONG;
+  payload: {
+    timestamp: number;
+    echo: number;
+  };
 }
 
 /**
  * Union type of all shared events
  */
-export type SharedEvent =
+export type GameEvent =
   | MoveRequestEvent
   | MoveResultEvent
   | DuelInitiatedEvent
@@ -241,7 +334,6 @@ export type SharedEvent =
   | DuelOutcomeEvent
   | RetreatOptionsEvent
   | RetreatSelectionEvent
-  | CheckEvent
   | GameOverEvent
   | PlayerJoinedEvent
   | PlayerLeftEvent
@@ -255,8 +347,17 @@ export type SharedEvent =
   | GameOfferDrawEvent
   | GameRespondDrawEvent
   | ConnectionPingEvent
-  | PlayerSetNameEvent
-  | SpectatorJoinEvent;
+  | ConnectionPongEvent
+  | AuthChallengeEvent
+  | AuthResponseEvent
+  | AuthResultEvent
+  | GameSessionJoinedEvent
+  | StateSyncRequestEvent
+  | StateSyncResponseEvent
+  | BPCommitmentEvent
+  | BPRevealEvent
+  | ConnectionStatusEvent
+  | ReconnectionEvent;
   
 // Export validation functions
 export * from './validation'; 

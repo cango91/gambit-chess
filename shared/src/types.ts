@@ -2,100 +2,44 @@
  * Core types for Gambit Chess
  */
 
-/**
- * Represents a position on the chess board
- */
-export type Position = string; // e.g., "e4", "a1"
+import { IChessPiece } from "./chess/contracts";
+import { ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPosition, ChessPositionType } from "./chess/types";
+import { RetreatCost } from "./tactical";
 
 /**
- * Represents chess piece colors
+ * Represents a value object
+ * 
+ * A value object is an object that is immutable and has no identity
+ * It is defined by its value and is equal to another value object if it has the same value
  */
-export type PieceColor = 'white' | 'black';
+export type ValueObject<T> = {
+  equals(vo: ValueObject<T>): boolean;
+  hashCode(): string;
+  get value(): T;
+  set value(value: T);
+  valueOf(): number;
+  toString(): string;
+}
 
-/**
- * Represents piece types
- */
-export type PieceType = 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
-
-
-/**
- * Represents a chess piece
- */
-export interface ChessPiece {
-    /** Piece type (p=pawn, n=knight, b=bishop, r=rook, q=queen, k=king) */
-    type: PieceType;
-    /** Piece color */
-    color: PieceColor;
-    /** Current position on the board */
-    position: Position;
-    /** Whether the piece has moved from its starting position */
-    hasMoved: boolean;
-    /** Turn number when this piece last moved (for en passant and other time-sensitive rules) */
-    lastMoveTurn?: number;
-  }
-  
-  /**
-   * Board interface that defines core functionality for any board representation
-   */
-  export interface IBoard {
-    /** Gets the piece at a specific position */
-    getPiece(position: Position): ChessPiece | undefined;
-    
-    /** Gets all pieces currently on the board */
-    getAllPieces(): ChessPiece[];
-    
-    /** Gets all pieces of a specific color */
-    getPiecesByColor(color: PieceColor): ChessPiece[];
-    
-    /** Gets all captured pieces */
-    getCapturedPieces(): ChessPiece[];
-    
-    /** Gets the position of the king for a specific color */
-    getKingPosition(color: PieceColor): Position | undefined;
-    
-    /** Checks if a move is valid according to chess rules */
-    isValidMove(from: Position, to: Position): boolean;
-    
-    /** Checks if the king of a specific color is in check */
-    isInCheck(color: PieceColor): boolean;
-    
-    /** Makes a move on the board */
-    makeMove(from: Position, to: Position, promotion?: PieceType): { 
-      success: boolean, 
-      captured?: ChessPiece, 
-      check?: boolean, 
-      checkmate?: boolean
-    };
-    
-    /** Creates a deep copy of the board */
-    clone(): IBoard;
-    
-    /** Gets the current move/turn number */
-    getCurrentTurn(): number;
-    
-    /** Checks if a pawn can be captured via en passant at the given position */
-    getEnPassantTarget(): Position | null;
-  }
-  
-  /**
-   * Represents the outcome of a move
-   */
-  export type MoveOutcome = 'success' | 'failed';
+// /**
+//  * Represents the outcome of a move
+//  */
+export type MoveOutcome = 'success' | 'failed';
   
   /**
    * Represents a chess move
    */
   export interface Move {
     /** Starting position */
-    from: Position;
+    from: ChessPosition;
     /** Destination position */
-    to: Position;
+    to: ChessPosition;
     /** Moving piece type */
-    piece: PieceType;
+    piece: ChessPieceType;
     /** Captured piece type (if a capture was attempted) */
-    capture?: PieceType;
+    capture?: ChessPieceType;
     /** Promotion piece (if pawn is promoted) */
-    promotion?: PieceType;
+    promotion?: ChessPieceType;
     /** If the move is a castle */
     castle?: 'kingside' | 'queenside';
     /** If the move results in check */
@@ -113,7 +57,7 @@ export interface ChessPiece {
    */
   export interface Duel {
     /** Player who initiated the capture attempt */
-    attacker: PieceColor;
+    attacker: ChessPieceColor;
     /** BP allocated by the attacker */
     attackerAllocation: number;
     /** BP allocated by the defender */
@@ -121,17 +65,7 @@ export interface ChessPiece {
     /** The outcome of the duel */
     outcome: MoveOutcome;
   }
-  
-  /**
-   * Represents a tactical retreat after a failed capture
-   */
-  export interface Retreat {
-    /** Position to retreat to */
-    to: Position;
-    /** BP cost of the retreat */
-    cost: number;
-  }
-  
+
   /**
    * Represents game phase
    */
@@ -161,7 +95,7 @@ export interface ChessPiece {
     /** Player display name */
     name: string;
     /** Player color */
-    color: PieceColor;
+    color: ChessPieceColor;
   }
   
   /**
@@ -178,8 +112,6 @@ export interface ChessPiece {
    * Represents a chat message
    */
   export interface ChatMessage {
-    /** Sender ID */
-    senderId: string;
     /** Sender name */
     senderName: string;
     /** Message content */
@@ -198,11 +130,11 @@ export interface ExtendedMove {
   /** Duel information if a capture was attempted */
   duel: Duel | null;
   /** Retreat information if a failed capture resulted in a retreat */
-  retreat: Retreat | null;
+  retreat: RetreatCost | null;
   /** Battle Points regenerated after this move */
   bpRegeneration: number;
   /** Color of the player who made the move */
-  playerColor: PieceColor;
+  playerColor: ChessPieceColor;
   /** Turn number when this move was made */
   turnNumber: number;
 }
@@ -250,3 +182,173 @@ export interface PGNData {
   /** Move list */
   moves: MoveHistory;
 } 
+
+/**
+ * Enum for game event types
+ * Used for consistent event naming across the system
+ */
+export enum GameEventType {
+  // Game state events
+  GAME_STATE_UPDATE = 'game:updated',
+  GAME_CREATED = 'game:created',
+  GAME_STARTED = 'game:started',
+  GAME_OVER = 'game:over',
+  GAME_ABANDONED = 'game:abandoned',
+  // Game control events
+  GAME_RESIGN = 'game:resign',
+  GAME_OFFER_DRAW = 'game:offerDraw',
+  GAME_RESPOND_DRAW = 'game:respondDraw',
+  
+  // Player events
+  PLAYER_JOINED = 'game:playerJoined',
+  PLAYER_LEFT = 'game:playerLeft',
+  PLAYER_RECONNECTED = 'game:playerReconnected',
+  PLAYER_DISCONNECTED = 'game:playerDisconnected',
+  
+  // Move events
+  MOVE_REQUESTED = 'game:moveRequested',
+  MOVE_RESULT = 'game:moveResult',
+  
+  // Duel events
+  DUEL_INITIATED = 'game:duelInitiated',
+  DUEL_ALLOCATE = 'game:duelAllocate',
+  DUEL_OUTCOME = 'game:duelOutcome',
+  
+  // Retreat events
+  RETREAT_OPTIONS = 'game:retreatOptions',
+  RETREAT_SELECTED = 'game:retreatSelected',
+  
+  // Spectator events
+  SPECTATOR_JOINED = 'game:spectatorJoined',
+  SPECTATOR_LEFT = 'game:spectatorLeft',
+  
+  // Chat events
+  CHAT_MESSAGE = 'chat.message',
+  
+  // Authentication events
+  AUTH_CHALLENGE = 'auth:challenge',
+  AUTH_RESPONSE = 'auth:response',
+  AUTH_RESULT = 'auth:result',
+  
+  // Session events
+  SESSION_JOINED = 'session:joined',
+  STATE_SYNC_REQUEST = 'state:syncRequest',
+  STATE_SYNC_RESPONSE = 'state:syncResponse',
+  
+  // BP commitment scheme events
+  DUEL_COMMITMENT = 'game:duelCommitment',
+  DUEL_REVEAL = 'game:duelReveal',
+  
+  // Connection events
+  CONNECTION_STATUS = 'connection:status',
+  CONNECTION_RECONNECT = 'connection:reconnect',
+  CONNECTION_PING = 'connection:ping',
+  CONNECTION_PONG = 'connection:pong',
+  
+  // System events
+  ERROR = 'error',
+} 
+/**
+ * BP Regeneration Bonus Types
+ * 
+ * These are the types of tactical advantages that can be used to regenerate BP
+ * The key is the type of tactical advantage and the value is the BP regeneration bonus
+ * 
+ * BP Regeneration Bonuses Are Hierarchical, meaning that a higher level tactical advantage will include all the benefits of lower level tactical advantages
+ */
+export enum BPRegenBonusType{
+  DISCOVERED_CHECK = 'discovered_check',
+  DISCOVERED_ATTACK = 'discovered_attack',
+  PIN = 'pin',
+  SKEWER = 'skewer',
+  FORK = 'fork',
+  DIRECT_DEFENSE = 'direct_defense',
+  CHECK = 'check',
+  DOUBLE_CHECK = 'double_check',
+}
+
+/**
+ * Data structure for a pin (piece pinned to a more valuable piece)
+ */
+export interface PinData {
+  pinner: IChessPiece;
+  pinnedPiece: IChessPiece;
+  pinnedTo: IChessPiece;
+}
+
+/**
+ * Data structure for a fork (piece attacking multiple opponent pieces)
+ */
+export interface ForkData {
+  forker: IChessPiece;
+  forkedPieces: IChessPiece[];
+}
+
+/**
+ * Data structure for a skewer (attacking a piece to reveal another behind it)
+ */
+export interface SkewerData {
+  attacker: IChessPiece;
+  frontPiece: IChessPiece;
+  backPiece: IChessPiece;
+}
+
+/**
+ * Data structure for a direct defense
+ */
+export interface DefenseData {
+  defender: IChessPiece;
+  defended: IChessPiece;
+}
+
+/**
+ * Data structure for a discovered attack
+ */
+export interface DiscoveredAttackData {
+  moved: IChessPiece;
+  attacker: IChessPiece;
+  attacked: IChessPiece;
+} 
+
+/**
+ * Data structure for double check
+ */
+export interface DoubleCheckData {
+  moved: IChessPiece;
+  attacker1: IChessPiece;
+  attacker2: IChessPiece;
+}
+
+/**
+ * Data structure for a check
+ */
+export interface CheckData {
+  attacker: IChessPiece;
+}
+
+/**
+ * Data structure for a tactical advantage
+ */
+export type TacticalAdvantageData<T extends BPRegenBonusType> = 
+  T extends BPRegenBonusType.DISCOVERED_CHECK ? DiscoveredAttackData :
+  T extends BPRegenBonusType.DISCOVERED_ATTACK ? DiscoveredAttackData :
+  T extends BPRegenBonusType.PIN ? PinData :
+  T extends BPRegenBonusType.SKEWER ? SkewerData :
+  T extends BPRegenBonusType.FORK ? ForkData :
+  T extends BPRegenBonusType.DIRECT_DEFENSE ? DefenseData :
+  T extends BPRegenBonusType.CHECK ? CheckData :
+  T extends BPRegenBonusType.DOUBLE_CHECK ? DoubleCheckData :
+  never;
+
+
+
+/**
+ * BP Regeneration Bonuses
+ * 
+ * A map of BP regeneration bonuses for each tactical advantage type
+ * The key is the type of tactical advantage and the value is a function that returns the BP regeneration bonus
+ * The function takes a data object that matches the type of the tactical advantage
+ */
+export type BPRegenBonuses = {
+  [K in BPRegenBonusType]: (data: TacticalAdvantageData<K>) => number;
+};

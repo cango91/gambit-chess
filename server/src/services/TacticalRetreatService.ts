@@ -2,7 +2,7 @@ import {
   calculateTacticalRetreats, 
   Position, 
   PieceType,
-  Retreat 
+  RetreatCost 
 } from '@gambit-chess/shared';
 import { Board } from '../models/Board';
 
@@ -20,7 +20,7 @@ export class TacticalRetreatService {
   public calculateRetreatOptions(
     board: Board,
     piecePosition: Position
-  ): Retreat[] {
+  ): RetreatCost[] {
     const piece = board.getPiece(piecePosition);
     if (!piece) {
       return [];
@@ -37,12 +37,11 @@ export class TacticalRetreatService {
     
     // Add all pieces to the occupied positions map
     for (const p of board.getAllPieces()) {
-      occupiedPositions.set(p.position, true);
+      occupiedPositions.set(p.position!, true);
     }
     
     // Use the shared module utility to calculate retreats
     return calculateTacticalRetreats(
-      piece.type,
       lastCaptureAttempt.from, // Original position before capture attempt
       lastCaptureAttempt.to,   // Position where capture was attempted
       occupiedPositions
@@ -55,7 +54,7 @@ export class TacticalRetreatService {
    * @param position Position to validate
    * @returns Whether the position is a valid retreat option
    */
-  public isValidRetreatPosition(retreatOptions: Retreat[], position: Position): boolean {
+  public isValidRetreatPosition(retreatOptions: RetreatCost[], position: Position): boolean {
     return retreatOptions.some(option => option.to === position);
   }
   
@@ -65,7 +64,7 @@ export class TacticalRetreatService {
    * @param position Position to check
    * @returns BP cost or undefined if not a valid retreat position
    */
-  public getRetreatCost(retreatOptions: Retreat[], position: Position): number | undefined {
+  public getRetreatCost(retreatOptions: RetreatCost[], position: Position): number | undefined {
     const option = retreatOptions.find(option => option.to === position);
     return option?.cost;
   }

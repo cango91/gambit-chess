@@ -22,19 +22,20 @@
  * - Player turn management
  */
 
-import { ChessPiece, PieceColor, PieceType, Position, IBoard } from '../types';
-import { isValidPosition, positionToCoordinates, coordinatesToPosition } from '../utils/position';
+import { ChessPiece, ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPieceTypeType, ChessPosition, ChessPositionType } from './types';
 import { isValidPieceMove } from './movement';
 import { isKingInCheck, IBoardForCheckDetection, wouldMoveResolveCheck, wouldMoveLeaveKingInCheck } from './checkDetector';
+import { IBoard } from './contracts';
+import {  PIECE_COLOR, PIECE_TYPE, PieceColor, PieceType, POSITION, Position } from '..';
 
 /**
  * Represents a non-authoritative snapshot of a chess board state
  */
 export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
-  private pieces: Map<Position, ChessPiece> = new Map();
+  private pieces: Map<string, ChessPiece> = new Map();
   private capturedPieces: ChessPiece[] = [];
   private currentTurn: number = 1;
-  private enPassantTarget: Position | null = null;
+  private enPassantTarget: ChessPosition | null = null;
   
   /**
    * Creates a new board snapshot with optional initial position
@@ -89,18 +90,12 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param position Position on the board
    * @returns The newly created piece
    */
-  public addPiece(type: PieceType, color: PieceColor, position: Position): ChessPiece {
-    if (!isValidPosition(position)) {
-      throw new Error(`Invalid position: ${position}`);
-    }
-    
-    const piece: ChessPiece = { 
-      type, 
-      color, 
-      position,
-      hasMoved: false  // Initially, pieces haven't moved
-    };
-    this.pieces.set(position, piece);
+  public addPiece(type: ChessPieceTypeType, color: ChessPieceColorType, position: ChessPositionType, lastMoveTurn: number | undefined = undefined): ChessPiece {
+    const typ = PIECE_TYPE(type);  
+    const col = PIECE_COLOR(color);
+    const pos = POSITION(position);
+    const piece = new ChessPiece(typ, col, pos, lastMoveTurn !== undefined, lastMoveTurn);
+    this.pieces.set(pos.value, piece);
     return piece;
   }
   
@@ -109,11 +104,11 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param position Position to remove piece from
    * @returns The removed piece or undefined if no piece at that position
    */
-  public removePiece(position: Position): ChessPiece | undefined {
-    const piece = this.pieces.get(position);
+  public removePiece(position: ChessPositionType): ChessPiece | undefined {
+    const piece = this.getPieceAt(position);
     if (piece) {
-      this.pieces.delete(position);
-      this.capturedPieces.push({ ...piece });
+      this.pieces.delete(`${position}`);
+      this.capturedPieces.push(piece);
     }
     return piece;
   }
@@ -123,8 +118,9 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param position Position to check
    * @returns The piece at that position or undefined if empty
    */
-  public getPiece(position: Position): ChessPiece | undefined {
-    return this.pieces.get(position);
+  public getPieceAt(position: ChessPositionType): ChessPiece | undefined {
+    const pos = POSITION(position);
+    return this.pieces.get(pos.value) ?? undefined;
   }
   
   /**
@@ -157,9 +153,11 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param color King color to find
    * @returns Position of the king or undefined if not found
    */
-  public getKingPosition(color: PieceColor): Position | undefined {
-    const king = this.getAllPieces().find(piece => piece.type === 'k' && piece.color === color);
-    return king?.position;
+  public getKingPosition(color: ChessPieceColorType): ChessPosition | undefined {
+    const playerColor = PIECE_COLOR(color);
+    const kingType = PIECE_TYPE('k');
+    const king = this.getAllPieces().find(piece => piece.type.equals(kingType) && piece.color.equals(playerColor));
+    return king?.position ?? undefined;
   }
   
   /**
@@ -186,41 +184,40 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param to Destination position
    * @returns True if the move is valid, false otherwise
    */
-  public isValidMove(from: Position, to: Position): boolean {
-    if (!isValidPosition(from) || !isValidPosition(to)) {
-      return false;
-    }
+  public isValidMove(from: ChessPositionType, to: ChessPositionType): boolean {
+    const fromPos = POSITION(from);
+    const toPos = POSITION(to);
     
     // Get the piece at the starting position
-    const piece = this.getPiece(from);
+    const piece = this.getPieceAt(fromPos);
     if (!piece) {
       return false;
     }
     
     // Check if destination is occupied by a piece of the same color
-    const destPiece = this.getPiece(to);
+    const destPiece = this.getPieceAt(toPos);
     if (destPiece && destPiece.color === piece.color) {
       return false;
     }
     
     // Check for en passant capture
     let isCapture = destPiece !== undefined;
-    if (piece.type === 'p' && !destPiece && to === this.enPassantTarget) {
+    if (piece.type.value === 'p' && !destPiece && toPos === this.enPassantTarget) {
       // This is an en passant capture
       isCapture = true;
     }
     
     // Check for castling
-    if (piece.type === 'k' && this.isCastlingMove(from, to)) {
-      return this.isValidCastling(from, to);
+    if (piece.type.value === 'k' && this.isCastlingMove(fromPos, toPos)) {
+      return this.isValidCastling(fromPos, toPos);
     }
     
     // Check if the move pattern is valid for this piece type
     const isValid = isValidPieceMove(
       piece.type,
-      from,
-      to,
-      piece.color === 'white',
+      fromPos,
+      toPos,
+      piece.color.value === 'white',
       isCapture,
       !piece.hasMoved // Pass whether this is the piece's first move (for pawns)
     );
@@ -230,7 +227,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     }
     
     // For sliding pieces, check if the path is clear
-    if (['b', 'r', 'q'].includes(piece.type)) {
+    if (['b', 'r', 'q'].includes(piece.type.value)) {
       if (!this.isPathClear(from, to)) {
         return false;
       }
@@ -250,10 +247,12 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param to Destination position
    * @returns True if this is a castling move
    */
-  private isCastlingMove(from: Position, to: Position): boolean {
+  private isCastlingMove(from: ChessPositionType, to: ChessPositionType): boolean {
+    const fromPos = POSITION(from);
+    const toPos = POSITION(to);
     // King starting positions
-    const isWhiteKing = from === 'e1';
-    const isBlackKing = from === 'e8';
+    const isWhiteKing = fromPos.value === 'e1';
+    const isBlackKing = fromPos.value === 'e8';
     
     // If it's not a king on its starting square, it's not castling
     if (!isWhiteKing && !isBlackKing) {
@@ -261,12 +260,12 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     }
     
     // Kingside castling destinations
-    if (to === 'g1' || to === 'g8') {
+    if (toPos.value === 'g1' || toPos.value === 'g8') {
       return true;
     }
     
     // Queenside castling destinations
-    if (to === 'c1' || to === 'c8') {
+    if (toPos.value === 'c1' || toPos.value === 'c8') {
       return true;
     }
     
@@ -280,62 +279,48 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @returns True if castling is valid
    */
   private isValidCastling(kingFrom: Position, kingTo: Position): boolean {
-    const king = this.getPiece(kingFrom);
-    if (!king || king.type !== 'k' || king.hasMoved) {
+    const king = this.getPieceAt(kingFrom);
+    if (!king || king.type.value !== 'k' || king.hasMoved) {
       return false;
     }
     
     // Determine if kingside or queenside
-    const isKingside = kingTo[0] === 'g';
-    const isQueenside = kingTo[0] === 'c';
+    const isKingside = kingTo.value[0] === 'g';
     
     // Determine rook position based on king color and castling type
-    let rookPos: Position;
-    if (king.color === 'white') {
-      rookPos = isKingside ? 'h1' : 'a1';
+    let rookPos: ChessPosition;
+    if (king.color.equals(PIECE_COLOR('white'))) {
+      rookPos = isKingside ? POSITION('h1') : POSITION('a1');
     } else {
-      rookPos = isKingside ? 'h8' : 'a8';
+      rookPos = isKingside ? POSITION('h8') : POSITION('a8');
     }
     
     // Check if rook exists and hasn't moved
-    const rook = this.getPiece(rookPos);
-    if (!rook || rook.type !== 'r' || rook.hasMoved) {
+    const rook = this.getPieceAt(rookPos);
+    if (!rook || rook.type.value !== 'r' || rook.hasMoved) {
       return false;
     }
-    
-    // Check if path between king and rook is clear
-    const betweenPositions = isKingside
-      ? [kingFrom[0] === 'e' ? 'f' + kingFrom[1] : 'f' + kingTo[1]]
-      : [kingFrom[0] === 'e' ? 'd' + kingFrom[1] : 'd' + kingTo[1], 
-         kingFrom[0] === 'e' ? 'b' + kingFrom[1] : 'b' + kingTo[1]];
-    
-    for (const pos of betweenPositions) {
-      if (this.getPiece(pos)) {
-        return false; // Path is not clear
-      }
-    }
-    
     // Check if king is in check
     if (this.isInCheck(king.color)) {
       return false;
     }
-    
-    // Check if king passes through check
-    const testBoard = this.clone();
-    const kingPassesThroughPos = isKingside
-      ? kingFrom[0] === 'e' ? 'f' + kingFrom[1] : 'f' + kingTo[1]
-      : kingFrom[0] === 'e' ? 'd' + kingFrom[1] : 'd' + kingTo[1];
-    
-    // Simulate king at intermediate position to check if it would be in check
-    const testKing = testBoard.getPiece(kingFrom)!;
-    testBoard.pieces.delete(kingFrom);
-    testKing.position = kingPassesThroughPos;
-    testBoard.pieces.set(kingPassesThroughPos, testKing);
-    
-    if (testBoard.isInCheck(king.color)) {
-      return false;
+
+    // Check if path between king and rook is clear and if so, simulate the move and check if the king is in check
+    const betweenPositions = isKingside
+      ? [kingFrom.value[0] === 'e' ? 'f' + kingFrom.value[1] : 'f' + kingTo.value[1]]
+      : [kingFrom.value[0] === 'e' ? 'd' + kingFrom.value[1] : 'd' + kingTo.value[1], 
+         kingFrom.value[0] === 'e' ? 'b' + kingFrom.value[1] : 'b' + kingTo.value[1]];
+    for (const pos of betweenPositions) {
+      if (this.getPieceAt(pos)) {
+        return false; // Path is not clear
+      }
+      const testBoard = this.clone();
+      testBoard.removePiece(kingFrom);
+      testBoard.addPiece(king.type, king.color, POSITION(pos));
+      if (testBoard.isInCheck(king.color)) {
+        return false;
+      }
     }
-    
     return true;
   }
   
@@ -345,9 +330,11 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param to Destination position
    * @returns True if path is clear, false if blocked
    */
-  private isPathClear(from: Position, to: Position): boolean {
-    const [fromX, fromY] = positionToCoordinates(from);
-    const [toX, toY] = positionToCoordinates(to);
+  private isPathClear(from: ChessPositionType, to: ChessPositionType): boolean {
+    const fromPos = POSITION(from);
+    const toPos = POSITION(to);
+    const [fromX, fromY] = fromPos.toCoordinates() ?? new Error(`Invalid from position: ${from}`);
+    const [toX, toY] = toPos.toCoordinates();
     
     // Calculate direction vector
     const dx = Math.sign(toX - fromX);
@@ -358,8 +345,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     let y = fromY + dy;
     
     while (x !== toX || y !== toY) {
-      const position = coordinatesToPosition(x, y);
-      if (this.getPiece(position)) {
+      if (this.getPieceAt([x,y])) {
         return false; // Path is blocked
       }
       
@@ -387,7 +373,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param promotion Promotion piece type (if pawn promotion)
    * @returns Object with move information
    */
-  public makeMove(from: Position, to: Position, promotion?: PieceType): { 
+  public makeMove(from: ChessPositionType, to: ChessPositionType, promotion?: ChessPieceTypeType): { 
     success: boolean, 
     captured?: ChessPiece, 
     check?: boolean
@@ -395,9 +381,12 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     if (!this.isValidMove(from, to)) {
       return { success: false };
     }
+
+    const fromPos = POSITION(from);
+    const toPos = POSITION(to);
     
-    const piece = this.getPiece(from)!;
-    const destPiece = this.getPiece(to);
+    const piece = this.getPieceAt(fromPos)!;
+    const destPiece = this.getPieceAt(toPos);
     let captured: ChessPiece | undefined = destPiece;
     
     // Reset en passant target from previous move
@@ -405,56 +394,62 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     this.enPassantTarget = null;
     
     // Handle en passant capture
-    if (piece.type === 'p' && to === oldEnPassantTarget) {
+    if (piece.type.value === 'p' && toPos === oldEnPassantTarget) {
       // The captured pawn is not on the destination square but behind it
-      const captureY = piece.color === 'white' ? 4 : 3; // Rank 5 for white, rank 4 for black
-      const capturePos = coordinatesToPosition(positionToCoordinates(to)[0], captureY);
-      captured = this.removePiece(capturePos);
+      const captureY = piece.color.equals(PIECE_COLOR('white')) ? 4 : 3; // Rank 5 for white, rank 4 for black
+      const capturePos = POSITION([toPos.toCoordinates()[0], captureY]);
+      captured = this.removePiece(`${capturePos}`);
     } else if (destPiece) {
       // Regular capture
-      this.removePiece(to);
+      this.removePiece(toPos.value);
     }
     
     // Handle castling
-    if (piece.type === 'k' && this.isCastlingMove(from, to)) {
-      this.executeCastling(from, to);
+    if (piece.type.value === 'k' && this.isCastlingMove(fromPos, toPos)) {
+      this.executeCastling(fromPos, toPos);
     } else {
       // Regular move
-      this.pieces.delete(from);
-      piece.position = to;
-      piece.hasMoved = true;
-      piece.lastMoveTurn = this.currentTurn;
-      this.pieces.set(to, piece);
+      this.pieces.delete(fromPos.value);
+      piece.move(toPos, this.currentTurn);
+      this.pieces.set(toPos.value, piece);
     }
     
     // Check for pawn double move and set en passant target
-    if (piece.type === 'p' && !piece.hasMoved) {
-      const [fromX, fromY] = positionToCoordinates(from);
-      const [toX, toY] = positionToCoordinates(to);
+    if (piece.type.value === 'p' && !piece.hasMoved) {
+      const [fromX, fromY] = fromPos.toCoordinates() ?? new Error(`Invalid from position: ${from}`);
+      const [toX, toY] = toPos.toCoordinates() ?? new Error(`Invalid to position: ${to}`);
       
       // If pawn moved two squares
       if (Math.abs(toY - fromY) === 2) {
         // The en passant target is the square behind the pawn
         const enPassantY = (fromY + toY) / 2; // Middle square
-        this.enPassantTarget = coordinatesToPosition(toX, enPassantY);
+        this.enPassantTarget = POSITION([toX, enPassantY]);
       }
     }
+
+    // move the piece to the new position
+    piece.move(toPos, this.currentTurn);
     
     // Handle pawn promotion
-    if (piece.type === 'p' && (to[1] === '8' || to[1] === '1')) {
+    if (piece.type.value === 'p' && (toPos.value[1] === '8' || toPos.value[1] === '1')) {
       if (promotion) {
-        piece.type = promotion;
+        piece.promote(ChessPieceType.from(promotion));
       } else {
         // Default promotion to queen
-        piece.type = 'q';
+        piece.promote(ChessPieceType.from('q'));
       }
+
     }
+
+    // Update the board
+    this.pieces.set(toPos.value, piece);
+    this.pieces.delete(fromPos.value);
     
     // Increment turn counter after the move
     this.currentTurn++;
     
     // Check for check
-    const opponentColor = piece.color === 'white' ? 'black' : 'white';
+    const opponentColor = piece.color.equals(ChessPieceColor.from('white')) ? ChessPieceColor.from('black') : ChessPieceColor.from('white');
     const check = this.isInCheck(opponentColor);
     
     return {
@@ -469,31 +464,30 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param kingFrom King's starting position
    * @param kingTo King's destination position
    */
-  private executeCastling(kingFrom: Position, kingTo: Position): void {
-    const king = this.getPiece(kingFrom)!;
-    
+  private executeCastling(kingFrom: ChessPositionType, kingTo: ChessPositionType): void {
+    const king = this.getPieceAt(kingFrom)!;
+    const kingToPos = POSITION(kingTo);
+    const kingFromPos = POSITION(kingFrom);
     // Determine if kingside or queenside
-    const isKingside = kingTo[0] === 'g';
+    const isKingside = kingToPos.value[0] === 'g';
     
     // Move king
-    this.pieces.delete(kingFrom);
-    king.position = kingTo;
-    king.hasMoved = true;
-    king.lastMoveTurn = this.currentTurn;
-    this.pieces.set(kingTo, king);
+    king.move(kingToPos, this.currentTurn);
+    this.pieces.delete(kingFromPos.value);
+    this.pieces.set(kingToPos.value, king);
     
     // Determine rook positions
-    const rank = king.color === 'white' ? '1' : '8';
+    const rank = king.color.equals(ChessPieceColor.from('white')) ? '1' : '8';
     const rookFrom = isKingside ? 'h' + rank : 'a' + rank;
     const rookTo = isKingside ? 'f' + rank : 'd' + rank;
+    const rookFromPos = POSITION(rookFrom) ?? new Error(`Invalid rookFrom position: ${rookFrom}`);
+    const rookToPos = POSITION(rookTo) ?? new Error(`Invalid rookTo position: ${rookTo}`);
     
     // Move rook
-    const rook = this.getPiece(rookFrom)!;
-    this.pieces.delete(rookFrom);
-    rook.position = rookTo;
-    rook.hasMoved = true;
-    rook.lastMoveTurn = this.currentTurn;
-    this.pieces.set(rookTo, rook);
+    const rook = this.getPieceAt(rookFromPos)!;
+    this.pieces.delete(rookFromPos.value);
+    rook.move(rookToPos, this.currentTurn);
+    this.pieces.set(rookToPos.value, rook);
   }
   
   /**
@@ -505,11 +499,8 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     
     // Copy all pieces
     for (const piece of this.getAllPieces()) {
-      const clonedPiece = clone.addPiece(piece.type, piece.color, piece.position);
-      clonedPiece.hasMoved = piece.hasMoved;
-      if (piece.lastMoveTurn !== undefined) {
-        clonedPiece.lastMoveTurn = piece.lastMoveTurn;
-      }
+      clone.addPiece(piece.type, piece.color, piece.position!, piece.lastMoveTurn);
+
     }
     
     // Copy captured pieces
@@ -533,15 +524,15 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
       result += `${y + 1} `;
       
       for (let x = 0; x < 8; x++) {
-        const position = coordinatesToPosition(x, y);
-        const piece = this.getPiece(position);
+
+        const piece = this.getPieceAt([x,y]);
         
         if (piece) {
           // Use uppercase for white, lowercase for black
           let symbol = piece.type;
-          if (piece.color === 'white') {
+          if (piece.color.equals(ChessPieceColor.from('white'))) {
             // Convert to uppercase for display only, doesn't change the type
-            result += symbol.toUpperCase() + ' ';
+            result += symbol.toString().toUpperCase() + ' ';
           } else {
             result += symbol + ' ';
           }

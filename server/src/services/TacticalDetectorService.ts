@@ -1,14 +1,21 @@
 import { 
-  PieceColor, 
-  Position, 
-  PieceType, 
-  ChessPiece, 
-  PIECE_VALUES,
-  isKingInCheck,
-  positionToCoordinates,
-  coordinatesToPosition
+  PieceColor,
+  Position,
+  ChessPiece,
+  PieceType,
+  POSITION,
+  PIECE_COLOR,
+  PIECE_TYPE,
 } from '@gambit-chess/shared';
 import { Board } from '../models/Board';
+
+const positionToCoordinates = (position: Position): [number, number] => {
+  return [position.toCoordinates()[0], position.toCoordinates()[1]];
+};
+
+const coordinatesToPosition = (x: number, y: number): Position => {
+  return POSITION([x, y]);
+};
 
 /**
  * Represents a tactical advantage like a pin, fork, skewer, etc.
@@ -93,7 +100,7 @@ export class TacticalDetectorService {
       if (pin.targetPosition) {
         const pinnedPiece = board.getPiece(pin.targetPosition);
         if (pinnedPiece) {
-          bpRegen += Math.ceil(PIECE_VALUES[pinnedPiece.type] / 3);
+          bpRegen += Math.ceil(+pinnedPiece.type / 3);
         }
       }
     }
@@ -128,7 +135,7 @@ export class TacticalDetectorService {
         for (const targetPos of fork.targetPositions) {
           const targetPiece = board.getPiece(targetPos);
           if (targetPiece) {
-            totalValue += PIECE_VALUES[targetPiece.type];
+            totalValue += +targetPiece.type;
           }
         }
         
@@ -165,7 +172,7 @@ export class TacticalDetectorService {
       if (skewer.secondaryPosition) {
         const skeweredPiece = board.getPiece(skewer.secondaryPosition);
         if (skeweredPiece) {
-          bpRegen += Math.ceil(PIECE_VALUES[skeweredPiece.type] / 4);
+          bpRegen += Math.ceil(+skeweredPiece.type / 4);
         }
       }
     }
@@ -198,7 +205,7 @@ export class TacticalDetectorService {
       if (defense.targetPosition) {
         const defendedPiece = board.getPiece(defense.targetPosition);
         if (defendedPiece) {
-          bpRegen += Math.ceil(PIECE_VALUES[defendedPiece.type] / 5);
+          bpRegen += Math.ceil(+defendedPiece.type / 5);
         }
       }
     }
@@ -233,7 +240,7 @@ export class TacticalDetectorService {
       if (attack.targetPosition) {
         const attackedPiece = board.getPiece(attack.targetPosition);
         if (attackedPiece) {
-          bpRegen += Math.ceil(PIECE_VALUES[attackedPiece.type] / 2);
+          bpRegen += Math.ceil(+attackedPiece.type / 2);
         }
       }
     }
@@ -253,7 +260,7 @@ export class TacticalDetectorService {
     board: Board,
     previousBoard: Board
   ): boolean {
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     
     // Check if the opponent's king is in check now
     const isCurrentlyInCheck = board.isInCheck(opponentColor);
@@ -273,13 +280,13 @@ export class TacticalDetectorService {
    */
   private detectPins(color: PieceColor, board: Board): PositionalAdvantage[] {
     const pins: PositionalAdvantage[] = [];
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     const opponentPieces = board.getPiecesByColor(opponentColor);
     
     // For each opponent piece that could be pinned
     for (const potentialPinned of opponentPieces) {
       // Skip kings (cannot be pinned)
-      if (potentialPinned.type === 'k') continue;
+      if (potentialPinned.type === PIECE_TYPE('k')) continue;
       
       // Sliding pieces that can create pins (queen, rook, bishop)
       const playerPieces = board.getPiecesByColor(color);
@@ -287,13 +294,13 @@ export class TacticalDetectorService {
         // Only long-range pieces can pin
         if (!this.isSlidingPiece(attacker)) continue;
         
-        const [fromX, fromY] = positionToCoordinates(attacker.position);
-        const [pinnedX, pinnedY] = positionToCoordinates(potentialPinned.position);
+        const [fromX, fromY] = positionToCoordinates(attacker.position!);
+        const [pinnedX, pinnedY] = positionToCoordinates(potentialPinned.position!);
         
         // Check if attacker and potential pinned piece are aligned
-        const isAligned = (attacker.type === 'r' || attacker.type === 'q') && 
+        const isAligned = (attacker.type.value === 'r' || attacker.type.value === 'q') && 
           (fromX === pinnedX || fromY === pinnedY) || // Horizontal/vertical
-          (attacker.type === 'b' || attacker.type === 'q') && 
+          (attacker.type.value === 'b' || attacker.type.value === 'q') && 
           Math.abs(fromX - pinnedX) === Math.abs(fromY - pinnedY); // Diagonal
         
         if (!isAligned) continue;
@@ -315,11 +322,11 @@ export class TacticalDetectorService {
           if (piece) {
             // If we find an opponent piece of higher value (or a king)
             if (piece.color === opponentColor && 
-                (piece.type === 'k' || PIECE_VALUES[piece.type] > PIECE_VALUES[potentialPinned.type])) {
+                (piece.type.value === 'k' || +piece.type > +potentialPinned.type)) {
               // We've found a piece that the potential pinned piece is pinned to
               pins.push({
-                piecePosition: attacker.position,
-                targetPosition: potentialPinned.position,
+                piecePosition: attacker.position!,
+                targetPosition: potentialPinned.position!,
                 secondaryPosition: pos // The piece being protected by the pin
               });
               foundPinnedTo = true;
@@ -344,7 +351,7 @@ export class TacticalDetectorService {
   
   // Helper function to check if a piece is a sliding piece (queen, rook, bishop)
   private isSlidingPiece(piece: ChessPiece): boolean {
-    return piece.type === 'q' || piece.type === 'r' || piece.type === 'b';
+    return piece.type.value === 'q' || piece.type.value === 'r' || piece.type.value === 'b';
   }
   
   /**
@@ -357,7 +364,7 @@ export class TacticalDetectorService {
   private detectForks(color: PieceColor, board: Board): PositionalAdvantage[] {
     const forks: PositionalAdvantage[] = [];
     const attackingPieces = board.getPiecesByColor(color);
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     
     // Check each of the player's pieces for potential forks
     for (const attacker of attackingPieces) {
@@ -381,14 +388,14 @@ export class TacticalDetectorService {
         // Calculate total value of forked pieces
         let totalValue = 0;
         for (const pieceType of attackedValues) {
-          totalValue += PIECE_VALUES[pieceType];
+          totalValue += +pieceType;
         }
         
         // Only consider it a fork if the total value is significant
         // or if a king is involved (check)
-        if (totalValue >= 6 || attackedValues.includes('k')) {
+        if (totalValue >= 6 || attackedValues.includes(PIECE_TYPE('k'))) {
           forks.push({
-            piecePosition: attacker.position,
+            piecePosition: attacker.position!,
             targetPositions: attackedPieces
           });
         }
@@ -406,10 +413,10 @@ export class TacticalDetectorService {
    */
   private getAttackedPositions(piece: ChessPiece, board: Board): Position[] {
     const attacked: Position[] = [];
-    const [pieceX, pieceY] = positionToCoordinates(piece.position);
+    const [pieceX, pieceY] = positionToCoordinates(piece.position!);
     
     // Knight movements
-    if (piece.type === 'n') {
+    if (piece.type.value === 'n') {
       const knightMoves = [
         [1, 2], [2, 1], [2, -1], [1, -2],
         [-1, -2], [-2, -1], [-2, 1], [-1, 2]
@@ -432,8 +439,8 @@ export class TacticalDetectorService {
     }
     
     // Pawn attacks
-    else if (piece.type === 'p') {
-      const direction = piece.color === 'white' ? 1 : -1;
+    else if (piece.type.value === 'p') {
+      const direction = piece.color === PIECE_COLOR('white') ? 1 : -1;
       
       // Diagonal captures
       for (const dx of [-1, 1]) {
@@ -448,7 +455,7 @@ export class TacticalDetectorService {
     }
     
     // King attacks
-    else if (piece.type === 'k') {
+    else if (piece.type.value === 'k') {
       for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
           if (dx === 0 && dy === 0) continue;
@@ -473,12 +480,12 @@ export class TacticalDetectorService {
       const directions: [number, number][] = [];
       
       // Rook and Queen can move horizontally and vertically
-      if (piece.type === 'r' || piece.type === 'q') {
+      if (piece.type.value === 'r' || piece.type.value === 'q') {
         directions.push([1, 0], [-1, 0], [0, 1], [0, -1]);
       }
       
       // Bishop and Queen can move diagonally
-      if (piece.type === 'b' || piece.type === 'q') {
+      if (piece.type.value === 'b' || piece.type.value === 'q') {
         directions.push([1, 1], [1, -1], [-1, 1], [-1, -1]);
       }
       
@@ -523,24 +530,24 @@ export class TacticalDetectorService {
   private detectSkewers(color: PieceColor, board: Board): PositionalAdvantage[] {
     const skewers: PositionalAdvantage[] = [];
     const attackingPieces = board.getPiecesByColor(color);
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     
     // Only sliding pieces can create skewers
     for (const attacker of attackingPieces) {
       if (!this.isSlidingPiece(attacker)) continue;
       
-      const [fromX, fromY] = positionToCoordinates(attacker.position);
+      const [fromX, fromY] = positionToCoordinates(attacker.position!);
       
       // Check in all directions this piece can move
       const directions: [number, number][] = [];
       
       // Rook and Queen can move horizontally and vertically
-      if (attacker.type === 'r' || attacker.type === 'q') {
+      if (attacker.type.value === 'r' || attacker.type.value === 'q') {
         directions.push([1, 0], [-1, 0], [0, 1], [0, -1]);
       }
       
       // Bishop and Queen can move diagonally
-      if (attacker.type === 'b' || attacker.type === 'q') {
+      if (attacker.type.value === 'b' || attacker.type.value === 'q') {
         directions.push([1, 1], [1, -1], [-1, 1], [-1, -1]);
       }
       
@@ -568,10 +575,10 @@ export class TacticalDetectorService {
             } else {
               // Found the second piece, must be opponent's and lower value
               if (piece.color === opponentColor && 
-                  PIECE_VALUES[firstPiece.type] >= PIECE_VALUES[piece.type]) {
+                  +firstPiece.type >= +piece.type) {
                 // Valid skewer: first piece is of higher value and forced to move
                 skewers.push({
-                  piecePosition: attacker.position,
+                  piecePosition: attacker.position!,
                   targetPosition: firstPiecePos!,
                   secondaryPosition: pos
                 });
@@ -600,12 +607,12 @@ export class TacticalDetectorService {
   private detectDirectDefenses(color: PieceColor, board: Board): PositionalAdvantage[] {
     const defenses: PositionalAdvantage[] = [];
     const playerPieces = board.getPiecesByColor(color);
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     
     // Check each player piece to see if it's under attack
     for (const defendedPiece of playerPieces) {
       // Skip low-value pieces
-      if (defendedPiece.type === 'p') continue;
+      if (defendedPiece.type.value === 'p') continue;
       
       // Check if the piece is under attack
       let isUnderAttack = false;
@@ -615,9 +622,9 @@ export class TacticalDetectorService {
       const opponentPieces = board.getPiecesByColor(opponentColor);
       for (const attacker of opponentPieces) {
         const attackedPositions = this.getAttackedPositions(attacker, board);
-        if (attackedPositions.includes(defendedPiece.position)) {
+        if (attackedPositions.includes(defendedPiece.position!)) {
           isUnderAttack = true;
-          attackingPositions.push(attacker.position);
+          attackingPositions.push(attacker.position!);
         }
       }
       
@@ -634,8 +641,8 @@ export class TacticalDetectorService {
           for (const attackerPos of attackingPositions) {
             if (attackedPositions.includes(attackerPos)) {
               defenses.push({
-                piecePosition: defender.position,
-                targetPosition: defendedPiece.position,
+                piecePosition: defender.position!,
+                targetPosition: defendedPiece.position!,
                 secondaryPosition: attackerPos
               });
               break;
@@ -662,7 +669,7 @@ export class TacticalDetectorService {
   private detectDiscoveredAttacks(color: PieceColor, board: Board, previousBoard: Board): PositionalAdvantage[] {
     const discoveredAttacks: PositionalAdvantage[] = [];
     const slidingPieces = board.getPiecesByColor(color).filter(piece => this.isSlidingPiece(piece));
-    const opponentColor = color === 'white' ? 'black' : 'white';
+    const opponentColor = color === PIECE_COLOR('white') ? PIECE_COLOR('black') : PIECE_COLOR('white');
     
     // For each sliding piece, check if it has any attacks now that it didn't have before
     for (const attacker of slidingPieces) {
@@ -670,7 +677,7 @@ export class TacticalDetectorService {
       const currentAttacks = this.getAttackedPositions(attacker, board)
         .filter(pos => {
           const piece = board.getPiece(pos);
-          return piece && piece.color === opponentColor;
+          return piece && piece.color.equals(opponentColor);
         });
       
       // Find the same piece in the previous board state
@@ -684,7 +691,7 @@ export class TacticalDetectorService {
       const previousAttacks = this.getAttackedPositions(previousAttacker, previousBoard)
         .filter(pos => {
           const piece = previousBoard.getPiece(pos);
-          return piece && piece.color === opponentColor;
+          return piece && piece.color.equals(opponentColor);
         });
       
       // Find new attacks that weren't possible before
@@ -692,7 +699,7 @@ export class TacticalDetectorService {
         if (!previousAttacks.includes(attackPos)) {
           // This is a new attack that wasn't possible before
           // Check if there was a piece blocking the line of sight before
-          const [fromX, fromY] = positionToCoordinates(attacker.position);
+          const [fromX, fromY] = positionToCoordinates(attacker.position!);
           const [toX, toY] = positionToCoordinates(attackPos);
           
           // Calculate direction vector
@@ -722,7 +729,7 @@ export class TacticalDetectorService {
           // If we found a piece that moved away, this is a discovered attack
           if (discoveredPiecePos) {
             discoveredAttacks.push({
-              piecePosition: attacker.position,
+              piecePosition: attacker.position!,
               targetPosition: attackPos,
               secondaryPosition: discoveredPiecePos // The position where the piece moved from
             });
@@ -803,46 +810,3 @@ export class TacticalDetectorService {
     return true;
   }
 }
-
-/**
- * Data structure for a pin (piece pinned to a more valuable piece)
- */
-interface PinData {
-  pinner: ChessPiece;
-  pinnedPiece: ChessPiece;
-  pinnedTo: ChessPiece;
-}
-
-/**
- * Data structure for a fork (piece attacking multiple opponent pieces)
- */
-interface ForkData {
-  forker: ChessPiece;
-  forkedPieces: ChessPiece[];
-}
-
-/**
- * Data structure for a skewer (attacking a piece to reveal another behind it)
- */
-interface SkewerData {
-  attacker: ChessPiece;
-  frontPiece: ChessPiece;
-  backPiece: ChessPiece;
-}
-
-/**
- * Data structure for a direct defense
- */
-interface DefenseData {
-  defender: ChessPiece;
-  defended: ChessPiece;
-}
-
-/**
- * Data structure for a discovered attack
- */
-interface DiscoveredAttackData {
-  moved: ChessPiece;
-  attacker: ChessPiece;
-  attacked: ChessPiece;
-} 

@@ -1,4 +1,4 @@
-import { PieceColor } from '@gambit-chess/shared';
+import { PIECE_COLOR, PieceColor } from '@gambit-chess/shared';
 import { TacticalDetectorService } from './TacticalDetectorService';
 import { Board } from '../models/Board';
 
@@ -38,7 +38,7 @@ export class BPManager {
    * @returns Current BP pool
    */
   public getBpPool(color: PieceColor): number {
-    return color === 'white' ? this.whiteBpPool : this.blackBpPool;
+    return color.equals(PIECE_COLOR('white')) ? this.whiteBpPool : this.blackBpPool;
   }
   
   /**
@@ -60,7 +60,7 @@ export class BPManager {
     }
     
     // Deduct the BP from the player's pool
-    if (color === 'white') {
+    if (color.equals(PIECE_COLOR('white'))) {
       this.whiteBpPool -= amount;
     } else {
       this.blackBpPool -= amount;
@@ -89,7 +89,7 @@ export class BPManager {
     );
     
     // Apply the regeneration
-    if (color === 'white') {
+    if (color.equals(PIECE_COLOR('white'))) {
       this.whiteBpPool += regenAmount;
     } else {
       this.blackBpPool += regenAmount;
@@ -120,7 +120,7 @@ export class BPManager {
       throw new Error('BP pool cannot be negative');
     }
     
-    if (color === 'white') {
+    if (color.equals(PIECE_COLOR('white'))) {
       this.whiteBpPool = amount;
     } else {
       this.blackBpPool = amount;

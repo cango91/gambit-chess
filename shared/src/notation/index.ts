@@ -7,21 +7,13 @@
  * hiding rules based on player perspective.
  */
 
+import { MoveOutcome, Duel, Move, ExtendedMove, MoveHistory, PGNHeaders } from '@/types';
 import { 
-  Move, 
-  PieceType, 
-  Position, 
-  Duel, 
-  Retreat, 
-  PieceColor, 
-  MoveOutcome,
-  ExtendedMove,
-  MoveHistory,
-  PGNMoveList,
-  PGNHeaders,
-  PGNData
-} from '../types';
-import { OPPONENT_BP_PLACEHOLDER } from '../constants';
+  ChessPieceColor,
+  ChessPieceTypeSymbol,
+  ChessPosition,
+} from '../chess/types';
+import { RetreatCost } from '../tactical';
 
 /**
  * Represents a parsed move from notation
@@ -51,7 +43,7 @@ interface ParsedMove {
   /** BP regeneration amount */
   bpRegeneration: number;
   /** Color of the player making the move */
-  playerColor: PieceColor;
+  playerColor: ChessPieceColor;
 }
 
 /**
@@ -62,7 +54,7 @@ interface ParsedMove {
  * @returns The SAN symbol for the piece (empty string for pawns, uppercase letter for other pieces)
  * @throws Error if the piece type is invalid
  */
-export function pieceTypeToSAN(pieceType: PieceType): string {
+export function pieceTypeToSAN(pieceType: ChessPieceTypeSymbol): string {
   // Validate input
   if (typeof pieceType !== 'string' || pieceType.length !== 1) {
     throw new Error(`Invalid piece type: ${pieceType}. Must be a single character string.`);
@@ -89,7 +81,7 @@ export function pieceTypeToSAN(pieceType: PieceType): string {
  * @returns The piece type as a lowercase character ('p', 'n', 'b', 'r', 'q', 'k')
  * @throws Error if the SAN symbol is invalid
  */
-export function sanToPieceType(sanSymbol: string): PieceType {
+export function sanToPieceType(sanSymbol: string): ChessPieceTypeSymbol {
   // Validate input
   if (typeof sanSymbol !== 'string') {
     throw new Error(`Invalid SAN symbol: ${sanSymbol}. Must be a string.`);
@@ -143,14 +135,14 @@ export function moveToSAN(move: Move): string {
   }
 
   // Get SAN piece symbol
-  const piece = pieceTypeToSAN(move.piece);
+  const piece = pieceTypeToSAN(move.piece.value as ChessPieceTypeSymbol);
   
   // Start with the piece symbol (empty for pawns)
   let notation = piece;
   
   // For pawn captures, include the file of departure
-  if (move.piece === 'p' && move.capture) {
-    notation += move.from.charAt(0);
+  if (move.piece.value === 'p' && move.capture) {
+    notation += move.from.value.charAt(0);
   }
 
   // Add 'x' for captures
@@ -163,7 +155,7 @@ export function moveToSAN(move: Move): string {
   
   // Add promotion piece if applicable
   if (move.promotion) {
-    notation += '=' + pieceTypeToSAN(move.promotion);
+    notation += '=' + pieceTypeToSAN(move.promotion.value as ChessPieceTypeSymbol);
   }
   
   // Add check or checkmate symbol
@@ -188,7 +180,7 @@ export function moveToSAN(move: Move): string {
 export function toGambitNotation(
   move: Move,
   duel: Duel | null = null,
-  retreat: Retreat | null = null,
+  retreat: RetreatCost | null = null,
   bpRegeneration: number = 0,
   shouldIncludeBpRegen: boolean = true
 ): string {
@@ -242,8 +234,9 @@ export function toGambitNotation(
 export function preDuelNotation(
   move: Move,
   attackerAllocation: number,
-  viewerColor: PieceColor,
-  attackerColor: PieceColor
+  viewerColor: ChessPieceColor,
+  attackerColor: ChessPieceColor,
+  opponentBPPlaceholder: string = '?'
 ): string {
   // Input validation
   if (!move || typeof move !== 'object') {
@@ -254,11 +247,11 @@ export function preDuelNotation(
     throw new Error('Invalid attackerAllocation: Must be a non-negative number');
   }
   
-  if (viewerColor !== 'white' && viewerColor !== 'black') {
+  if (viewerColor !== ChessPieceColor.from('white') && viewerColor !== ChessPieceColor.fromValue('black')) {
     throw new Error('Invalid viewerColor: Must be "white" or "black"');
   }
   
-  if (attackerColor !== 'white' && attackerColor !== 'black') {
+  if (attackerColor !== ChessPieceColor.from('white') && attackerColor !== ChessPieceColor.fromValue('black')) {
     throw new Error('Invalid attackerColor: Must be "white" or "black"');
   }
 
@@ -268,10 +261,10 @@ export function preDuelNotation(
   // Show appropriate allocation based on viewer's perspective
   if (viewerColor === attackerColor) {
     // Viewer is attacker - show their allocation, hide defender's
-    notation += `[A:${attackerAllocation}/D:${OPPONENT_BP_PLACEHOLDER}]`;
+    notation += `[A:${attackerAllocation}/D:${opponentBPPlaceholder}]`;
   } else {
     // Viewer is defender - hide attacker's allocation, show placeholder for their own
-    notation += `[A:${OPPONENT_BP_PLACEHOLDER}/D:?]`;
+    notation += `[A:${opponentBPPlaceholder}/D:?]`;
   }
 
   return notation;
@@ -288,15 +281,16 @@ export function preDuelNotation(
  */
 export function generateVisibleGameHistory(
   moves: MoveHistory,
-  viewerColor: PieceColor | 'spectator',
-  gameOver: boolean = false
+  viewerColor: ChessPieceColor | 'spectator',
+  gameOver: boolean = false,
+  opponentBPPlaceholder: string = '?'
 ): MoveHistory {
   // Input validation
   if (!Array.isArray(moves)) {
     throw new Error('Invalid moves: Must be an array');
   }
   
-  if (viewerColor !== 'white' && viewerColor !== 'black' && viewerColor !== 'spectator') {
+  if (viewerColor !== ChessPieceColor.from('white') && viewerColor !== ChessPieceColor.fromValue('black') && viewerColor !== 'spectator') {
     throw new Error('Invalid viewerColor: Must be "white", "black", or "spectator"');
   }
 
@@ -317,7 +311,7 @@ export function generateVisibleGameHistory(
     // Rule 1: Players can only see their own BP allocation in duels
     if (visibleMoveData.duel && visibleMoveData.playerColor !== viewerColor && viewerColor !== 'spectator') {
       // This is an opponent's move, hide their BP allocation
-      visibleMoveData.duel.attackerAllocation = Number(OPPONENT_BP_PLACEHOLDER);
+      visibleMoveData.duel.attackerAllocation = Number(opponentBPPlaceholder);
     }
 
     // Rule 2: Players can only see their own BP regeneration
@@ -329,8 +323,8 @@ export function generateVisibleGameHistory(
     if (viewerColor === 'spectator') {
       visibleMoveData.bpRegeneration = 0;
       if (visibleMoveData.duel) {
-        visibleMoveData.duel.attackerAllocation = Number(OPPONENT_BP_PLACEHOLDER);
-        visibleMoveData.duel.defenderAllocation = Number(OPPONENT_BP_PLACEHOLDER);
+        visibleMoveData.duel.attackerAllocation = Number(opponentBPPlaceholder);
+        visibleMoveData.duel.defenderAllocation = Number(opponentBPPlaceholder);
       }
     }
 
@@ -393,7 +387,7 @@ export function parsePGN(pgn: string): ParsedMove[] {
           duel: null,
           retreat: null,
           bpRegeneration: 0,
-          playerColor: 'white'
+          playerColor: ChessPieceColor.from('white')
         };
       }
     });
@@ -419,7 +413,7 @@ export function parseGambitNotation(notation: string): ParsedMove {
     duel: null,
     retreat: null,
     bpRegeneration: 0,
-    playerColor: 'white' // Default, will be set by calling code
+    playerColor: ChessPieceColor.from('white') // Default, will be set by calling code
   };
   
   // Handle castling
@@ -498,7 +492,7 @@ export function parseGambitNotation(notation: string): ParsedMove {
 export function toPGN(
   moves: MoveHistory,
   headers: PGNHeaders = {},
-  viewerColor: PieceColor | 'spectator' | null = null,
+  viewerColor: ChessPieceColor | 'spectator' | null = null,
   gameOver: boolean = false
 ): string {
   // Input validation
@@ -511,8 +505,8 @@ export function toPGN(
   }
   
   if (viewerColor !== null && 
-      viewerColor !== 'white' && 
-      viewerColor !== 'black' && 
+      viewerColor !== ChessPieceColor.from('white') && 
+      viewerColor !== ChessPieceColor.from('black') && 
       viewerColor !== 'spectator') {
     throw new Error('Invalid viewerColor: Must be "white", "black", "spectator", or null');
   }

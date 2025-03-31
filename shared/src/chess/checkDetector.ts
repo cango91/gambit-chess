@@ -20,23 +20,20 @@
  * authoritative source of truth for game state progression.
  */
 
-import { ChessPiece, PieceColor, Position } from '../types';
-import { 
-  positionToCoordinates, 
-  coordinatesToPosition, 
-  getPositionsBetween
-} from '../utils/position';
+import { Position } from '..';
 import { isValidPieceMove, isSlidingPiece } from './movement';
+import { ChessPiece, ChessPieceColor, ChessPieceType, ChessPosition } from './types';
+import { ChessPieceColorType, ChessPositionType } from './types';
 
 /**
  * Minimal interface for a board to be used with check detector functions
  * This helps avoid circular dependencies with the full BoardSnapshot class
  */
 export interface IBoardForCheckDetection {
-  getPiece(position: Position): ChessPiece | undefined;
-  getPiecesByColor(color: PieceColor): ChessPiece[];
-  getKingPosition(color: PieceColor): Position | undefined;
-  makeMove(from: Position, to: Position): { success: boolean };
+  getPieceAt(position: ChessPositionType): ChessPiece | undefined;
+  getPiecesByColor(color: ChessPieceColorType): ChessPiece[];
+  getKingPosition(color: ChessPieceColorType): ChessPosition | undefined;
+  makeMove(from: ChessPositionType, to: ChessPositionType): { success: boolean };
   clone(): IBoardForCheckDetection;
 }
 
@@ -46,7 +43,7 @@ export interface IBoardForCheckDetection {
  * @param kingColor The color of the king to check
  * @returns True if the king is in check, false otherwise
  */
-export function isKingInCheck(board: IBoardForCheckDetection, kingColor: PieceColor): boolean {
+export function isKingInCheck(board: IBoardForCheckDetection, kingColor: ChessPieceColorType): boolean {
   const kingPosition = board.getKingPosition(kingColor);
   if (!kingPosition) {
     return false; // No king found (shouldn't happen in a valid game)
@@ -74,11 +71,14 @@ export function isKingInCheck(board: IBoardForCheckDetection, kingColor: PieceCo
  * @returns True if the piece can attack the king, false otherwise
  */
 function canPieceAttackKing(board: IBoardForCheckDetection, piece: ChessPiece, kingPosition: Position): boolean {
+  if (!piece.position) {
+    return false;
+  }
   const pieceType = piece.type;
-  const isWhitePiece = piece.color === 'white';
+  const isWhitePiece = piece.color.toString() === 'white';
   
   // For pawns, need special attack check (different from movement)
-  if (pieceType === 'p') {
+  if (pieceType.value === 'p') {
     return canPawnAttack(piece.position, kingPosition, isWhitePiece);
   }
   
@@ -87,11 +87,11 @@ function canPieceAttackKing(board: IBoardForCheckDetection, piece: ChessPiece, k
   if (isValidPieceMove(pieceType, piece.position, kingPosition, isWhitePiece, true)) {
     // For sliding pieces (bishop, rook, queen), check if path is clear
     if (isSlidingPiece(pieceType)) {
-      const positionsBetween = getPositionsBetween(piece.position, kingPosition);
+      const positionsBetween = piece.position.getPositionsBetween(kingPosition);
       
       // Check if all positions between are empty
       for (const pos of positionsBetween) {
-        if (board.getPiece(pos)) {
+        if (board.getPieceAt(pos)) {
           return false; // Path is blocked
         }
       }
@@ -110,9 +110,9 @@ function canPieceAttackKing(board: IBoardForCheckDetection, piece: ChessPiece, k
  * @param isWhitePawn Whether the pawn is white
  * @returns True if the pawn can attack the target position
  */
-function canPawnAttack(pawnPosition: Position, targetPosition: Position, isWhitePawn: boolean): boolean {
-  const [pawnX, pawnY] = positionToCoordinates(pawnPosition);
-  const [targetX, targetY] = positionToCoordinates(targetPosition);
+function canPawnAttack(pawnPosition: ChessPositionType, targetPosition: ChessPositionType, isWhitePawn: boolean): boolean {
+  const [pawnX, pawnY] = ChessPosition.from(pawnPosition).toCoordinates();
+  const [targetX, targetY] = ChessPosition.from(targetPosition).toCoordinates();
   
   const forwardDirection = isWhitePawn ? 1 : -1;
   
@@ -129,7 +129,7 @@ function canPawnAttack(pawnPosition: Position, targetPosition: Position, isWhite
  * @param kingColor The color of the king
  * @returns Array of pieces that are attacking the king
  */
-export function getKingAttackers(board: IBoardForCheckDetection, kingColor: PieceColor): ChessPiece[] {
+export function getKingAttackers(board: IBoardForCheckDetection, kingColor: ChessPieceColorType): ChessPiece[] {
   const kingPosition = board.getKingPosition(kingColor);
   if (!kingPosition) {
     return []; // No king found
@@ -155,7 +155,7 @@ export function getKingAttackers(board: IBoardForCheckDetection, kingColor: Piec
  * @param kingColor The color of the king
  * @returns Array of positions that could block the attack
  */
-export function getCheckBlockingPositions(board: IBoardForCheckDetection, kingColor: PieceColor): Position[] {
+export function getCheckBlockingPositions(board: IBoardForCheckDetection, kingColor: ChessPieceColorType): ChessPosition[] {
   const kingPosition = board.getKingPosition(kingColor);
   if (!kingPosition) {
     return []; // No king found
@@ -176,7 +176,7 @@ export function getCheckBlockingPositions(board: IBoardForCheckDetection, kingCo
   }
   
   // Get positions between attacker and king
-  return getPositionsBetween(attacker.position, kingPosition);
+  return attacker.position?.getPositionsBetween(kingPosition) ?? [];
 }
 
 /**
@@ -190,16 +190,16 @@ export function getCheckBlockingPositions(board: IBoardForCheckDetection, kingCo
  * @returns True if the move would result in self-check
  */
 export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from: Position, to: Position): boolean {
-  const piece = board.getPiece(from);
+  const piece = board.getPieceAt(from);
   if (!piece) {
     return false;
   }
   
   // If the piece is a king, we need special handling
-  if (piece.type === 'k') {
+  if (piece.type.equals(ChessPieceType.from('k'))) {
     // Check if any opponent piece would attack the king at its new position
     const kingColor = piece.color;
-    const opponentColor = kingColor === 'white' ? 'black' : 'white';
+    const opponentColor = kingColor.equals(ChessPieceColor.from('w')) ? ChessPieceColor.from('b') : ChessPieceColor.from('w');
     const opponentPieces = board.getPiecesByColor(opponentColor);
     
     for (const opponentPiece of opponentPieces) {
@@ -226,11 +226,11 @@ export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from:
  */
 function canPieceAttackSquare(board: IBoardForCheckDetection, piece: ChessPiece, target: Position): boolean {
   // Check if the piece can attack according to movement rules
-  const canAttack = isValidPieceMove(
+  const canAttack = piece.position && isValidPieceMove(
     piece.type,
     piece.position,
     target,
-    piece.color === 'white',
+    piece.color.equals(ChessPieceColor.from('w')),
     true, // Treating as capture
     false
   );
@@ -240,14 +240,14 @@ function canPieceAttackSquare(board: IBoardForCheckDetection, piece: ChessPiece,
   }
   
   // Knights, kings and pawns don't need path checking
-  if (piece.type === 'n' || piece.type === 'k' || piece.type === 'p') {
+  if (piece.type.equals(ChessPieceType.from('n')) || piece.type.equals(ChessPieceType.from('k')) || piece.type.equals(ChessPieceType.from('p'))) {
     return true;
   }
   
   // For sliding pieces, check if the path is clear
-  const positions = getPositionsBetween(piece.position, target);
+  const positions = piece.position?.getPositionsBetween(target) ?? [];
   for (const pos of positions) {
-    if (board.getPiece(pos)) {
+    if (board.getPieceAt(pos)) {
       return false; // Path is blocked
     }
   }
@@ -264,22 +264,22 @@ function canPieceAttackSquare(board: IBoardForCheckDetection, piece: ChessPiece,
  * @param to Destination position
  * @returns True if the move would leave the king in check
  */
-export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: Position, to: Position): boolean {
-  const piece = board.getPiece(from);
+export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: ChessPositionType, to: ChessPositionType): boolean {
+  const piece = board.getPieceAt(from);
   if (!piece) {
     return false;
   }
   
   const kingColor = piece.color;
   // If the king is moving, use the destination as the king position
-  const kingPos = piece.type === 'k' ? to : board.getKingPosition(kingColor);
+  const kingPos = piece.type.equals(ChessPieceType.from('k')) ? to : board.getKingPosition(kingColor);
   
   if (!kingPos) {
     return false; // No king found (shouldn't happen)
   }
   
   // Get all opponent pieces
-  const opponentColor = kingColor === 'white' ? 'black' : 'white';
+  const opponentColor = kingColor.equals(ChessPieceColor.from('w')) ? ChessPieceColor.from('b') : ChessPieceColor.from('w');
   const opponentPieces = board.getPiecesByColor(opponentColor);
   
   for (const opponentPiece of opponentPieces) {
@@ -289,7 +289,7 @@ export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: 
     }
     
     // Check if this opponent piece would attack the king after the move
-    if (wouldPieceAttackKingAfterMove(board, opponentPiece, kingPos, from, to)) {
+    if (wouldPieceAttackKingAfterMove(board, opponentPiece, kingPos as Position, from, to)) {
       return true;
     }
   }
@@ -309,20 +309,20 @@ export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: 
  * @param moveTo The to position of the move being checked
  * @returns True if the opponent piece would attack the king after the move
  */
-function wouldPieceAttackKingAfterMove(
+function  wouldPieceAttackKingAfterMove<T>(
   board: IBoardForCheckDetection,
   opponentPiece: ChessPiece,
   kingPos: Position,
-  moveFrom: Position,
-  moveTo: Position
+  moveFrom: T,
+  moveTo: T
 ): boolean {
   // First check if the opponent piece can attack the king's position
   // according to basic movement rules
-  const canAttack = isValidPieceMove(
+  const canAttack = opponentPiece.position && isValidPieceMove(
     opponentPiece.type,
     opponentPiece.position,
     kingPos,
-    opponentPiece.color === 'white',
+    opponentPiece.color.equals(ChessPieceColor.from('w')),
     true, // Treating as capture
     false
   );
@@ -332,17 +332,17 @@ function wouldPieceAttackKingAfterMove(
   }
   
   // For non-sliding pieces (knight, pawn, king), if they can attack, they will attack
-  if (opponentPiece.type === 'n' || opponentPiece.type === 'p' || opponentPiece.type === 'k') {
+  if (opponentPiece.type.equals(ChessPieceType.from('n')) || opponentPiece.type.equals(ChessPieceType.from('p')) || opponentPiece.type.equals(ChessPieceType.from('k'))) {
     return true;
   }
   
   // For sliding pieces (bishop, rook, queen), check if the path will be clear after the move
-  const positionsBetween = getPositionsBetween(opponentPiece.position, kingPos);
+  const positionsBetween = opponentPiece.position?.getPositionsBetween(kingPos) ?? [];
   
   // If moving the piece from the attack line
-  if (moveFrom === kingPos || positionsBetween.includes(moveFrom)) {
+  if (moveFrom === kingPos || positionsBetween.includes(moveFrom as Position)) {
     // Check if the piece is moving along the same attack line
-    const onSameLine = moveTo === kingPos || positionsBetween.includes(moveTo);
+    const onSameLine = moveTo === kingPos || positionsBetween.includes(moveTo as Position);
     
     // If moving along the same line (maintaining the pin), it's safe
     if (onSameLine) {
@@ -357,7 +357,7 @@ function wouldPieceAttackKingAfterMove(
       if (pos === moveFrom) continue;
       
       // Count blocking pieces
-      if (board.getPiece(pos)) {
+      if (board.getPieceAt(pos)) {
         blockingPieces++;
       }
     }
@@ -374,7 +374,7 @@ function wouldPieceAttackKingAfterMove(
     }
     
     // If any other piece blocks the path, king is safe
-    if (board.getPiece(pos) && pos !== moveFrom) {
+    if (board.getPieceAt(pos) && pos !== moveFrom) {
       return false;
     }
   }
@@ -391,7 +391,7 @@ function wouldPieceAttackKingAfterMove(
  * @param to The destination position
  * @returns True if the move would get the king out of check
  */
-export function wouldMoveResolveCheck(board: IBoardForCheckDetection, kingColor: PieceColor, from: Position, to: Position): boolean {
+export function wouldMoveResolveCheck(board: IBoardForCheckDetection, kingColor: ChessPieceColorType, from: ChessPositionType, to: ChessPositionType): boolean {
   // If king isn't in check, any valid move is fine
   if (!isKingInCheck(board, kingColor)) {
     return true;

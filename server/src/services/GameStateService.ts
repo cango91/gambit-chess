@@ -8,7 +8,9 @@ import {
   GameStateDTO,
   PieceType,
   isKingInCheck,
-  RetreatOptionsDTO
+  RetreatOptionsDTO,
+  PIECE_COLOR,
+  PIECE_TYPE
 } from '@gambit-chess/shared';
 import { Board } from '../models/Board';
 import { BPManager } from './BPManager';
@@ -25,7 +27,7 @@ export class GameStateService {
   private currentPhase: GamePhase = GamePhase.NORMAL;
   private gameResult: GameResult | null = null;
   private moveHistory: Move[] = [];
-  private playerToMove: PieceColor = 'white';
+  private playerToMove: PieceColor = PIECE_COLOR('w');
   private sequenceNumber: number = 0;
   private whiteTimeRemaining: number = 0;
   private blackTimeRemaining: number = 0;
@@ -58,7 +60,7 @@ export class GameStateService {
     
     // Only start timer if time control is enabled
     if (initialTimeMsWhite > 0 && initialTimeMsBlack > 0) {
-      this.activeTimer = 'white'; // White goes first
+      this.activeTimer = PIECE_COLOR('w'); // White goes first
     }
   }
   
@@ -98,7 +100,6 @@ export class GameStateService {
     
     // Base game state information visible to all
     const stateDTO: GameStateDTO = {
-      gameId: this.gameId,
       phase: this.currentPhase,
       turn: this.playerToMove,
       pieces: this.board.getAllPieces(),
@@ -107,8 +108,6 @@ export class GameStateService {
       whiteTimeRemaining: this.whiteTimeRemaining,
       blackTimeRemaining: this.blackTimeRemaining,
       activeTimer: this.activeTimer,
-      sequence: this.sequenceNumber,
-      timestamp: Date.now(),
       players: [], // TODO: Implement player tracking
       spectators: [] // TODO: Implement spectator tracking
     };
@@ -138,20 +137,8 @@ export class GameStateService {
       return null;
     }
     
-    // Extract position and cost arrays from retreat options
-    const validPositions: Position[] = [];
-    const costs: number[] = [];
-    
-    for (const option of retreatOptions) {
-      validPositions.push(option.to);
-      costs.push(option.cost);
-    }
-    
     return {
-      gameId: this.gameId,
-      piece: captureAttempt.from,
-      validPositions,
-      costs
+      options: retreatOptions
     };
   }
   
@@ -226,7 +213,7 @@ export class GameStateService {
         this.moveHistory.push({
           from,
           to,
-          piece: this.board.getPiece(to)?.type || 'p', // Fallback to pawn if type not found
+          piece: this.board.getPiece(to)?.type || PIECE_TYPE('p'), // Fallback to pawn
           check: moveResult.check,
           checkmate: false, // Will be updated below if applicable
           turnNumber: this.board.getCurrentTurn()
@@ -236,11 +223,11 @@ export class GameStateService {
         this.switchPlayerToMove();
         
         // Check for game termination conditions
-        const opponentColor = playerColor === 'white' ? 'black' : 'white';
+        const opponentColor = playerColor.value === 'w' ? PIECE_COLOR('b') : PIECE_COLOR('w');
         
         // Use the board's checkmate detection
         if (moveResult.check && this.board.isCheckmate(opponentColor)) {
-          this.gameResult = playerColor === 'white' ? GameResult.WHITE_WIN : GameResult.BLACK_WIN;
+          this.gameResult = playerColor.value === 'w' ? GameResult.WHITE_WIN : GameResult.BLACK_WIN;
           this.currentPhase = GamePhase.GAME_OVER;
           
           // Update the move history with checkmate flag
@@ -373,7 +360,7 @@ export class GameStateService {
       
       // Check for check or checkmate
       if (this.isInCheck()) {
-        const opponentColor = duel.attacker === 'white' ? 'black' : 'white';
+        const opponentColor = duel.attacker.value === 'w' ? PIECE_COLOR('b') : PIECE_COLOR('w');
         // TODO: Implement checkmate detection
       }
     }
@@ -491,7 +478,7 @@ export class GameStateService {
    * Switches the player to move
    */
   private switchPlayerToMove(): void {
-    this.playerToMove = this.playerToMove === 'white' ? 'black' : 'white';
+    this.playerToMove = this.playerToMove.value === 'w' ? PIECE_COLOR('b') : PIECE_COLOR('w');
     this.board.setActivePlayer(this.playerToMove);
     
     // Switch active timer
@@ -546,7 +533,7 @@ export class GameStateService {
     }
     
     // Update time remaining
-    if (color === 'white') {
+    if (color.value === 'w') {
       this.whiteTimeRemaining = Math.max(0, this.whiteTimeRemaining - elapsedMs);
       
       // Check for timeout
@@ -580,7 +567,7 @@ export class GameStateService {
     
     // Start timer for white if time control is enabled
     if (this.whiteTimeRemaining > 0 && this.blackTimeRemaining > 0) {
-      this.activeTimer = 'white';
+      this.activeTimer = PIECE_COLOR('w');
     }
     
     return true;
@@ -649,9 +636,9 @@ export class GameStateService {
     this.currentPhase = GamePhase.GAME_OVER;
     
     // Set game result based on the winner
-    if (result.winner === 'white') {
+    if (result.winner?.value === 'w') {
       this.gameResult = GameResult.WHITE_WIN;
-    } else if (result.winner === 'black') {
+    } else if (result.winner?.value === 'b') {
       this.gameResult = GameResult.BLACK_WIN;
     } else {
       this.gameResult = GameResult.DRAW;

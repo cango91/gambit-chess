@@ -8,15 +8,8 @@
 // @ts-ignore
 import pako from 'pako';
 import { compressedKnightRetreatTable } from './knightRetreatData';
-
-/**
- * Interface for knight retreat position with cost
- */
-export interface RetreatOption {
-  x: number;
-  y: number;
-  cost: number;
-}
+import { RetreatCost } from '../tactical';
+import { ChessPosition, ChessPositionType } from '../chess/types';
 
 // Cache the decompressed table to avoid repeated decompression
 let decompressedTable: Record<string, number[]> | null = null;
@@ -123,10 +116,9 @@ export function generateRetreatKey(
  * @param packed Bit-packed retreat option (9 bits)
  * @returns Unpacked retreat option with x, y coordinates and cost
  */
-export function unpackRetreatOption(packed: number): RetreatOption {
+export function unpackRetreatOption(packed: number): RetreatCost {
   return {
-    x: (packed >> 6) & 0x7,
-    y: (packed >> 3) & 0x7,
+    to: ChessPosition.fromCoordinates((packed >> 6) & 0x7, (packed >> 3) & 0x7),
     cost: packed & 0x7
   };
 }
@@ -143,7 +135,7 @@ export function unpackRetreatOption(packed: number): RetreatOption {
 export function getKnightRetreats(
   startX: number, startY: number,
   attackX: number, attackY: number
-): RetreatOption[] {
+): RetreatCost[] {
   // Get the lookup table
   const table = decompressKnightRetreatTable();
   
@@ -166,42 +158,14 @@ export function getKnightRetreats(
  * @returns Array of valid retreat options with positions and costs, converted to board positions
  */
 export function getKnightRetreatsFromPositions(
-  startPosition: string,
-  attackPosition: string
-): Array<{ to: string, cost: number }> {
+  startPosition: ChessPositionType,
+  attackPosition: ChessPositionType
+): RetreatCost[] {
   // Convert string positions to coordinates
-  const [startX, startY] = positionToCoordinates(startPosition);
-  const [attackX, attackY] = positionToCoordinates(attackPosition);
+  const [startX, startY] = ChessPosition.from(startPosition).toCoordinates();
+  const [attackX, attackY] = ChessPosition.from(attackPosition).toCoordinates();
   
   // Get retreats using coordinates
-  const retreats = getKnightRetreats(startX, startY, attackX, attackY);
-  
-  // Convert coordinates back to string positions
-  return retreats.map(option => ({
-    to: coordinatesToPosition(option.x, option.y),
-    cost: option.cost
-  }));
-}
+  return getKnightRetreats(startX, startY, attackX, attackY);
 
-/**
- * Utility function to convert position string to coordinates
- * @param position Position string (e.g., "e4")
- * @returns [x, y] coordinates (0-indexed)
- */
-function positionToCoordinates(position: string): [number, number] {
-  const file = position.charCodeAt(0) - 'a'.charCodeAt(0);
-  const rank = parseInt(position.charAt(1), 10) - 1;
-  return [file, rank];
 }
-
-/**
- * Utility function to convert coordinates to position string
- * @param x X coordinate (0-7)
- * @param y Y coordinate (0-7)
- * @returns Position string (e.g., "e4")
- */
-function coordinatesToPosition(x: number, y: number): string {
-  const file = String.fromCharCode('a'.charCodeAt(0) + x);
-  const rank = y + 1;
-  return `${file}${rank}`;
-} 

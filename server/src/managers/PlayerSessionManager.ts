@@ -70,7 +70,7 @@ export class PlayerSessionManager implements IPlayerSessionManager {
     
     // Update the game player map
     const gamePlayers = this.gamePlayerMap.get(gameId) || { white: null, black: null };
-    if (color === 'white') {
+    if (color.value === 'w') {
       gamePlayers.white = playerId;
     } else {
       gamePlayers.black = playerId;
@@ -97,7 +97,7 @@ export class PlayerSessionManager implements IPlayerSessionManager {
     // Update the game player map
     const gamePlayers = this.gamePlayerMap.get(gameId);
     if (gamePlayers) {
-      if (color === 'white') {
+      if (color.value === 'w') {
         gamePlayers.white = null;
       } else {
         gamePlayers.black = null;
@@ -150,7 +150,7 @@ export class PlayerSessionManager implements IPlayerSessionManager {
       return null;
     }
     
-    return color === 'white' ? gamePlayers.white : gamePlayers.black;
+    return color.value === 'w' ? gamePlayers.white : gamePlayers.black;
   }
   
   /**

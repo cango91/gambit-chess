@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { 
   GamePhase, 
   PieceColor, 
-  GameResult, 
   Position,
-  Move
+  GameEventType,
+  PIECE_COLOR,
 } from '@gambit-chess/shared';
 
 import { IGameRepository } from '../interfaces/IGameRepository';
@@ -12,11 +12,8 @@ import { IPlayerSessionManager } from '../interfaces/IPlayerSessionManager';
 import { ISpectatorManager } from '../interfaces/ISpectatorManager';
 import { IEventDispatcher } from '../interfaces/IEventDispatcher';
 import { GameState } from '../types/GameState';
-import { GameEventType } from '../types/GameEventType';
 import { IGameConfig } from '../interfaces/IGameConfig';
 import { DEFAULT_GAME_CONFIG } from '../config';
-
-import { Board } from '../models/Board';
 import { GameStateService } from './GameStateService';
 import { BPManager } from './BPManager';
 import { TacticalDetectorService } from './TacticalDetectorService';
@@ -152,19 +149,19 @@ export class GameManager {
     
     if (preferredColor) {
       // Check if preferred color is available
-      if (preferredColor === 'white' && snapshot.players.white === null) {
-        assignedColor = 'white';
-      } else if (preferredColor === 'black' && snapshot.players.black === null) {
-        assignedColor = 'black';
+      if (preferredColor.equals(PIECE_COLOR('white')) && snapshot.players.white === null) {
+        assignedColor = PIECE_COLOR('white');
+      } else if (preferredColor.equals(PIECE_COLOR('black')) && snapshot.players.black === null) {
+        assignedColor = PIECE_COLOR('black');
       }
     }
     
     // If no preference or preferred color not available, assign any available color
     if (!assignedColor) {
       if (snapshot.players.white === null) {
-        assignedColor = 'white';
+        assignedColor = PIECE_COLOR('white');
       } else if (snapshot.players.black === null) {
-        assignedColor = 'black';
+        assignedColor = PIECE_COLOR('black');
       }
     }
     
@@ -179,7 +176,7 @@ export class GameManager {
     }
     
     // Update game snapshot
-    snapshot.players[assignedColor] = playerId;
+    snapshot.players[`${assignedColor.toString()}` as keyof typeof snapshot.players] = playerId;
     snapshot.lastUpdated = Date.now();
     
     // Update game metadata
@@ -232,8 +229,8 @@ export class GameManager {
     await this.gameRepository.saveGame(gameId, snapshot.gameState);
     
     // Send game started event with filtered game states for each player
-    const whiteState = game.createGameStateDTO('white');
-    const blackState = game.createGameStateDTO('black');
+    const whiteState = game.createGameStateDTO(PIECE_COLOR('white'));
+    const blackState = game.createGameStateDTO(PIECE_COLOR('black'));
     
     this.eventDispatcher.dispatchToPlayers(
       gameId,
@@ -612,7 +609,7 @@ export class GameManager {
     }
     
     // Get opponent
-    const opponentColor = playerColor === 'white' ? 'black' : 'white';
+    const opponentColor = playerColor.equals(PIECE_COLOR('white')) ? PIECE_COLOR('black') : PIECE_COLOR('white');
     const opponentId = this.getPlayerId(gameId, opponentColor);
     
     // End the game with the opponent as winner
@@ -727,13 +724,13 @@ export class GameManager {
    */
   private sendGameStateUpdates(gameId: string, game: GameStateService): void {
     // Create filtered game states for each player
-    const whiteState = game.createGameStateDTO('white');
-    const blackState = game.createGameStateDTO('black');
+    const whiteState = game.createGameStateDTO(PIECE_COLOR('white'));
+    const blackState = game.createGameStateDTO(PIECE_COLOR('black'));
     const spectatorState = game.createGameStateDTO(null);
     
     // Get player IDs
-    const whiteId = this.getPlayerId(gameId, 'white');
-    const blackId = this.getPlayerId(gameId, 'black');
+    const whiteId = this.getPlayerId(gameId, PIECE_COLOR('white'));
+    const blackId = this.getPlayerId(gameId, PIECE_COLOR('black'));
     
     // Send to white player
     if (whiteId && this.playerSessionManager.isPlayerConnected(whiteId)) {
@@ -772,9 +769,9 @@ export class GameManager {
     }
     
     if (snapshot.players.white === playerId) {
-      return 'white';
+      return PIECE_COLOR('white');
     } else if (snapshot.players.black === playerId) {
-      return 'black';
+      return PIECE_COLOR('black');
     }
     
     return null;
@@ -793,6 +790,6 @@ export class GameManager {
       return null;
     }
     
-    return snapshot.players[color];
+    return snapshot.players[`${color.toString()}` as keyof typeof snapshot.players];
   }
 } 

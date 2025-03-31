@@ -10,16 +10,18 @@
   ],
   "scripts": {
     "build": "yarn workspace @gambit-chess/shared build && yarn workspace @gambit-chess/server build && yarn workspace @gambit-chess/client build",
-    "build:shared": "yarn workspace @gambit-chess/shared build",
-    "build:server": "yarn workspace @gambit-chess/server build",
-    "build:client": "yarn workspace @gambit-chess/client build",
+    "build:shared": "yarn workspace @gambit-chess/shared build:clean",
+    "build:server": "yarn workspace @gambit-chess/server build:clean",
+    "build:client": "yarn workspace @gambit-chess/client build:clean",
     "dev": "concurrently \"yarn workspace @gambit-chess/server dev\" \"yarn workspace @gambit-chess/client dev\"",
     "start": "yarn workspace @gambit-chess/server start",
     "test": "yarn workspaces run test",
     "test:shared": "yarn workspace @gambit-chess/shared test",
     "test:server": "yarn workspace @gambit-chess/server test",
     "test:client": "yarn workspace @gambit-chess/client test",
+    "clean": "yarn workspaces run clean",
     "docs": "yarn workspaces run docs",
+    "docs:clean": "yarn workspaces run docs:clean",
     "docs:shared": "yarn workspace @gambit-chess/shared docs",
     "docs:server": "yarn workspace @gambit-chess/server docs",
     "docs:client": "yarn workspace @gambit-chess/client docs"
@@ -27,6 +29,7 @@
   "author": "cango91",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "rimraf": "^6.0.1"
   }
 }

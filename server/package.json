@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build:clean": "rimraf dist && yarn build",
     "clean": "rimraf dist",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js",
@@ -14,7 +15,8 @@
     "docs:html": "typedoc --out ../docs/api/html/server src/index.ts",
     "docs:json": "typedoc --json ../docs/api/json/server.json src/index.ts",
     "docs:md": "typedoc --plugin typedoc-plugin-markdown --out ../docs/api/md/server src/index.ts",
-    "docs": "yarn docs:html && yarn docs:json && yarn docs:md"
+    "docs": "yarn docs:html && yarn docs:json && yarn docs:md",
+    "docs:clean": "rimraf ../docs/api/html/server ../docs/api/json/server.json ../docs/api/md/server"
   },
   "author": "cango91",
   "license": "MIT",

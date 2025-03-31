@@ -2,24 +2,38 @@
  * Chess piece movement pattern utilities
  */
 
-import { BOARD_SIZE } from '../constants';
-import { PieceType, Position } from '../types';
-import {
-  isValidPosition,
-  positionToCoordinates,
-  coordinatesToPosition,
-  isSameFile,
-  isSameRank,
-  isSameDiagonal,
-} from '../utils/position';
+import { ChessPieceType, ChessPosition } from './types';
+
+const isSameRank = (from: ChessPosition, to: ChessPosition): boolean => {
+  return from.isSameRank(to);
+}
+
+const isSameFile = (from: ChessPosition, to: ChessPosition): boolean => {
+  return from.isSameFile(to);
+}
+
+const isSameDiagonal = (from: ChessPosition, to: ChessPosition): boolean => {
+  return from.isSameDiagonal(to);
+}
+
+const isValidPosition = (position: ChessPosition | string | number[] | null | undefined): boolean => {
+  return !!position && ChessPosition.isValidPosition(position);
+}
+
+const positionToCoordinates = (position: ChessPosition |string | number[] ): number[] => {
+  if (!isValidPosition(position)) {
+    throw new Error('Invalid position');
+  }
+  return (new ChessPosition(position)).toCoordinates();
+}
 
 /**
  * Generates possible move directions for a specific piece type
  * @param pieceType The type of chess piece
  * @returns Array of [dx, dy] direction vectors
  */
-export function getPieceDirections(pieceType: PieceType): [number, number][] {
-  switch (pieceType) {
+export function getPieceDirections(pieceType: ChessPieceType): [number, number][] {
+  switch (pieceType.value) {
     case 'p':
       // Pawns are handled separately due to their special movement rules
       return [];
@@ -61,8 +75,8 @@ export function getPieceDirections(pieceType: PieceType): [number, number][] {
  * @returns True if the move is valid for a pawn
  */
 export function isValidPawnMove(
-  from: Position,
-  to: Position,
+  from: ChessPosition,
+  to: ChessPosition,
   isWhite: boolean,
   isCapture: boolean = false,
   isFirstMove: boolean = false
@@ -70,7 +84,6 @@ export function isValidPawnMove(
   if (!isValidPosition(from) || !isValidPosition(to)) {
     return false;
   }
-
   const [fromX, fromY] = positionToCoordinates(from);
   const [toX, toY] = positionToCoordinates(to);
 
@@ -110,7 +123,7 @@ export function isValidPawnMove(
  * @param to Destination position
  * @returns True if the move is valid for a knight
  */
-export function isValidKnightMove(from: Position, to: Position): boolean {
+export function isValidKnightMove(from: ChessPosition, to: ChessPosition): boolean {
   if (!isValidPosition(from) || !isValidPosition(to)) {
     return false;
   }
@@ -131,7 +144,7 @@ export function isValidKnightMove(from: Position, to: Position): boolean {
  * @param to Destination position
  * @returns True if the move is valid for a bishop
  */
-export function isValidBishopMove(from: Position, to: Position): boolean {
+export function isValidBishopMove(from: ChessPosition, to: ChessPosition): boolean {
   if (!isValidPosition(from) || !isValidPosition(to)) {
     return false;
   }
@@ -146,7 +159,7 @@ export function isValidBishopMove(from: Position, to: Position): boolean {
  * @param to Destination position
  * @returns True if the move is valid for a rook
  */
-export function isValidRookMove(from: Position, to: Position): boolean {
+export function isValidRookMove(from: ChessPosition, to: ChessPosition): boolean {
   if (!isValidPosition(from) || !isValidPosition(to)) {
     return false;
   }
@@ -161,7 +174,7 @@ export function isValidRookMove(from: Position, to: Position): boolean {
  * @param to Destination position
  * @returns True if the move is valid for a queen
  */
-export function isValidQueenMove(from: Position, to: Position): boolean {
+export function isValidQueenMove(from: ChessPosition, to: ChessPosition): boolean {
   if (!isValidPosition(from) || !isValidPosition(to)) {
     return false;
   }
@@ -178,8 +191,8 @@ export function isValidQueenMove(from: Position, to: Position): boolean {
  * @returns True if the move is valid for a king
  */
 export function isValidKingMove(
-  from: Position,
-  to: Position,
+  from: ChessPosition,
+  to: ChessPosition,
   includeCastle: boolean = false
 ): boolean {
   if (!isValidPosition(from) || !isValidPosition(to)) {
@@ -212,14 +225,14 @@ export function isValidKingMove(
  * @returns True if the move is valid for the piece type
  */
 export function isValidPieceMove(
-  pieceType: PieceType,
-  from: Position,
-  to: Position,
+  pieceType: ChessPieceType,
+  from: ChessPosition,
+  to: ChessPosition,
   isWhitePiece: boolean = true,
   isCapture: boolean = false,
   isFirstMove: boolean = false
 ): boolean {
-  switch (pieceType) {
+  switch (pieceType.value) {
     case 'p':
       return isValidPawnMove(from, to, isWhitePiece, isCapture, isFirstMove);
     case 'n':
@@ -242,8 +255,8 @@ export function isValidPieceMove(
  * @param pieceType The type of chess piece
  * @returns True if the piece is a sliding piece
  */
-export function isSlidingPiece(pieceType: PieceType): boolean {
-  return pieceType === 'b' || pieceType === 'r' || pieceType === 'q';
+export function isSlidingPiece(pieceType: ChessPieceType): boolean {
+  return pieceType.value === 'b' || pieceType.value === 'r' || pieceType.value === 'q';
 }
 
 /**
@@ -253,7 +266,7 @@ export function isSlidingPiece(pieceType: PieceType): boolean {
  * @param dy Direction vector y component
  * @returns True if the piece can move in the given direction
  */
-export function canMoveInDirection(pieceType: PieceType, dx: number, dy: number): boolean {
+export function canMoveInDirection(pieceType: ChessPieceType, dx: number, dy: number): boolean {
   // Normalize the direction vector
   if (dx !== 0) dx = dx / Math.abs(dx);
   if (dy !== 0) dy = dy / Math.abs(dy);

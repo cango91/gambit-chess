@@ -2,30 +2,31 @@
  * Data Transfer Objects (DTOs) for Gambit Chess
  */
 
+import { RetreatCost } from '@/tactical';
 import {
-  ChessPiece,
   GamePhase,
   GameResult,
-  PieceColor,
   Player,
-  Position,
   Spectator,
-  ChatMessage
+  ChatMessage,
+  MoveOutcome,
 } from '../types';
+import { ChessPieceColor, ChessPosition } from '@/chess/types';
+import { IChessPiece } from '@/chess/contracts';
+
+type DuelOutcome = MoveOutcome;
 
 /**
  * DTO for game state updates sent to clients
  * Note: This is filtered by the server based on player visibility rules
  */
 export interface GameStateDTO {
-  /** Game unique identifier */
-  gameId: string;
   /** Current game phase */
   phase: GamePhase;
   /** Current player's turn */
-  turn: PieceColor;
+  turn: ChessPieceColor;
   /** Current board pieces */
-  pieces: ChessPiece[];
+  pieces: IChessPiece[];
   /** Current move number */
   moveNumber: number;
   /** Check status */
@@ -39,11 +40,7 @@ export interface GameStateDTO {
   /** Time remaining for black player (in milliseconds) */
   blackTimeRemaining: number;
   /** Current active timer */
-  activeTimer: PieceColor | null;
-  /** Sequence number for state reconciliation */
-  sequence: number;
-  /** Server timestamp */
-  timestamp: number;
+  activeTimer: ChessPieceColor | null;
   /** Players information */
   players: Player[];
   /** Current spectators */
@@ -54,64 +51,41 @@ export interface GameStateDTO {
  * DTO for move requests from clients
  */
 export interface MoveDTO {
-  /** Game ID */
-  gameId: string;
   /** Starting position */
-  from: Position;
+  from: ChessPosition;
   /** Destination position */
-  to: Position;
-  /** Move sequence number for validation */
-  sequence: number;
+  to: ChessPosition;
 }
 
-/**
- * DTO for BP allocation during duels
- */
-export interface BPAllocationDTO {
-  /** Game ID */
-  gameId: string;
-  /** Amount of BP allocated */
-  amount: number;
-  /** Sequence number for validation */
-  sequence: number;
-}
 
 /**
  * DTO for tactical retreat selection
  */
-export interface RetreatDTO {
-  /** Game ID */
-  gameId: string;
+export interface RetreatSelectionDTO {
   /** Position to retreat to */
-  position: Position;
-  /** Sequence number for validation */
-  sequence: number;
+  position: ChessPosition;
 }
 
 /**
  * DTO for duel initiation notification
  */
 export interface DuelInitiatedDTO {
-  /** Game ID */
-  gameId: string;
   /** Position of the attacking piece */
-  attackingPiece: Position;
+  attackingPiece: ChessPosition;
   /** Position of the defending piece */
-  defendingPiece: Position;
+  defendingPiece: ChessPosition;
   /** Position where the capture is attempted */
-  position: Position;
+  position: ChessPosition;
 }
 
 /**
  * DTO for duel outcome notification
  */
 export interface DuelOutcomeDTO {
-  /** Game ID */
-  gameId: string;
   /** Winner of the duel (attacker or defender) */
-  winner: PieceColor;
+  winner: ChessPieceColor;
   /** Result of the duel (success or failed) */
-  result: 'success' | 'failed';
+  result: DuelOutcome;
   /** BP allocated by attacker */
   attackerAllocation: number;
   /** BP allocated by defender */
@@ -122,49 +96,32 @@ export interface DuelOutcomeDTO {
  * DTO for retreat options notification
  */
 export interface RetreatOptionsDTO {
-  /** Game ID */
-  gameId: string;
-  /** Piece position that needs to retreat */
-  piece: Position;
-  /** Valid positions to retreat to */
-  validPositions: Position[];
-  /** BP costs for each valid position */
-  costs: number[];
+  /** Retreat options */
+  options: RetreatCost[];
 }
 
 /**
  * DTO for BP update notification
  */
-export interface BPUpdateDTO {
-  /** Game ID */
-  gameId: string;
-  /** Current BP amount */
-  currentBP: number;
-}
-
-/**
- * DTO for chat message
- */
-export interface ChatMessageDTO extends ChatMessage {
-  /** Game ID */
-  gameId: string;
+export interface BPAllocationDTO {
+  /** BP allocation requested by the player */
+  bp: number;
 }
 
 /**
  * DTO for player information
  */
-export interface PlayerDTO extends Player {
-  /** Game ID */
-  gameId: string;
-}
+export type PlayerDTO = Player;
 
 /**
  * DTO for spectator information
  */
-export interface SpectatorDTO extends Spectator {
-  /** Game ID */
-  gameId: string;
-}
+export type SpectatorDTO = Spectator;
+
+/**
+ * DTO for chat message
+ */
+export type ChatMessageDTO = ChatMessage;
 
 /**
  * DTO for error messages
@@ -176,56 +133,13 @@ export interface ErrorDTO {
   message: string;
 }
 
-/**
- * DTO for game resignation
- */
-export interface ResignDTO {
-  /** Game ID */
-  gameId: string;
-  /** Sequence number for validation */
-  sequence: number;
-}
-
-/**
- * DTO for draw offer
- */
-export interface DrawOfferDTO {
-  /** Game ID */
-  gameId: string;
-  /** Sequence number for validation */
-  sequence: number;
-}
 
 /**
  * DTO for draw response
  */
 export interface DrawResponseDTO {
-  /** Game ID */
-  gameId: string;
   /** Whether the draw was accepted */
   accept: boolean;
-  /** Sequence number for validation */
-  sequence: number;
-}
-
-/**
- * DTO for connection ping
- */
-export interface ConnectionPingDTO {
-  /** Game ID */
-  gameId: string;
-  /** Client timestamp for latency calculation */
-  timestamp: number;
-}
-
-/**
- * DTO for spectator join request
- */
-export interface SpectatorJoinDTO {
-  /** Game ID */
-  gameId: string;
-  /** Spectator display name */
-  name: string;
 }
 
 /**

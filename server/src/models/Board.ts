@@ -7,9 +7,12 @@ import {
   Position, 
   PieceColor, 
   PieceType, 
-  Retreat,
+  RetreatCost,
   isKingInCheck,
-  wouldMoveResultInSelfCheck
+  wouldMoveResultInSelfCheck,
+  PIECE_COLOR,
+  PIECE,
+  POSITION
 } from '@gambit-chess/shared';
 
 /**
@@ -20,9 +23,9 @@ export class Board {
   private boardSnapshot: BoardSnapshot;
   private currentPhase: GamePhase = GamePhase.NORMAL;
   private activeDuel: Duel | null = null;
-  private retreatOptions: Retreat[] | null = null;
+  private retreatOptions: RetreatCost[] | null = null;
   private previousBoardState: Board | null = null;
-  private activePlayer: PieceColor = 'white';
+  private activePlayer: PieceColor = PIECE_COLOR('white');
   private lastCaptureAttempt: { from: Position, to: Position } | null = null;
   private capturedPieces: ChessPiece[] = [];
   private moveCount: number = 0;
@@ -76,7 +79,7 @@ export class Board {
    * Switches the active player
    */
   public switchActivePlayer(): void {
-    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white';
+    this.activePlayer = this.activePlayer.equals(PIECE_COLOR('white')) ? PIECE_COLOR('black') : PIECE_COLOR('white');
   }
 
   /**
@@ -97,7 +100,7 @@ export class Board {
    * Gets the piece at a position
    */
   public getPiece(position: Position): ChessPiece | undefined {
-    return this.boardSnapshot.getPiece(position);
+    return this.boardSnapshot.getPieceAt(position!);
   }
 
   /**
@@ -271,14 +274,14 @@ export class Board {
    * Sets the available tactical retreat options
    * @param options Available retreat options
    */
-  public setRetreatOptions(options: Retreat[]): void {
+  public setRetreatOptions(options: RetreatCost[]): void {
     this.retreatOptions = options;
   }
 
   /**
    * Gets the available tactical retreat options
    */
-  public getRetreatOptions(): Retreat[] | null {
+  public getRetreatOptions(): RetreatCost[] | null {
     return this.retreatOptions;
   }
 
@@ -349,7 +352,7 @@ export class Board {
       
       // Handle halfmove clock for 50-move rule
       // Reset on capture or pawn move, increment otherwise
-      if (capturedPiece || (movingPiece && movingPiece.type === 'p')) {
+      if (capturedPiece || (movingPiece && movingPiece.type.value === 'p')) {
         this.halfMoveClock = 0;
       } else {
         this.halfMoveClock++;
@@ -357,7 +360,19 @@ export class Board {
       
       // Track captured piece
       if (capturedPiece) {
-        this.capturedPieces.push({...capturedPiece}); // Clone to avoid reference issues
+        // Check if all required properties exist
+        if (capturedPiece.type && capturedPiece.color) {
+          const piece = PIECE([
+            capturedPiece.type, 
+            capturedPiece.color, 
+            capturedPiece.position || POSITION('a1'), // Default position if null
+            capturedPiece.lastMoveTurn || 0 // Default to 0 if undefined
+          ]);
+          // Only add if a valid piece was created
+          if (piece) {
+            this.capturedPieces.push(piece);
+          }
+        }
       }
       
       // Update position history for threefold repetition
@@ -388,13 +403,14 @@ export class Board {
     // For each piece, check all possible destination squares
     for (const piece of pieces) {
       const { position } = piece;
+      if (!position) continue; // Skip pieces without a position
       
       // Iterate through all 64 squares as potential destinations
       for (let fileIdx = 0; fileIdx < 8; fileIdx++) {
         for (let rankIdx = 0; rankIdx < 8; rankIdx++) {
           const file = String.fromCharCode(97 + fileIdx); // 'a' to 'h'
           const rank = String(rankIdx + 1); // '1' to '8'
-          const destination = `${file}${rank}` as Position;
+          const destination = POSITION(`${file}${rank}`);
           
           // Check if the move is valid according to chess rules
           if (this.isValidMove(position, destination)) {
@@ -454,22 +470,32 @@ export class Board {
     
     // King and bishop vs King or King and knight vs King
     if (pieces.length === 3) {
-      const hasBishop = pieces.some(p => p.type === 'b');
-      const hasKnight = pieces.some(p => p.type === 'n');
+      const hasBishop = pieces.some(p => p.type.value === 'b');
+      const hasKnight = pieces.some(p => p.type.value === 'n');
       return hasBishop || hasKnight;
     }
     
     // King and bishop vs King and bishop (same colored bishops)
     if (pieces.length === 4) {
-      const bishops = pieces.filter(p => p.type === 'b');
+      const bishops = pieces.filter(p => p.type.value === 'b');
       if (bishops.length === 2 && 
-          pieces.filter(p => p.type === 'k').length === 2) {
+          pieces.filter(p => p.type.value === 'k').length === 2) {
         // Check if bishops are on same colored squares
-        const [b1x, b1y] = [bishops[0].position.charCodeAt(0) - 97, Number(bishops[0].position[1]) - 1];
-        const [b2x, b2y] = [bishops[1].position.charCodeAt(0) - 97, Number(bishops[1].position[1]) - 1];
+        for (const bishop of bishops) {
+          if (!bishop.position) continue;
+        }
         
-        // Bishop square colors: (x + y) % 2
-        return (b1x + b1y) % 2 === (b2x + b2y) % 2;
+        // Get first bishop with position
+        const bishop1 = bishops.find(b => b.position !== null);
+        const bishop2 = bishops.find(b => b.position !== null && b !== bishop1);
+        
+        if (bishop1?.position && bishop2?.position) {
+          const [b1x, b1y] = bishop1.position.toCoordinates();
+          const [b2x, b2y] = bishop2.position.toCoordinates();
+          
+          // Bishop square colors: (x + y) % 2
+          return (b1x + b1y) % 2 === (b2x + b2y) % 2;
+        }
       }
     }
     
@@ -519,8 +545,21 @@ export class Board {
     // Copy the board snapshot
     clonedBoard.boardSnapshot = this.boardSnapshot.clone();
     
-    // Copy captured pieces
-    clonedBoard.capturedPieces = [...this.capturedPieces.map(p => ({...p}))];
+    // Copy captured pieces with proper type casting to ensure no undefined values
+    clonedBoard.capturedPieces = this.capturedPieces
+      .map(p => {
+        if (p && p.type && p.color) {
+          const piece = PIECE([
+            p.type, 
+            p.color, 
+            p.position || POSITION('a1'), // Default position if null
+            p.lastMoveTurn || 0 // Default to 0 if undefined
+          ]);
+          return piece;
+        }
+        return null;
+      })
+      .filter((p): p is ChessPiece => p !== null); // Type guard to filter out nulls
     
     // Copy game state
     clonedBoard.currentPhase = this.currentPhase;

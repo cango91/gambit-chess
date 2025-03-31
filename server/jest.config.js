@@ -26,4 +26,9 @@ module.exports = {
   },
   verbose: true,
   testTimeout: 30000,
+  
+  // Add moduleNameMapper for path aliases
+  moduleNameMapper: {
+    '@/(.*)': '<rootDir>/../shared/src/$1'
+  }
 }; 

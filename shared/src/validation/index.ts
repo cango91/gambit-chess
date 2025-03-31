@@ -9,26 +9,26 @@ import {
   GameStateDTO, 
   MoveDTO, 
   BPAllocationDTO, 
-  RetreatDTO,
+  RetreatSelectionDTO,
   DuelInitiatedDTO,
   DuelOutcomeDTO,
   RetreatOptionsDTO,
-  BPUpdateDTO,
   ChatMessageDTO,
   PlayerDTO,
   SpectatorDTO
 } from '../dtos';
-import { Position, PieceColor, GamePhase, GameResult } from '../types';
-import { isValidPosition } from '../utils/position';
+import { GamePhase, GameResult } from '../types';
+import { ChessPieceColor, ChessPosition } from '@/chess/types';
 
 /**
  * Validates a position string
  * @param position The position to validate
+ * @type {Position | string | number[] | null | undefined}
  * @returns True if the position is valid
  */
-export function validatePosition(position: Position | null | undefined): boolean {
+export function validatePosition(position: ChessPosition | string | number[] | null | undefined): boolean {
   if (!position) return false;
-  return isValidPosition(position);
+  return ChessPosition.isValidPosition(position);
 }
 
 /**
@@ -36,9 +36,9 @@ export function validatePosition(position: Position | null | undefined): boolean
  * @param color The color to validate
  * @returns True if the color is valid
  */
-export function validatePieceColor(color: PieceColor | null | undefined): boolean {
+export function validatePieceColor(color: ChessPieceColor | null | undefined): boolean {
   if (!color) return false;
-  return color === 'white' || color === 'black';
+  return color === ChessPieceColor.from('white') || color === ChessPieceColor.fromValue('black');
 }
 
 /**
@@ -141,7 +141,6 @@ export function validateGameStateDTO(dto: Partial<GameStateDTO>): boolean {
   if (!dto) return false;
   
   // Required fields
-  if (!validateGameId(dto.gameId)) return false;
   if (!validateGamePhase(dto.phase)) return false;
   if (!validatePieceColor(dto.turn)) return false;
   if (!Array.isArray(dto.pieces)) return false;
@@ -149,8 +148,6 @@ export function validateGameStateDTO(dto: Partial<GameStateDTO>): boolean {
   if (typeof dto.inCheck !== 'boolean') return false;
   if (!validateTime(dto.whiteTimeRemaining)) return false;
   if (!validateTime(dto.blackTimeRemaining)) return false;
-  if (!validateSequence(dto.sequence)) return false;
-  if (!validateTimestamp(dto.timestamp)) return false;
   
   // Optional fields
   if (dto.bp !== undefined && (typeof dto.bp !== 'number' || dto.bp < 0)) return false;
@@ -172,10 +169,8 @@ export function validateGameStateDTO(dto: Partial<GameStateDTO>): boolean {
 export function validateMoveDTO(dto: Partial<MoveDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!validatePosition(dto.from)) return false;
   if (!validatePosition(dto.to)) return false;
-  if (!validateSequence(dto.sequence)) return false;
   
   return true;
 }
@@ -188,9 +183,7 @@ export function validateMoveDTO(dto: Partial<MoveDTO>): boolean {
 export function validateBPAllocationDTO(dto: Partial<BPAllocationDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
-  if (!validateBPAmount(dto.amount)) return false;
-  if (!validateSequence(dto.sequence)) return false;
+  if (!validateBPAmount(dto.bp)) return false;
   
   return true;
 }
@@ -200,12 +193,10 @@ export function validateBPAllocationDTO(dto: Partial<BPAllocationDTO>): boolean 
  * @param dto The DTO to validate
  * @returns True if the DTO is valid
  */
-export function validateRetreatDTO(dto: Partial<RetreatDTO>): boolean {
+export function validateRetreatDTO(dto: Partial<RetreatSelectionDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!validatePosition(dto.position)) return false;
-  if (!validateSequence(dto.sequence)) return false;
   
   return true;
 }
@@ -218,7 +209,6 @@ export function validateRetreatDTO(dto: Partial<RetreatDTO>): boolean {
 export function validateDuelInitiatedDTO(dto: Partial<DuelInitiatedDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!validatePosition(dto.attackingPiece)) return false;
   if (!validatePosition(dto.defendingPiece)) return false;
   if (!validatePosition(dto.position)) return false;
@@ -234,7 +224,6 @@ export function validateDuelInitiatedDTO(dto: Partial<DuelInitiatedDTO>): boolea
 export function validateDuelOutcomeDTO(dto: Partial<DuelOutcomeDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!validatePieceColor(dto.winner)) return false;
   if (dto.result !== 'success' && dto.result !== 'failed') return false;
   if (!validateBPAmount(dto.attackerAllocation)) return false;
@@ -251,34 +240,8 @@ export function validateDuelOutcomeDTO(dto: Partial<DuelOutcomeDTO>): boolean {
 export function validateRetreatOptionsDTO(dto: Partial<RetreatOptionsDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
-  if (!validatePosition(dto.piece)) return false;
-  if (!Array.isArray(dto.validPositions)) return false;
-  if (!Array.isArray(dto.costs)) return false;
-  if (dto.validPositions.length !== dto.costs.length) return false;
-  
-  // Validate individual positions and costs
-  for (const position of dto.validPositions) {
-    if (!validatePosition(position)) return false;
-  }
-  
-  for (const cost of dto.costs) {
-    if (typeof cost !== 'number' || cost < 0 || !Number.isInteger(cost)) return false;
-  }
-  
-  return true;
-}
-
-/**
- * Validates a BPUpdateDTO
- * @param dto The DTO to validate
- * @returns True if the DTO is valid
- */
-export function validateBPUpdateDTO(dto: Partial<BPUpdateDTO>): boolean {
-  if (!dto) return false;
-  
-  if (!validateGameId(dto.gameId)) return false;
-  if (!validateBPAmount(dto.currentBP)) return false;
+  if (!Array.isArray(dto.options)) return false;
+  if (dto.options.some(option => !ChessPosition.isValidPosition(option.to))) return false;
   
   return true;
 }
@@ -291,11 +254,8 @@ export function validateBPUpdateDTO(dto: Partial<BPUpdateDTO>): boolean {
 export function validateChatMessageDTO(dto: Partial<ChatMessageDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
-  if (!dto.senderId || typeof dto.senderId !== 'string') return false;
   if (!validateName(dto.senderName)) return false;
   if (!validateChatMessage(dto.message)) return false;
-  if (!validateTimestamp(dto.timestamp)) return false;
   
   return true;
 }
@@ -308,7 +268,6 @@ export function validateChatMessageDTO(dto: Partial<ChatMessageDTO>): boolean {
 export function validatePlayerDTO(dto: Partial<PlayerDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!dto.id || typeof dto.id !== 'string') return false;
   if (!validateName(dto.name)) return false;
   if (!validatePieceColor(dto.color)) return false;
@@ -324,7 +283,6 @@ export function validatePlayerDTO(dto: Partial<PlayerDTO>): boolean {
 export function validateSpectatorDTO(dto: Partial<SpectatorDTO>): boolean {
   if (!dto) return false;
   
-  if (!validateGameId(dto.gameId)) return false;
   if (!dto.id || typeof dto.id !== 'string') return false;
   if (!validateName(dto.name)) return false;
   
