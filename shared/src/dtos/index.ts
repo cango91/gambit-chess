@@ -2,152 +2,106 @@
  * Data Transfer Objects (DTOs) for Gambit Chess
  */
 
-import { RetreatCost } from '@/tactical';
 import {
-  GamePhase,
-  GameResult,
-  Player,
-  Spectator,
-  ChatMessage,
-  MoveOutcome,
-} from '../types';
-import { ChessPieceColor, ChessPosition } from '@/chess/types';
-import { IChessPiece } from '@/chess/contracts';
+    PrimitiveChessPieceDTO,
+    PrimitiveGameStateDTO,
+    PrimitiveMoveDTO,
+    PrimitiveRetreatOptionDTO,
+    PrimitivePlayerDTO,
+    PrimitiveSpectatorDTO,
+    PrimitiveChatMessageDTO,
+    DuelInfoDTO,
+    convertToPrimitivePiece,
+    convertFromPrimitivePiece,
+    convertToPrimitiveMove,
+    convertFromPrimitiveMove,
+    convertToPrimitiveRetreatOption,
+    convertFromPrimitiveRetreatOption,
+    convertToPrimitiveGameState,
+    convertFromPrimitiveGameState,
+    convertToPrimitivePlayer,
+    convertFromPrimitivePlayer,
+    convertToPrimitiveSpectator,
+    convertFromPrimitiveSpectator,
+    convertToPrimitiveChatMessage,
+    convertFromPrimitiveChatMessage
+} from './primitives';
 
-type DuelOutcome = MoveOutcome;
+// Re-export primitive DTOs
+export {
+    PrimitiveChessPieceDTO as ChessPieceDTO,
+    PrimitiveGameStateDTO as GameStateDTO,
+    PrimitiveMoveDTO as MoveDTO,
+    PrimitiveRetreatOptionDTO as RetreatOptionDTO,
+    PrimitivePlayerDTO as PlayerDTO,
+    PrimitiveSpectatorDTO as SpectatorDTO,
+    PrimitiveChatMessageDTO as ChatMessageDTO,
+    DuelInfoDTO
+};
 
-/**
- * DTO for game state updates sent to clients
- * Note: This is filtered by the server based on player visibility rules
- */
-export interface GameStateDTO {
-  /** Current game phase */
-  phase: GamePhase;
-  /** Current player's turn */
-  turn: ChessPieceColor;
-  /** Current board pieces */
-  pieces: IChessPiece[];
-  /** Current move number */
-  moveNumber: number;
-  /** Check status */
-  inCheck: boolean;
-  /** Player's own BP (opponent's BP is hidden) */
-  bp?: number;
-  /** Game result if game is over */
-  result?: GameResult;
-  /** Time remaining for white player (in milliseconds) */
-  whiteTimeRemaining: number;
-  /** Time remaining for black player (in milliseconds) */
-  blackTimeRemaining: number;
-  /** Current active timer */
-  activeTimer: ChessPieceColor | null;
-  /** Players information */
-  players: Player[];
-  /** Current spectators */
-  spectators: Spectator[];
-}
-
-/**
- * DTO for move requests from clients
- */
-export interface MoveDTO {
-  /** Starting position */
-  from: ChessPosition;
-  /** Destination position */
-  to: ChessPosition;
-}
-
-
-/**
- * DTO for tactical retreat selection
- */
-export interface RetreatSelectionDTO {
-  /** Position to retreat to */
-  position: ChessPosition;
-}
+// Re-export converters
+export {
+    convertToPrimitivePiece as toPieceDTO,
+    convertFromPrimitivePiece as fromPieceDTO,
+    convertToPrimitiveMove as toMoveDTO,
+    convertFromPrimitiveMove as fromMoveDTO,
+    convertToPrimitiveRetreatOption as toRetreatOptionDTO,
+    convertFromPrimitiveRetreatOption as fromRetreatOptionDTO,
+    convertToPrimitiveGameState as toGameStateDTO,
+    convertFromPrimitiveGameState as fromGameStateDTO,
+    convertToPrimitivePlayer as toPlayerDTO,
+    convertFromPrimitivePlayer as fromPlayerDTO,
+    convertToPrimitiveSpectator as toSpectatorDTO,
+    convertFromPrimitiveSpectator as fromSpectatorDTO,
+    convertToPrimitiveChatMessage as toChatMessageDTO,
+    convertFromPrimitiveChatMessage as fromChatMessageDTO
+};
 
 /**
  * DTO for duel initiation notification
  */
 export interface DuelInitiatedDTO {
-  /** Position of the attacking piece */
-  attackingPiece: ChessPosition;
-  /** Position of the defending piece */
-  defendingPiece: ChessPosition;
-  /** Position where the capture is attempted */
-  position: ChessPosition;
+    attackingPiece: string;  // Position as string e.g., 'e4'
+    defendingPiece: string;  // Position as string e.g., 'e5'
+    position: string;        // Position as string e.g., 'e5'
 }
 
 /**
  * DTO for duel outcome notification
  */
 export interface DuelOutcomeDTO {
-  /** Winner of the duel (attacker or defender) */
-  winner: ChessPieceColor;
-  /** Result of the duel (success or failed) */
-  result: DuelOutcome;
-  /** BP allocated by attacker */
-  attackerAllocation: number;
-  /** BP allocated by defender */
-  defenderAllocation: number;
-}
-
-/**
- * DTO for retreat options notification
- */
-export interface RetreatOptionsDTO {
-  /** Retreat options */
-  options: RetreatCost[];
+    winner: string;           // 'w'|'b'
+    result: string;          // MoveOutcome as string
+    attackerAllocation: number;
+    defenderAllocation: number;
 }
 
 /**
  * DTO for BP update notification
  */
 export interface BPAllocationDTO {
-  /** BP allocation requested by the player */
-  bp: number;
+    bp: number;
 }
-
-/**
- * DTO for player information
- */
-export type PlayerDTO = Player;
-
-/**
- * DTO for spectator information
- */
-export type SpectatorDTO = Spectator;
-
-/**
- * DTO for chat message
- */
-export type ChatMessageDTO = ChatMessage;
 
 /**
  * DTO for error messages
  */
 export interface ErrorDTO {
-  /** Error code */
-  code: string;
-  /** Error message */
-  message: string;
+    code: string;
+    message: string;
 }
-
 
 /**
  * DTO for draw response
  */
 export interface DrawResponseDTO {
-  /** Whether the draw was accepted */
-  accept: boolean;
+    accept: boolean;
 }
 
 /**
  * DTO for player name setting
  */
 export interface PlayerNameDTO {
-  /** Game ID */
-  gameId: string;
-  /** Player display name */
-  name: string;
-} 
+    gameId: string;
+    name: string;
+}

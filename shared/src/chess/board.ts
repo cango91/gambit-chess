@@ -26,7 +26,7 @@ import { ChessPiece, ChessPieceColor, ChessPieceColorType, ChessPieceType, Chess
 import { isValidPieceMove } from './movement';
 import { isKingInCheck, IBoardForCheckDetection, wouldMoveResolveCheck, wouldMoveLeaveKingInCheck } from './checkDetector';
 import { IBoard } from './contracts';
-import {  PIECE_COLOR, PIECE_TYPE, PieceColor, PieceType, POSITION, Position } from '..';
+import { PIECE_COLOR, PIECE_TYPE, POSITION } from '..';
 
 /**
  * Represents a non-authoritative snapshot of a chess board state
@@ -144,7 +144,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param color The color to filter by
    * @returns Array of pieces of the specified color
    */
-  public getPiecesByColor(color: PieceColor): ChessPiece[] {
+  public getPiecesByColor(color: ChessPieceColor): ChessPiece[] {
     return this.getAllPieces().filter(piece => piece.color === color);
   }
   
@@ -172,7 +172,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * Gets the current en passant target position, if any
    * @returns The en passant target position or null
    */
-  public getEnPassantTarget(): Position | null {
+  public getEnPassantTarget(): ChessPosition | null {
     return this.enPassantTarget;
   }
   
@@ -278,7 +278,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param kingTo King's destination position
    * @returns True if castling is valid
    */
-  private isValidCastling(kingFrom: Position, kingTo: Position): boolean {
+  private isValidCastling(kingFrom: ChessPosition, kingTo: ChessPosition): boolean {
     const king = this.getPieceAt(kingFrom);
     if (!king || king.type.value !== 'k' || king.hasMoved) {
       return false;
@@ -361,7 +361,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param color King color to check
    * @returns True if the king is in check, false otherwise
    */
-  public isInCheck(color: PieceColor): boolean {
+  public isInCheck(color: ChessPieceColor): boolean {
     // Delegate to the shared isKingInCheck function
     return isKingInCheck(this, color);
   }
@@ -464,7 +464,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param kingFrom King's starting position
    * @param kingTo King's destination position
    */
-  private executeCastling(kingFrom: ChessPositionType, kingTo: ChessPositionType): void {
+  private executeCastling(kingFrom: ChessPosition, kingTo: ChessPosition): void {
     const king = this.getPieceAt(kingFrom)!;
     const kingToPos = POSITION(kingTo);
     const kingFromPos = POSITION(kingFrom);

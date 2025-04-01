@@ -1,6 +1,6 @@
 graph TD
     %% Client-Server Communication
-    ClientApp[Client Application] <--> |WebSocket| Server[Server]
+    ClientApp[Client Application] <--> |SecureMessage Protocol| Server[Server]
     
     %% Client Components
     subgraph "Client"
@@ -11,6 +11,13 @@ graph TD
         
         NetworkLayer --> MessageHandler[Message Handler]
         NetworkLayer --> WSConnection[WebSocket Connection]
+        
+        %% Add Security Layer to Client
+        NetworkLayer --> ClientSecurityLayer[Security Layer]
+        ClientSecurityLayer --> TokenManager[Token Manager]
+        ClientSecurityLayer --> SignatureGenerator[Signature Generator]
+        ClientSecurityLayer --> ChallengeHandler[Challenge Handler]
+        ClientSecurityLayer --> MessageValidator[Message Validator]
         
         ClientState --> UIState[UI State]
         ClientState --> GameModel[Game Model]
@@ -31,12 +38,18 @@ graph TD
         Server --> WebSocketController[WebSocket Controller]
         Server --> GameManagerService[Game Manager Service]
         
+        %% Add Security Layer to Server
+        WebSocketController --> ServerSecurityLayer[Security Layer]
+        ServerSecurityLayer --> AuthenticationService[Authentication Service]
+        ServerSecurityLayer --> TokenValidator[Token Validator]
+        ServerSecurityLayer --> SignatureVerifier[Signature Verifier]
+        ServerSecurityLayer --> ChallengeGenerator[Challenge Generator]
+        
         GameManagerService --> BoardService[Board Service]
         GameManagerService --> BPManagerService[BP Manager Service]
         GameManagerService --> TacticalDetectorService[Tactical Detector Service]
         GameManagerService --> TimerService[Timer Service]
         
-        WebSocketController --> AuthHandler[Authentication Handler]
         WebSocketController --> MessageRouter[Message Router]
         WebSocketController --> StatePublisher[State Publisher]
         
@@ -55,24 +68,38 @@ graph TD
         ChessUtils[Chess Utilities]
         ValidationUtils[Validation Utilities]
         
+        %% Add Security Types to Shared
+        SecurityTypes[Security Types]
+        SharedTypes --> SecurityTypes
+        EventDefinitions --> SecurityTypes
+        
         SharedTypes --> EventDefinitions
         SharedTypes --> DTOs[Data Transfer Objects]
         ChessUtils --> MovementRules[Movement Rules]
         ChessUtils --> CheckDetection[Check Detection]
         ValidationUtils --> InputValidation[Input Validation]
         ValidationUtils --> EventValidation[Event Validation]
+        ValidationUtils --> SecurityValidation[Security Validation]
     end
     
     %% Component Relationships
     ClientApp --> SharedTypes
     ClientApp --> ChessUtils
+    ClientApp --> ValidationUtils
+    ClientApp --> SecurityTypes
     Server --> SharedTypes
     Server --> ChessUtils
     Server --> ValidationUtils
+    Server --> SecurityTypes
+    
+    %% Security Flow
+    ClientSecurityLayer -.-> ServerSecurityLayer
+    ServerSecurityLayer -.-> ClientSecurityLayer
     
     %% Data Flow
     ClientState -.-> NetworkLayer
     MessageHandler -.-> ClientState
+    MessageValidator -.-> MessageHandler
     
     WebSocketController -.-> GameManagerService
     GameManagerService -.-> BoardService
@@ -80,6 +107,8 @@ graph TD
     GameManagerService -.-> TacticalDetectorService
     GameManagerService -.-> TimerService
     GameManagerService -.-> StatePublisher
+    ServerSecurityLayer -.-> MessageRouter
+    MessageRouter -.-> GameManagerService
     
     %% Repository Connections
     GameManagerService -.-> RedisRepository
@@ -100,6 +129,6 @@ graph TD
     TimerService --> TimerControl[Timer Control]
     TimerService --> TimeoutHandling[Timeout Handling]
     
-    %% Client-Server Interactions
-    WSConnection <-.-> |Client Events| MessageRouter
-    StatePublisher <-.-> |Server Events| MessageHandler
+    %% Client-Server Secure Interactions
+    WSConnection <-.-> |SecureMessage| MessageRouter
+    StatePublisher <-.-> |SecureMessage| MessageHandler

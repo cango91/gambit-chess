@@ -96,15 +96,17 @@
 | GameManager | Manages game lifecycles | Server | GameState, BPManager, TacticalDetector | Implemented |
 | GameStateService | Handles game state transitions | Server | Board, BPManager | Implemented |
 | ServiceFactory | Manages service dependencies | Server | All services | Implemented |
-| RedisGameRepository | Persists game states in Redis | Server | GameState | Implemented |
+| RedisGameRepository | Persists game states in Redis | Server | GameState | Implemented - Needs Refinement |
 | ConfigModule | Centralized configuration | Server | None | Implemented |
 | GameSessionManager | Manages game sessions | Server | GameState | Planned |
-| WebSocketController | Handles WebSocket communication | Server | None | Planned |
-| PlayerAuthenticator | Authenticates players | Server | None | Planned |
+| WebSocketController | Handles WebSocket communication | Server | GambitChessEngine, SecureMessageManager | Implemented |
+| SecureMessageManager | Handles message security and validation | Server | None | Implemented |
+| PlayerAuthenticator | Authenticates players | Server | None | Partially Implemented |
 | PlayerManager | Manages player information | Server | PlayerDTO | Implemented |
 | SpectatorManager | Manages spectator sessions | Server | SpectatorDTO | Implemented |
-| ChatManager | Manages chat functionality | Server | ChatMessageDTO | Planned |
+| ChatManager | Manages chat functionality | Server | ChatMessageDTO | Implemented |
 | ContentFilter | Filters chat and player names | Server | None | Planned |
+| DuelInfoDTO | Structure for duel information | Shared | None | Implemented |
 
 ### 2.3 Client Domain Components
 
@@ -345,5 +347,70 @@ Date when this debt was resolved (if applicable)
 - **Implementation Contracts**: Verify implementations against contracts.
 - **Automated Checks**: Implement automated checks for common debt patterns.
 - **Documentation Currency**: Keep documentation in sync with implementation.
+
+## Technical Debt Item
+
+**Category**: Implementation
+**Component**: ConfigController
+**Priority**: Low
+**Estimated Effort**: Small
+
+### Description
+The ConfigController's `prepareClientConfig()` method returns a type `Partial<GameConfig> & { bpRegenDescriptions: any }` which uses the `any` type for the bpRegenDescriptions property. This should be replaced with a proper type that accurately reflects the structure of the BP regeneration descriptions.
+
+### Impact
+Using `any` circumvents TypeScript's type checking, making the API less predictable for consumers and potentially allowing runtime errors that could be caught at compile time. The lack of proper types also reduces code readability and makes future refactoring more error-prone.
+
+### Resolution Approach
+1. Create a proper interface extension for the client config that includes BP regeneration descriptions
+2. Use the BPRegenBonusDescriptions type properly in the return type
+3. Apply consistent typing throughout the controller methods
+
+### Created
+2025-03-31
+
+## Technical Debt Item
+
+**Category**: Implementation
+**Component**: TacticalDetectorService
+**Priority**: Medium
+**Estimated Effort**: Small
+
+### Description
+The TacticalDetectorService currently uses `any` type annotations as a temporary solution to fix TypeScript build errors. These should be replaced with proper type definitions to maintain type safety throughout the application.
+
+### Impact
+Using `any` types circumvents TypeScript's type checking system, which could lead to runtime errors that would otherwise be caught at compile time. This also makes the code harder to maintain and refactor in the future.
+
+### Resolution Approach
+1. Import proper types from the shared module
+2. Define interfaces for any component-specific types
+3. Update the type annotations in the filter callbacks
+4. Add proper type guards where necessary
+
+### Created
+2025-03-31
+
+## Technical Debt Item
+
+**Category**: Implementation
+**Component**: WebSocketController
+**Priority**: Medium
+**Estimated Effort**: Small
+
+### Description
+The WebSocketController currently uses a placeholder token management system (`getTokenForClient` method returns a hardcoded value). This needs to be replaced with a proper session-based token management system that securely manages client sessions.
+
+### Impact
+The current implementation could allow unauthorized access to game sessions or enable session hijacking. This represents a security vulnerability that could compromise game integrity.
+
+### Resolution Approach
+1. Implement a proper token management system with JWT or similar standards
+2. Store tokens securely with proper expiration and refresh mechanisms
+3. Verify token ownership on all secure operations
+4. Add rate limiting for authentication attempts
+
+### Created
+2025-04-01
 
 

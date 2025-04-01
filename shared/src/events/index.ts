@@ -1,4 +1,26 @@
 /**
+ * Events Module
+ * 
+ * This module exports event types and validation utilities
+ * following domain boundary rules.
+ */
+
+export * from './types';
+export * as GameEventValidation from './validation';
+
+/**
+ * IMPORTANT: This module provides:
+ * 1. Event type definitions
+ * 2. Event validation utilities
+ * 3. Type guards for event validation
+ * 
+ * All events must follow the domain boundary rules:
+ * - Events are DTOs for communication
+ * - Events must not contain implementation details
+ * - Events must respect information visibility rules
+ */
+
+/**
  * Shared Event Definitions for Gambit Chess
  * 
  * This module defines event interfaces that can be safely shared between client and server
@@ -7,11 +29,10 @@
 
 import {
   MoveDTO,
-  RetreatSelectionDTO,
   DuelInitiatedDTO,
   DuelOutcomeDTO,
-  RetreatOptionsDTO,
   ChatMessageDTO,
+  RetreatOptionDTO,
   PlayerDTO,
   SpectatorDTO,
   GameStateDTO,
@@ -110,25 +131,6 @@ export interface StateSyncResponseEvent extends BaseGameEvent {
 }
 
 /**
- * BP Commitment Scheme Events
- * These events implement a secure commitment scheme for BP allocation
- */
-export interface BPCommitmentEvent extends BaseGameEvent {
-  type: GameEventType.DUEL_COMMITMENT;
-  payload: {
-    commitment: string;
-  };
-}
-
-export interface BPRevealEvent extends BaseGameEvent {
-  type: GameEventType.DUEL_REVEAL;
-  payload: {
-    allocation: number;
-    nonce: string;
-  };
-}
-
-/**
  * Connection Status Events
  * These events handle connection state management
  */
@@ -193,12 +195,12 @@ export interface DuelOutcomeEvent extends BaseGameEvent {
  */
 export interface RetreatOptionsEvent extends BaseGameEvent {
   type: GameEventType.RETREAT_OPTIONS;
-  payload: RetreatOptionsDTO;
+  payload: RetreatOptionDTO[];
 }
 
 export interface RetreatSelectionEvent extends BaseGameEvent {
   type: GameEventType.RETREAT_SELECTED;
-  payload: RetreatSelectionDTO;
+  payload: RetreatOptionDTO;
 }
 
 /**
@@ -354,10 +356,5 @@ export type GameEvent =
   | GameSessionJoinedEvent
   | StateSyncRequestEvent
   | StateSyncResponseEvent
-  | BPCommitmentEvent
-  | BPRevealEvent
   | ConnectionStatusEvent
-  | ReconnectionEvent;
-  
-// Export validation functions
-export * from './validation'; 
+  | ReconnectionEvent; 

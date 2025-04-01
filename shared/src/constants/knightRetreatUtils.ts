@@ -153,19 +153,20 @@ export function getKnightRetreats(
  * Gets all valid knight retreat options from string positions
  * This wrapper simplifies the API by handling coordinate conversion
  * 
- * @param startPosition Original knight position (e.g., "e4")
- * @param attackPosition Attack position (e.g., "f6")
+ * @param startPosition Original knight position (e.g., "e4" or ChessPosition)
+ * @param attackPosition Attack position (e.g., "f6" or ChessPosition)
  * @returns Array of valid retreat options with positions and costs, converted to board positions
  */
 export function getKnightRetreatsFromPositions(
   startPosition: ChessPositionType,
   attackPosition: ChessPositionType
 ): RetreatCost[] {
-  // Convert string positions to coordinates
-  const [startX, startY] = ChessPosition.from(startPosition).toCoordinates();
-  const [attackX, attackY] = ChessPosition.from(attackPosition).toCoordinates();
+  // Convert positions to coordinates
+  const [startX, startY] = startPosition instanceof ChessPosition ? 
+    startPosition.toCoordinates() : ChessPosition.from(startPosition).toCoordinates();
+  const [attackX, attackY] = attackPosition instanceof ChessPosition ? 
+    attackPosition.toCoordinates() : ChessPosition.from(attackPosition).toCoordinates();
   
   // Get retreats using coordinates
   return getKnightRetreats(startX, startY, attackX, attackY);
-
 }

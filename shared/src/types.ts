@@ -7,19 +7,12 @@ import { ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPosition, Ch
 import { RetreatCost } from "./tactical";
 
 /**
- * Represents a value object
- * 
- * A value object is an object that is immutable and has no identity
- * It is defined by its value and is equal to another value object if it has the same value
+ * Base interface for value objects
  */
 export type ValueObject<T> = {
-  equals(vo: ValueObject<T>): boolean;
-  hashCode(): string;
-  get value(): T;
-  set value(value: T);
-  valueOf(): number;
-  toString(): string;
-}
+    equals(vo: ValueObject<T>): boolean;
+    value: T;
+};
 
 // /**
 //  * Represents the outcome of a move
@@ -70,20 +63,21 @@ export type MoveOutcome = 'success' | 'failed';
    * Represents game phase
    */
   export enum GamePhase {
-    NORMAL = 'normal',
-    DUEL_ALLOCATION = 'duel_allocation',
-    TACTICAL_RETREAT = 'tactical_retreat',
-    GAME_OVER = 'game_over'
+    SETUP = 'SETUP',
+    NORMAL = 'NORMAL',
+    DUEL = 'DUEL',
+    RETREAT = 'RETREAT',
+    GAME_OVER = 'GAME_OVER'
   }
   
   /**
    * Represents the result of a completed game
    */
   export enum GameResult {
-    WHITE_WIN = 'white_win',
-    BLACK_WIN = 'black_win',
-    DRAW = 'draw',
-    IN_PROGRESS = 'in_progress'
+    WHITE_WIN = 'WHITE_WIN',
+    BLACK_WIN = 'BLACK_WIN',
+    DRAW = 'DRAW',
+    ABANDONED = 'ABANDONED'
   }
   
   /**
@@ -184,70 +178,68 @@ export interface PGNData {
 } 
 
 /**
- * Enum for game event types
- * Used for consistent event naming across the system
+ * Game Event Types
+ * Defines all possible event types in the game
  */
 export enum GameEventType {
-  // Game state events
-  GAME_STATE_UPDATE = 'game:updated',
-  GAME_CREATED = 'game:created',
-  GAME_STARTED = 'game:started',
-  GAME_OVER = 'game:over',
-  GAME_ABANDONED = 'game:abandoned',
-  // Game control events
-  GAME_RESIGN = 'game:resign',
-  GAME_OFFER_DRAW = 'game:offerDraw',
-  GAME_RESPOND_DRAW = 'game:respondDraw',
-  
-  // Player events
-  PLAYER_JOINED = 'game:playerJoined',
-  PLAYER_LEFT = 'game:playerLeft',
-  PLAYER_RECONNECTED = 'game:playerReconnected',
-  PLAYER_DISCONNECTED = 'game:playerDisconnected',
-  
-  // Move events
-  MOVE_REQUESTED = 'game:moveRequested',
-  MOVE_RESULT = 'game:moveResult',
-  
-  // Duel events
-  DUEL_INITIATED = 'game:duelInitiated',
-  DUEL_ALLOCATE = 'game:duelAllocate',
-  DUEL_OUTCOME = 'game:duelOutcome',
-  
-  // Retreat events
-  RETREAT_OPTIONS = 'game:retreatOptions',
-  RETREAT_SELECTED = 'game:retreatSelected',
-  
-  // Spectator events
-  SPECTATOR_JOINED = 'game:spectatorJoined',
-  SPECTATOR_LEFT = 'game:spectatorLeft',
-  
-  // Chat events
-  CHAT_MESSAGE = 'chat.message',
-  
-  // Authentication events
-  AUTH_CHALLENGE = 'auth:challenge',
-  AUTH_RESPONSE = 'auth:response',
-  AUTH_RESULT = 'auth:result',
-  
-  // Session events
-  SESSION_JOINED = 'session:joined',
-  STATE_SYNC_REQUEST = 'state:syncRequest',
-  STATE_SYNC_RESPONSE = 'state:syncResponse',
-  
-  // BP commitment scheme events
-  DUEL_COMMITMENT = 'game:duelCommitment',
-  DUEL_REVEAL = 'game:duelReveal',
-  
-  // Connection events
-  CONNECTION_STATUS = 'connection:status',
-  CONNECTION_RECONNECT = 'connection:reconnect',
-  CONNECTION_PING = 'connection:ping',
-  CONNECTION_PONG = 'connection:pong',
-  
-  // System events
-  ERROR = 'error',
-} 
+    // Game Flow Events
+    GAME_STATE_UPDATE = 'GAME_STATE_UPDATE',
+    GAME_OVER = 'GAME_OVER',
+    GAME_CREATED = 'GAME_CREATED',
+    GAME_STARTED = 'GAME_STARTED',
+    GAME_ABANDONED = 'GAME_ABANDONED',
+    
+    // Move Events
+    MOVE_REQUESTED = 'MOVE_REQUESTED',
+    MOVE_RESULT = 'MOVE_RESULT',
+    
+    // Duel Events
+    DUEL_INITIATED = 'DUEL_INITIATED',
+    DUEL_ALLOCATE = 'DUEL_ALLOCATE',
+    DUEL_OUTCOME = 'DUEL_OUTCOME',
+    
+    // Retreat Events
+    RETREAT_OPTIONS = 'RETREAT_OPTIONS',
+    RETREAT_SELECTED = 'RETREAT_SELECTED',
+    
+    // Player Events
+    PLAYER_JOINED = 'PLAYER_JOINED',
+    PLAYER_LEFT = 'PLAYER_LEFT',
+    PLAYER_RECONNECTED = 'PLAYER_RECONNECTED',
+    PLAYER_DISCONNECTED = 'PLAYER_DISCONNECTED',
+    
+    // Spectator Events
+    SPECTATOR_JOINED = 'SPECTATOR_JOINED',
+    SPECTATOR_LEFT = 'SPECTATOR_LEFT',
+    
+    // Game Control Events
+    GAME_RESIGN = 'GAME_RESIGN',
+    GAME_OFFER_DRAW = 'GAME_OFFER_DRAW',
+    GAME_RESPOND_DRAW = 'GAME_RESPOND_DRAW',
+    
+    // Connection Events
+    CONNECTION_STATUS = 'CONNECTION_STATUS',
+    CONNECTION_RECONNECT = 'CONNECTION_RECONNECT',
+    CONNECTION_PING = 'CONNECTION_PING',
+    CONNECTION_PONG = 'CONNECTION_PONG',
+    
+    // Session Events
+    SESSION_JOINED = 'SESSION_JOINED',
+    STATE_SYNC_REQUEST = 'STATE_SYNC_REQUEST',
+    STATE_SYNC_RESPONSE = 'STATE_SYNC_RESPONSE',
+    
+    // Error Events
+    ERROR = 'ERROR',
+    
+    // Auth Events
+    AUTH_CHALLENGE = 'AUTH_CHALLENGE',
+    AUTH_RESPONSE = 'AUTH_RESPONSE',
+    AUTH_RESULT = 'AUTH_RESULT',
+    
+    // Chat Events
+    CHAT_MESSAGE = 'CHAT_MESSAGE'
+}
+
 /**
  * BP Regeneration Bonus Types
  * 
@@ -329,18 +321,10 @@ export interface CheckData {
 /**
  * Data structure for a tactical advantage
  */
-export type TacticalAdvantageData<T extends BPRegenBonusType> = 
-  T extends BPRegenBonusType.DISCOVERED_CHECK ? DiscoveredAttackData :
-  T extends BPRegenBonusType.DISCOVERED_ATTACK ? DiscoveredAttackData :
-  T extends BPRegenBonusType.PIN ? PinData :
-  T extends BPRegenBonusType.SKEWER ? SkewerData :
-  T extends BPRegenBonusType.FORK ? ForkData :
-  T extends BPRegenBonusType.DIRECT_DEFENSE ? DefenseData :
-  T extends BPRegenBonusType.CHECK ? CheckData :
-  T extends BPRegenBonusType.DOUBLE_CHECK ? DoubleCheckData :
-  never;
-
-
+export type TacticalAdvantageData<T extends BPRegenBonusType> = {
+    type: T;
+    value: number;
+};
 
 /**
  * BP Regeneration Bonuses
@@ -351,4 +335,8 @@ export type TacticalAdvantageData<T extends BPRegenBonusType> =
  */
 export type BPRegenBonuses = {
   [K in BPRegenBonusType]: (data: TacticalAdvantageData<K>) => number;
+};
+
+export type BPRegenBonusCalculator = {
+    [K in BPRegenBonusType]: (data: TacticalAdvantageData<K>) => number;
 };

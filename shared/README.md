@@ -1,6 +1,155 @@
-# Gambit Chess: Shared Module
+# Gambit Chess - Shared Module
 
-This module contains the shared types, utilities, and constants used by both the client and server components of Gambit Chess.
+## Overview
+
+The shared module provides the core domain types, validation utilities, and pure functions used by both client and server in the Gambit Chess application. This module enforces strict domain boundaries and information visibility rules while providing type-safe interfaces for cross-domain communication.
+
+## Architecture
+
+### Domain Boundaries
+
+The shared module strictly adheres to the following architectural principles:
+
+1. **Pure Domain Logic Only**
+   - No side effects
+   - No state management
+   - No direct dependencies on client or server code
+
+2. **Information Visibility**
+   - Enforces what information can be shared between domains
+   - Implements filtering rules for sensitive game data
+   - Maintains game integrity through validation
+
+3. **Type Safety**
+   - Comprehensive TypeScript types for all shared concepts
+   - Strict validation for all DTOs
+   - Value object pattern for core domain types
+
+## Core Components
+
+### 1. Chess Domain (`/src/chess/`)
+
+Core chess logic and utilities:
+
+- `BoardSnapshot`: Non-authoritative board state representation
+- `CheckDetector`: Pure functions for check detection and validation
+- `Movement`: Chess piece movement pattern validation
+- Types and contracts for chess domain objects
+
+### 2. Event System (`/src/events/`)
+
+WebSocket event definitions and validation:
+
+- Comprehensive event type definitions
+- Strict validation for all events
+- Information visibility enforcement
+- Session management events
+- Game state synchronization
+
+### 3. Data Transfer Objects (`/src/dtos/`)
+
+Type-safe DTOs for cross-domain communication:
+
+- Game state DTOs
+- Move and capture DTOs
+- Player and spectator DTOs
+- Battle Point allocation DTOs
+- Tactical retreat DTOs
+
+### 4. Validation (`/src/validation/`)
+
+Validation utilities for all shared types:
+
+- DTO validation functions
+- Position and move validation
+- Game state validation
+- Player and spectator validation
+- Time control validation
+
+### 5. Battle Points System (`/src/tactical/`)
+
+Battle Points (BP) and tactical advantage system:
+
+- BP regeneration rules
+- Tactical advantage detection
+- Retreat cost calculations
+- Duel resolution types
+
+## Usage Guidelines
+
+### 1. Domain Boundary Rules
+
+- Server remains authoritative for all game state
+- Client uses shared validation for UX improvements only
+- No game progression logic in shared code
+- Clear separation of concerns between domains
+
+### 2. Information Architecture
+
+Hidden information that must never be exposed:
+- Other player's BP pool values
+- Other player's BP regeneration amounts
+- Other player's BP allocation during duel (until revealed)
+- De novo tactical advantage calculations
+
+Visible information that can be shared:
+- Current board position
+- Whose turn it is
+- Check status
+- Game result
+- Move history
+- Remaining time for both players
+- Duel outcome after resolution
+
+### 3. Implementation Requirements
+
+When implementing or modifying shared code:
+
+1. Maintain pure functions without side effects
+2. Enforce strict type safety
+3. Validate all cross-domain data
+4. Document public interfaces
+5. Follow value object pattern for domain types
+6. Keep domain boundaries clear and explicit
+
+### 4. WebSocket Protocol
+
+The event system defines the following categories:
+- Game Flow Events (state updates, game over)
+- Move Events (requests, validation, results)
+- Duel Events (initiation, allocation, outcome)
+- Retreat Events (options, selection)
+- Player Events (join, leave, reconnect)
+- Connection Events (ping, status, auth)
+
+## Development
+
+### Prerequisites
+
+- Node.js 16+
+- TypeScript 4.5+
+- npm or yarn
+
+### Building
+
+```bash
+npm install
+npm run build
+```
+
+### Testing
+
+```bash
+npm test
+```
+
+## Contributing
+
+1. Follow TypeScript best practices
+2. Maintain pure functions
+3. Add tests for new functionality
+4. Document public interfaces
+5. Respect domain boundaries
 
 ## Key Components
 

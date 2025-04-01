@@ -20,10 +20,9 @@
  * authoritative source of truth for game state progression.
  */
 
-import { Position } from '..';
+import { ChessPiece, ChessPieceColor, ChessPosition } from './types';
 import { isValidPieceMove, isSlidingPiece } from './movement';
-import { ChessPiece, ChessPieceColor, ChessPieceType, ChessPosition } from './types';
-import { ChessPieceColorType, ChessPositionType } from './types';
+import { ChessPieceType, ChessPieceColorType, ChessPositionType } from './types';
 
 /**
  * Minimal interface for a board to be used with check detector functions
@@ -70,7 +69,7 @@ export function isKingInCheck(board: IBoardForCheckDetection, kingColor: ChessPi
  * @param kingPosition The king's position
  * @returns True if the piece can attack the king, false otherwise
  */
-function canPieceAttackKing(board: IBoardForCheckDetection, piece: ChessPiece, kingPosition: Position): boolean {
+function canPieceAttackKing(board: IBoardForCheckDetection, piece: ChessPiece, kingPosition: ChessPosition): boolean {
   if (!piece.position) {
     return false;
   }
@@ -189,7 +188,7 @@ export function getCheckBlockingPositions(board: IBoardForCheckDetection, kingCo
  * @param to The destination position
  * @returns True if the move would result in self-check
  */
-export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from: Position, to: Position): boolean {
+export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from: ChessPosition, to: ChessPosition): boolean {
   const piece = board.getPieceAt(from);
   if (!piece) {
     return false;
@@ -224,7 +223,7 @@ export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from:
 /**
  * Checks if a piece can attack a square (considering blocked paths)
  */
-function canPieceAttackSquare(board: IBoardForCheckDetection, piece: ChessPiece, target: Position): boolean {
+function canPieceAttackSquare(board: IBoardForCheckDetection, piece: ChessPiece, target: ChessPosition): boolean {
   // Check if the piece can attack according to movement rules
   const canAttack = piece.position && isValidPieceMove(
     piece.type,
@@ -289,7 +288,7 @@ export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: 
     }
     
     // Check if this opponent piece would attack the king after the move
-    if (wouldPieceAttackKingAfterMove(board, opponentPiece, kingPos as Position, from, to)) {
+    if (wouldPieceAttackKingAfterMove(board, opponentPiece, kingPos as ChessPosition, from, to)) {
       return true;
     }
   }
@@ -312,7 +311,7 @@ export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: 
 function  wouldPieceAttackKingAfterMove<T>(
   board: IBoardForCheckDetection,
   opponentPiece: ChessPiece,
-  kingPos: Position,
+  kingPos: ChessPosition,
   moveFrom: T,
   moveTo: T
 ): boolean {
@@ -340,9 +339,9 @@ function  wouldPieceAttackKingAfterMove<T>(
   const positionsBetween = opponentPiece.position?.getPositionsBetween(kingPos) ?? [];
   
   // If moving the piece from the attack line
-  if (moveFrom === kingPos || positionsBetween.includes(moveFrom as Position)) {
+  if (moveFrom === kingPos || positionsBetween.includes(moveFrom as ChessPosition)) {
     // Check if the piece is moving along the same attack line
-    const onSameLine = moveTo === kingPos || positionsBetween.includes(moveTo as Position);
+    const onSameLine = moveTo === kingPos || positionsBetween.includes(moveTo as ChessPosition);
     
     // If moving along the same line (maintaining the pin), it's safe
     if (onSameLine) {

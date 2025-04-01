@@ -9,16 +9,16 @@ import {
   GameStateDTO, 
   MoveDTO, 
   BPAllocationDTO, 
-  RetreatSelectionDTO,
   DuelInitiatedDTO,
   DuelOutcomeDTO,
-  RetreatOptionsDTO,
+  RetreatOptionDTO,
   ChatMessageDTO,
   PlayerDTO,
   SpectatorDTO
 } from '../dtos';
 import { GamePhase, GameResult } from '../types';
-import { ChessPieceColor, ChessPosition } from '@/chess/types';
+import { ChessPieceColor, ChessPosition } from '../chess/types';
+import { PIECE_COLOR } from '..';
 
 /**
  * Validates a position string
@@ -36,9 +36,16 @@ export function validatePosition(position: ChessPosition | string | number[] | n
  * @param color The color to validate
  * @returns True if the color is valid
  */
-export function validatePieceColor(color: ChessPieceColor | null | undefined): boolean {
+export function validatePieceColor(color: ChessPieceColor | string | null | undefined): boolean {
   if (!color) return false;
-  return color === ChessPieceColor.from('white') || color === ChessPieceColor.fromValue('black');
+  if (typeof color === 'string') {
+    try {
+      color = PIECE_COLOR(color);
+    } catch {
+      return false;
+    }
+  }
+  return color.value === 'white' || color.value === 'black';
 }
 
 /**
@@ -46,9 +53,9 @@ export function validatePieceColor(color: ChessPieceColor | null | undefined): b
  * @param phase The game phase to validate
  * @returns True if the phase is valid
  */
-export function validateGamePhase(phase: GamePhase | null | undefined): boolean {
+export function validateGamePhase(phase: GamePhase | string | null | undefined): boolean {
   if (!phase) return false;
-  return Object.values(GamePhase).includes(phase);
+  return Object.values(GamePhase).includes(phase as GamePhase);
 }
 
 /**
@@ -56,9 +63,9 @@ export function validateGamePhase(phase: GamePhase | null | undefined): boolean 
  * @param result The game result to validate
  * @returns True if the result is valid
  */
-export function validateGameResult(result: GameResult | null | undefined): boolean {
+export function validateGameResult(result: GameResult | string | null | undefined): boolean {
   if (!result) return true; // Result is optional
-  return Object.values(GameResult).includes(result);
+  return Object.values(GameResult).includes(result as GameResult);
 }
 
 /**
@@ -193,10 +200,11 @@ export function validateBPAllocationDTO(dto: Partial<BPAllocationDTO>): boolean 
  * @param dto The DTO to validate
  * @returns True if the DTO is valid
  */
-export function validateRetreatDTO(dto: Partial<RetreatSelectionDTO>): boolean {
+export function validateRetreatDTO(dto: Partial<RetreatOptionDTO>): boolean {
   if (!dto) return false;
   
-  if (!validatePosition(dto.position)) return false;
+  if (!validatePosition(dto.to)) return false;
+  if (typeof dto.cost !== 'number' || dto.cost < 0) return false;
   
   return true;
 }
@@ -237,11 +245,21 @@ export function validateDuelOutcomeDTO(dto: Partial<DuelOutcomeDTO>): boolean {
  * @param dto The DTO to validate
  * @returns True if the DTO is valid
  */
-export function validateRetreatOptionsDTO(dto: Partial<RetreatOptionsDTO>): boolean {
+export function validateRetreatOptionsDTO(dto: RetreatOptionDTO[]): boolean {
+  if (!Array.isArray(dto)) return false;
+  
+  return dto.every(option => validateRetreatDTO(option));
+}
+
+/**
+ * Validates a RetreatSelectionDTO
+ * @param dto The DTO to validate
+ * @returns True if the DTO is valid
+ */
+export function validateRetreatSelectionDTO(dto: Partial<RetreatOptionDTO>): boolean {
   if (!dto) return false;
   
-  if (!Array.isArray(dto.options)) return false;
-  if (dto.options.some(option => !ChessPosition.isValidPosition(option.to))) return false;
+  if (!validatePosition(dto.to)) return false;
   
   return true;
 }

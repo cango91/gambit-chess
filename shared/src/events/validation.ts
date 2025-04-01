@@ -5,7 +5,7 @@
  * they adhere to domain boundaries and information architecture.
  */
 
-import { GameEventType } from '..';
+import { GameEventType } from '../types';
 import { 
   validateMoveDTO, 
   validateBPAllocationDTO, 
@@ -20,7 +20,7 @@ import {
   validateGameId,
 } from '../validation';
 
-import {
+import type {
   MoveRequestEvent,
   MoveResultEvent,
   DuelInitiatedEvent,
@@ -42,7 +42,32 @@ import {
   GameOfferDrawEvent,
   GameRespondDrawEvent,
   ConnectionPingEvent,
-} from './index';
+} from './types';
+
+// Type guards for event validation
+function isMoveRequestEvent(event: GameEvent): event is MoveRequestEvent {
+    return event.type === GameEventType.MOVE_REQUESTED;
+}
+
+function isDuelInitiatedEvent(event: GameEvent): event is DuelInitiatedEvent {
+    return event.type === GameEventType.DUEL_INITIATED;
+}
+
+function isGameResignEvent(event: GameEvent): event is GameResignEvent {
+    return event.type === GameEventType.GAME_RESIGN;
+}
+
+function isGameOfferDrawEvent(event: GameEvent): event is GameOfferDrawEvent {
+    return event.type === GameEventType.GAME_OFFER_DRAW;
+}
+
+function isGameRespondDrawEvent(event: GameEvent): event is GameRespondDrawEvent {
+    return event.type === GameEventType.GAME_RESPOND_DRAW;
+}
+
+function isConnectionPingEvent(event: GameEvent): event is ConnectionPingEvent {
+    return event.type === GameEventType.CONNECTION_PING;
+}
 
 /**
  * Validates a MoveRequestEvent
@@ -289,11 +314,11 @@ export function validateGameEvent(event: GameEvent): boolean {
 
   switch (event.type) {
     case GameEventType.MOVE_REQUESTED:
-      return validateMoveRequestEvent(event as MoveRequestEvent);
+      return isMoveRequestEvent(event) && validateMoveRequestEvent(event);
     case GameEventType.MOVE_RESULT:
       return validateMoveResultEvent(event as MoveResultEvent);
     case GameEventType.DUEL_INITIATED:
-      return validateDuelInitiatedEvent(event as DuelInitiatedEvent);
+      return isDuelInitiatedEvent(event) && validateDuelInitiatedEvent(event);
     case GameEventType.DUEL_ALLOCATE:
       return validateDuelAllocationEvent(event as DuelAllocationEvent);
     case GameEventType.DUEL_OUTCOME:
@@ -321,13 +346,13 @@ export function validateGameEvent(event: GameEvent): boolean {
     case GameEventType.ERROR:
       return validateErrorEvent(event as ErrorEvent);
     case GameEventType.GAME_RESIGN:
-      return validateGameResignEvent(event);
+      return isGameResignEvent(event) && validateGameResignEvent(event);
     case GameEventType.GAME_OFFER_DRAW:
-      return validateGameOfferDrawEvent(event);
+      return isGameOfferDrawEvent(event) && validateGameOfferDrawEvent(event);
     case GameEventType.GAME_RESPOND_DRAW:
-      return validateGameRespondDrawEvent(event);
+      return isGameRespondDrawEvent(event) && validateGameRespondDrawEvent(event);
     case GameEventType.CONNECTION_PING:
-      return validateConnectionPingEvent(event);
+      return isConnectionPingEvent(event) && validateConnectionPingEvent(event);
     default:
       return false;
   }

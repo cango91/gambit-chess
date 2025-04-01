@@ -1,5 +1,5 @@
-import { BOARD_SIZE } from "@/constants";
-import { ValueObject } from "@/types";
+import { BOARD_SIZE } from "../constants";
+import { ValueObject } from "../types";
 import { IChessPiece } from "./contracts";
 
 // Define chess position coordinates type
@@ -451,6 +451,10 @@ export class ChessPiece implements IChessPiece {
         this._position = position ? ChessPosition.from(position) : null;
         this._hasMoved = true;
         this._lastMoveTurn = turn ?? this._lastMoveTurn;
+    }
+
+    removeFromBoard() {
+        this._position = null;
     }
 
     private _canPromote(): boolean {

@@ -6,3 +6,4 @@
  */
 
 export * from './retreat';
+export * from './types';

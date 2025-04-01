@@ -5,12 +5,12 @@
  * for chess pieces based on the piece type and position.
  */
 
-import { ChessPosition, ChessPieceType, ChessPositionType } from '@/chess/types';
+import { ChessPosition, ChessPieceType, ChessPositionType } from '../chess/types';
 import { isSlidingPiece } from '../chess/movement';
 import { 
   getKnightRetreatsFromPositions 
 } from '../constants/knightRetreatUtils';
-import { IChessPiece } from '@/chess/contracts';
+import { IChessPiece } from '../chess/contracts';
 
 // Knight move directions
 const KNIGHT_MOVES = [

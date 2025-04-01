@@ -1,29 +1,77 @@
 /**
- * Shared module for Gambit Chess
+ * Gambit Chess Shared Domain
  * 
- * This module contains shared types, utilities, and constants used by both
- * the client and server components.
+ * This module provides the shared types, interfaces, and pure utility functions
+ * for use by both client and server domains.
  */
 
-import { ChessPiece, ChessPiece_Type, ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPieceTypeType, ChessPosition, ChessPositionType } from "./chess/types";
+import { 
+    ChessPosition, 
+    ChessPieceColor, 
+    ChessPieceType, 
+    ChessPiece,
+    ChessPositionType,
+    ChessPieceColorType,
+    ChessPieceTypeType,
+    ChessPieceTypeSymbol,
+} from './chess/types';
 
+// Re-export essential types and interfaces
+export type {
+    ChessPositionType,
+    ChessPieceColorType,
+    ChessPieceTypeType,
+    ChessPieceTypeSymbol,
+    ChessPosition as PiecePosition,
+    ChessPieceColor as PieceColor,
+    ChessPieceType as PieceType,
+    ChessPiece as Piece,
+} from './chess/types';
 
-export type Position = ChessPosition;
-export const POSITION = (value:ChessPositionType) => new ChessPosition(value);
-export type PieceColor = ChessPieceColor;
+// Re-export core interfaces
+export type {
+    IMinimalChessEngine,
+    IMinimalEngineState,
+    IMoveValidationResult,
+    IBPAllocationValidationResult,
+    IRetreatOption,
+} from './chess/contracts';
+
+export * from './dtos';
+
+// Re-export game types
+export * from './types';
+
+// Re-export config types
+export * from './config';
+
+// Re-export event types
+export * from './events';
+
+// Re-export tactical types
+export * from './tactical';
+
+// Re-export validation utilities
+
+// Value object factories
+export const POSITION = (value: ChessPositionType) => new ChessPosition(value);
 export const PIECE_COLOR = (value: ChessPieceColorType) => new ChessPieceColor(value);
-export type PieceType = ChessPieceType;
 export const PIECE_TYPE = (value: ChessPieceTypeType) => new ChessPieceType(value);
-export type Piece = ChessPiece;
-export const PIECE = (value: ChessPiece_Type) => ChessPiece.from(value);
+export const PIECE = (value: string) => ChessPiece.fromString(value);
 
-export * from './types'
-export * from './chess'
-export * from './constants'
-export * from './config'
-export * from './events'
-export * from './dtos'
-export * from './validation'
-export * from './notation'
-export * from './tactical'
+// Re-export minimal engine and core utilities
+export {
+    MinimalChessEngine,
+    isValidPieceMove,
+    fenToPieces,
+    piecesToFen,
+} from './chess';
+
+// Re-export tactical utilities
+export {
+    calculateTacticalRetreats,
+} from './tactical';
+
+export * as NotationUtils from './notation';
+export * as ValidationUtils from './validation';
 
