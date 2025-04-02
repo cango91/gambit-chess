@@ -25,17 +25,16 @@
 import { ChessPiece, ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPieceTypeType, ChessPosition, ChessPositionType } from './types';
 import { isValidPieceMove } from './movement';
 import { isKingInCheck, IBoardForCheckDetection, wouldMoveResolveCheck, wouldMoveLeaveKingInCheck } from './checkDetector';
-import { IBoard } from './contracts';
+import { IBoard, IChessPiece, IEnPassantData } from './contracts';
 import { PIECE_COLOR, PIECE_TYPE, POSITION } from '..';
 
 /**
  * Represents a non-authoritative snapshot of a chess board state
  */
-export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
+export class Board implements IBoard, IBoardForCheckDetection {
   private pieces: Map<string, ChessPiece> = new Map();
-  private capturedPieces: ChessPiece[] = [];
-  private currentTurn: number = 1;
-  private enPassantTarget: ChessPosition | null = null;
+  private capturedPieces: IChessPiece[] = [];
+  private _currentMove: number = 1;
   
   /**
    * Creates a new board snapshot with optional initial position
@@ -44,7 +43,79 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
   constructor(setupBoard: boolean = true) {
     if (setupBoard) {
       this.setupInitialPosition();
+      this._currentMove = 1;
     }
+  }
+  setBoard(board: IBoard): void;
+  setBoard(pieces: IChessPiece[], capturedPieces?: IChessPiece[], currentMoveNumber?: number): void;
+  setBoard(pieces: unknown,  capturedPieces?: unknown, currentMoveNumber?: unknown): void {
+    this.pieces.clear();
+    this.capturedPieces = [];
+    if(pieces instanceof Board || (pieces as IBoard).getAllPieces) {
+      const board = pieces as IBoard;
+      for (const piece of board.getAllPieces()) {
+        this.addPiece(piece.type, piece.color, piece.position!, piece.lastMoveTurn);
+      }
+      this.capturedPieces = [...(board as IBoard).getCapturedPieces()];
+      this._currentMove = board.currentMove;
+    }else if (Array.isArray(pieces)) {
+      for (const piece of pieces as IChessPiece[]) {
+        this.addPiece(piece.type, piece.color, piece.position!, piece.lastMoveTurn);
+      }
+      if(capturedPieces && Array.isArray(capturedPieces)) { 
+        this.capturedPieces = [...(capturedPieces as IChessPiece[])];
+      }
+      if(currentMoveNumber && typeof currentMoveNumber === 'number') {
+        this._currentMove = currentMoveNumber;
+      }else{
+        this._currentMove = this.calculateCurrentMove(pieces as IChessPiece[]);
+      }
+    }else{
+      throw new Error('Invalid arguments provided to setBoard');
+    }
+  }
+
+  /**
+   * Calculates the current move number based on the last move turn of the pieces
+   * @param pieces The pieces on the board
+   * @returns The current move number
+   */
+  private calculateCurrentMove(pieces: IChessPiece[]): number {
+    const lastTurnData = pieces.reduce((acc: {blackMaxTurn: number, whiteMaxTurn: number}, piece) =>{
+      if(piece.lastMoveTurn && piece.lastMoveTurn) {
+        if(piece.lastMoveTurn >= (piece.color.value === 'w' ? acc.whiteMaxTurn : acc.blackMaxTurn))
+        {
+          acc[`${piece.color.toString()}MaxTurn` as keyof typeof acc] = piece.lastMoveTurn;
+        }
+      }
+      return acc;
+    }, {blackMaxTurn: 0, whiteMaxTurn: 0});
+    if(lastTurnData.blackMaxTurn === lastTurnData.whiteMaxTurn) {
+      return lastTurnData.blackMaxTurn * 2 + 1;
+    }else if(lastTurnData.whiteMaxTurn > lastTurnData.blackMaxTurn) {
+      return lastTurnData.whiteMaxTurn * 2;
+    }else{
+      throw new Error('Invalid board state: black has moved more times than white');
+    }
+  }
+
+  /**
+   * Checks if a piece could potentially be en passant captured, ignoring whether there are 
+   * pawns available to perform the en passant capture.
+   * @param piece The piece to check
+   * @returns True if the piece could be en passant captured, false otherwise
+   */
+  private canPieceBeEnPassantCaptured(piece: IChessPiece): boolean {
+    if(piece.type.value === 'p'  // only pawns can be en passant captured
+      && piece.hasMoved  // must have moved at least once
+      && piece.position  // must be on the board
+      && piece.position.y === (this.playerToMove === 'w' ? 4 : 3) // must be on the correct rank
+      && piece.lastMoveTurn === (this.playerToMove === 'w' ? this._currentMove - 1 : this._currentMove) // must have moved in the previous move
+      && piece.firstMoveTurn === piece.lastMoveTurn)  // last move must be the first move (coupled with correct rank, this means the piece must have moved two squares forward)
+      {
+      return true;
+    }
+    return false;
   }
   
   /**
@@ -107,7 +178,8 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
   public removePiece(position: ChessPositionType): ChessPiece | undefined {
     const piece = this.getPieceAt(position);
     if (piece) {
-      this.pieces.delete(`${position}`);
+      this.pieces.delete(piece.position!.value);
+      piece.removeFromBoard();
       this.capturedPieces.push(piece);
     }
     return piece;
@@ -135,7 +207,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * Gets all captured pieces
    * @returns Array of captured pieces
    */
-  public getCapturedPieces(): ChessPiece[] {
+  public getCapturedPieces(): IChessPiece[] {
     return [...this.capturedPieces];
   }
   
@@ -144,8 +216,9 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * @param color The color to filter by
    * @returns Array of pieces of the specified color
    */
-  public getPiecesByColor(color: ChessPieceColor): ChessPiece[] {
-    return this.getAllPieces().filter(piece => piece.color === color);
+  public getPiecesByColor(color: ChessPieceColorType): ChessPiece[] {
+    const playerColor = PIECE_COLOR(color);
+    return this.getAllPieces().filter(piece => piece.color.equals(playerColor));
   }
   
   /**
@@ -164,17 +237,41 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * Gets the current turn number
    * @returns The current turn number
    */
-  public getCurrentTurn(): number {
-    return this.currentTurn;
+  get currentTurn(): number {
+    return Math.ceil(this._currentMove / 2);
   }
-  
+
   /**
-   * Gets the current en passant target position, if any
-   * @returns The en passant target position or null
+   * Gets the current move number
+   * @returns The current move number
    */
-  public getEnPassantTarget(): ChessPosition | null {
-    return this.enPassantTarget;
+  get currentMove(): number {
+    return this._currentMove;
   }
+
+  get playerToMove(): 'w' | 'b' {
+    return this._currentMove % 2 === 0 ? 'b' : 'w';
+  }
+
+  /**
+   * Calculate if en passant capture is possible and if so, the target position
+   */
+  get enPassantData(): IEnPassantData {
+    const lastMovedPiece = this.getLastMovedPiece();
+    if(lastMovedPiece && this.canPieceBeEnPassantCaptured(lastMovedPiece)) {
+      const possible = [
+        POSITION([lastMovedPiece.position!.x + 1, lastMovedPiece.position!.y]),
+        POSITION([lastMovedPiece.position!.x - 1, lastMovedPiece.position!.y])
+      ].map(pos=> this.getPieceAt(pos)).filter(piece => piece && piece.type.value === 'p' && piece.color.value === this.playerToMove).length > 0;
+      const target = possible ? this.playerToMove === 'w' ? POSITION([lastMovedPiece.position!.x, lastMovedPiece.position!.y +1]) : POSITION([lastMovedPiece.position!.x, lastMovedPiece.position!.y -1]) : null;
+      return {
+        possible,
+        target
+      }
+    }
+    return { possible: false, target: null };
+  }
+
   
   /**
    * Checks if a move is valid according to chess rules
@@ -200,10 +297,9 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
       return false;
     }
     
-    // Check for en passant capture
     let isCapture = destPiece !== undefined;
-    if (piece.type.value === 'p' && !destPiece && toPos === this.enPassantTarget) {
-      // This is an en passant capture
+    // Check for en passant capture
+    if(this.enPassantData.possible && this.enPassantData.target === toPos) {
       isCapture = true;
     }
     
@@ -239,6 +335,16 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     }
     
     return true;
+  }
+
+  /**
+   * Gets the last moved piece on the board, or that of the specified color
+   * @param ofColor The color of the piece to get the last moved piece of
+   * @returns The last moved piece of the specified color
+   */
+  private getLastMovedPiece(ofColor?: ChessPieceColorType): IChessPiece | undefined {
+    const pieces = this.getPiecesByColor(ofColor ?? this.playerToMove === 'w' ? 'black' : 'white');
+    return pieces.sort((a, b) => a.lastMoveTurn! - b.lastMoveTurn!)[0];
   }
   
   /**
@@ -389,16 +495,12 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     const destPiece = this.getPieceAt(toPos);
     let captured: ChessPiece | undefined = destPiece;
     
-    // Reset en passant target from previous move
-    const oldEnPassantTarget = this.enPassantTarget;
-    this.enPassantTarget = null;
-    
     // Handle en passant capture
-    if (piece.type.value === 'p' && toPos === oldEnPassantTarget) {
+    if (piece.type.value === 'p' && toPos === this.enPassantData.target) {
       // The captured pawn is not on the destination square but behind it
       const captureY = piece.color.equals(PIECE_COLOR('white')) ? 4 : 3; // Rank 5 for white, rank 4 for black
       const capturePos = POSITION([toPos.toCoordinates()[0], captureY]);
-      captured = this.removePiece(`${capturePos}`);
+      captured = this.removePiece(capturePos);
     } else if (destPiece) {
       // Regular capture
       this.removePiece(toPos.value);
@@ -412,19 +514,6 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
       this.pieces.delete(fromPos.value);
       piece.move(toPos, this.currentTurn);
       this.pieces.set(toPos.value, piece);
-    }
-    
-    // Check for pawn double move and set en passant target
-    if (piece.type.value === 'p' && !piece.hasMoved) {
-      const [fromX, fromY] = fromPos.toCoordinates() ?? new Error(`Invalid from position: ${from}`);
-      const [toX, toY] = toPos.toCoordinates() ?? new Error(`Invalid to position: ${to}`);
-      
-      // If pawn moved two squares
-      if (Math.abs(toY - fromY) === 2) {
-        // The en passant target is the square behind the pawn
-        const enPassantY = (fromY + toY) / 2; // Middle square
-        this.enPassantTarget = POSITION([toX, enPassantY]);
-      }
     }
 
     // move the piece to the new position
@@ -446,7 +535,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     this.pieces.delete(fromPos.value);
     
     // Increment turn counter after the move
-    this.currentTurn++;
+    this._currentMove++;
     
     // Check for check
     const opponentColor = piece.color.equals(ChessPieceColor.from('white')) ? ChessPieceColor.from('black') : ChessPieceColor.from('white');
@@ -494,8 +583,8 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
    * Creates a deep copy of the board
    * @returns A new BoardSnapshot object with the same state
    */
-  public clone(): BoardSnapshot {
-    const clone = new BoardSnapshot(false);
+  public clone(): Board {
+    const clone = new Board(false);
     
     // Copy all pieces
     for (const piece of this.getAllPieces()) {
@@ -507,8 +596,7 @@ export class BoardSnapshot implements IBoard, IBoardForCheckDetection {
     clone.capturedPieces = [...this.capturedPieces];
     
     // Copy other state
-    clone.currentTurn = this.currentTurn;
-    clone.enPassantTarget = this.enPassantTarget;
+    clone._currentMove = this._currentMove;
     
     return clone;
   }

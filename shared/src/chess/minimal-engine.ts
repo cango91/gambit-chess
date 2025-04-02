@@ -1,17 +1,17 @@
 import { IConfigProvider } from '../config';
 import { GamePhase, GameResult } from '../types';
-import { ChessPieceDTO, GameStateDTO } from '../dtos';
-import { IBoard, IMinimalChessEngine, IMinimalEngineState, IMoveValidationResult, IBPAllocationValidationResult, IRetreatOption } from './contracts';
-import { ChessPosition, ChessPieceColor, ChessPieceType } from './types';
+import { fromGameStateDTO, GameStateDTO } from '../dtos';
+import { IBoard, IMinimalChessEngine, IGameState, IMoveValidationResult, IBPAllocationValidationResult, IRetreatOption } from './contracts';
+import { ChessPosition } from './types';
 import { calculateTacticalRetreats } from '../tactical';
-import { BoardSnapshot } from './board';
+import { Board } from './board';
 
 /**
  * Minimal chess engine implementation
  * Provides client-side validation and state management while keeping server as authority
  */
 export class MinimalChessEngine implements IMinimalChessEngine {
-    private state: IMinimalEngineState;
+    private state: IGameState;
     private config: IConfigProvider;
     private board: IBoard;
 
@@ -20,12 +20,15 @@ export class MinimalChessEngine implements IMinimalChessEngine {
         this.board = board || this.createBoard();
         this.state = this.getInitialState();
     }
-
-    private createBoard(): IBoard {
-        return new BoardSnapshot(true); // Creates a board with initial piece setup
+    getValidRetreatOptions(piecePos: string, failedTarget: string): IRetreatOption[] {
+        return calculateTacticalRetreats(ChessPosition.fromString(piecePos), ChessPosition.fromString(failedTarget), this.board);
     }
 
-    private getInitialState(): IMinimalEngineState {
+    private createBoard(): IBoard {
+        return new Board(true); // Creates a board with initial piece setup
+    }
+
+    private getInitialState(): IGameState {
         const pieces = this.board.getAllPieces();
         const timeControl = this.config.timeControl;
         
@@ -50,7 +53,7 @@ export class MinimalChessEngine implements IMinimalChessEngine {
     }
 
     // State Management
-    public getState(): IMinimalEngineState {
+    public getState(): IGameState {
         return {
             ...this.state,
             pieces: [...this.state.pieces],
@@ -61,23 +64,13 @@ export class MinimalChessEngine implements IMinimalChessEngine {
 
     public setState(state: GameStateDTO): void {
         // Update internal state
-        this.state = {
-            ...state,
-            phase: state.phase as GamePhase,
-            result: state.result as GameResult,
-            turn: state.turn as 'w' | 'b',
-            activeTimer: state.activeTimer as 'w' | 'b' | null,
-            players: state.players.map(p => ({
-                ...p,
-                color: p.color as 'w' | 'b'
-            }))
-        };
+        this.state = {...fromGameStateDTO(state)};
         
         // Create a new board with the updated pieces
-        const newBoard = new BoardSnapshot(false);
+        const newBoard = new Board(false);
         for (const piece of state.pieces) {
             if (piece.position) {
-                (newBoard as BoardSnapshot).addPiece(
+                (newBoard as Board).addPiece(
                     piece.type,
                     piece.color,
                     piece.position,
@@ -223,19 +216,11 @@ export class MinimalChessEngine implements IMinimalChessEngine {
                 return [];
             }
 
-            // Create a map of the current board state
-            const boardState = new Map();
-            this.board.getAllPieces().forEach(p => {
-                if (p.position) {
-                    boardState.set(p.position.value, p);
-                }
-            });
-
             // Calculate retreat options
-            const retreatOptions = calculateTacticalRetreats(pos, target, boardState);
+            const retreatOptions = calculateTacticalRetreats(pos, target, this.board);
             
             return retreatOptions.map(option => ({
-                to: option.to.value,
+                to: option.to,
                 cost: option.cost
             }));
         } catch (e) {

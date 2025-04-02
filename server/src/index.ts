@@ -6,9 +6,17 @@ import cors from 'cors';
 import { Request, Response } from 'express';
 import { WebSocketController } from './websocket/websocket-controller';
 import { ServerConfigProvider } from './config/provider';
+import { RepositoryFactory } from './repositories';
+import { ServiceFactory } from './services';
 
 // Initialize config provider
 const config = ServerConfigProvider.getInstance();
+
+// Create repository
+const gameRepository = RepositoryFactory.createGameRepository('memory');
+
+// Create service factory and initialize game manager
+const gameManager = ServiceFactory.getGameManager(gameRepository);
 
 // Create Express app
 const app = express();
@@ -51,7 +59,7 @@ const server = http.createServer(app);
 // Create WebSocket server
 const wss = new WebSocket.Server({ server });
 
-// Initialize WebSocket controller
+// Initialize WebSocket controller with game manager
 const wsController = new WebSocketController();
 wsController.initialize(wss);
 

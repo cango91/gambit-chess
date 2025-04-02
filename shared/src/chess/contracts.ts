@@ -1,5 +1,5 @@
 import { ChessPieceColor, ChessPieceColorType, ChessPieceType, ChessPosition, ChessPositionType } from "./types";
-import { GamePhase, GameResult } from "../types";
+import { GamePhase, GameResult, MoveOutcome, Player, Spectator } from "../types";
 import { GameStateDTO, ChessPieceDTO } from "../dtos";
 
 /**
@@ -16,8 +16,9 @@ export interface IChessPiece {
     get hasMoved(): boolean;
     /** Turn number when this piece last moved (for en passant and other time-sensitive rules) */
     get lastMoveTurn(): number | undefined;
-    set position(position: ChessPositionType);
-    move(position: ChessPositionType, turn: number | undefined) : void;
+    /** Turn number when this piece was first moved */
+    get firstMoveTurn(): number | undefined;
+    move(position: ChessPositionType, turn: number) : void;
     removeFromBoard(): void;
     promote? : (type: ChessPieceType) => void;
   }
@@ -52,23 +53,65 @@ export interface IChessPiece {
       success: boolean, 
       captured?: IChessPiece, 
       check?: boolean, 
-      checkmate?: boolean
+      checkmate?: boolean,
+      enpassant?: boolean,
     };
-    
+
+    /** Sets the board state to the given board */
+    setBoard(board: IBoard): void;
+
+    /** Sets the board state to the given pieces, captured pieces, and current move number */
+    setBoard(pieces: IChessPiece[], capturedPieces?: IChessPiece[], currentMoveNumber?: number): void;
+
     /** Creates a deep copy of the board */
     clone(): IBoard;
     
-    /** Gets the current move/turn number */
-    getCurrentTurn(): number;
-    
-    /** Checks if a pawn can be captured via en passant at the given position */
-    getEnPassantTarget(): ChessPosition | null;
+    /** Gets the current move number */
+    get currentMove(): number;
+
+    /** Gets the current turn number */
+    get currentTurn(): number;
+
+    /** Gets the player to move */
+    get playerToMove(): 'w' | 'b';
+
+    /** Gets the en passant data */
+    get enPassantData() : IEnPassantData;
   }
+
+  /**
+   * Represents the en passant data
+   */
+  export interface IEnPassantData {
+    possible: boolean;
+    target?: ChessPosition | null;
+  }
+
+  /**
+ * Information about an active duel
+ */
+export interface IDuelState {
+  attackingPiece?: IChessPiece;
+  defendingPiece?: IChessPiece;
+  playerAllocated?: boolean; // client-side only
+  initiatedAt?: number; // timestamp
+}
+
+export interface IDuelOutcome {
+  outcome: MoveOutcome;
+  attackerAllocation: number;
+  defenderAllocation: number;
+}
+
+export interface IRetreatState{
+  attacker: IChessPiece;
+  failedTarget: ChessPosition;
+}
   
 /**
  * Represents the internal state of the minimal chess engine
  */
-export interface IMinimalEngineState {
+export interface IGameState {
     phase: GamePhase;
     turn: 'w' | 'b';
     pieces: ChessPieceDTO[];
@@ -76,18 +119,14 @@ export interface IMinimalEngineState {
     inCheck: boolean;
     bp?: number;
     result?: GameResult;
+    duel?: IDuelState;
+    retreat?: IRetreatState;
     whiteTimeRemaining: number;
     blackTimeRemaining: number;
+    lastTimerSwitch?: number; // timestamp
     activeTimer: 'w' | 'b' | null;
-    players: {
-        id: string;
-        name: string;
-        color: 'w' | 'b';
-    }[];
-    spectators: {
-        id: string;
-        name: string;
-    }[];
+    players: Player[];
+    spectators: Spectator[];
 }
 
 /**
@@ -124,13 +163,14 @@ export interface IRetreatOption {
  */
 export interface IMinimalChessEngine {
     // State Management
-    getState(): IMinimalEngineState;
+    getState(): IGameState;
     setState(state: GameStateDTO): void;
     
     // Board Access
     getBoard(): IBoard;
     
     // Core Game Logic
+    getValidRetreatOptions(piecePos: string, failedTarget: string): IRetreatOption[];
     validateMove(from: string, to: string): IMoveValidationResult;
     validateBPAllocation(amount: number, piecePos: string): IBPAllocationValidationResult;
     validateTacticalRetreat(piecePos: string, failedTarget: string): IRetreatOption[];

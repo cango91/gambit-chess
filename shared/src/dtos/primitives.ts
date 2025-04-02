@@ -3,8 +3,56 @@
  * These DTOs use only primitive types for efficient serialization
  */
 
+import { IDuelState, IRetreatState } from '../chess/contracts';
 import { ChessPiece, ChessPieceColor, ChessPieceType, ChessPosition } from '../chess/types';
 import { GamePhase, GameResult, Player, Spectator, ChatMessage } from '../types';
+
+/**
+ * DTO for duel initiation notification
+ */
+export interface DuelInitiatedDTO {
+    attackingPiece: string;  // Position as string e.g., 'e4'
+    defendingPiece: string;  // Position as string e.g., 'e5'
+}
+
+/**
+ * DTO for duel outcome notification
+ */
+export interface DuelOutcomeDTO {
+    outcome: string; // MoveOutcome as string
+    attackerAllocation: number;
+    defenderAllocation: number;
+}
+
+/**
+ * DTO for BP update notification
+ */
+export interface BPAllocationDTO {
+    bp: number;
+}
+
+/**
+ * DTO for error messages
+ */
+export interface ErrorDTO {
+    code: string;
+    message: string;
+}
+
+/**
+ * DTO for draw response
+ */
+export interface DrawResponseDTO {
+    accept: boolean;
+}
+
+/**
+ * DTO for player name setting
+ */
+export interface PlayerNameDTO {
+    gameId: string;
+    name: string;
+}
 
 /**
  * Primitive representation of a chess piece
@@ -17,18 +65,16 @@ export interface PrimitiveChessPieceDTO {
     lastMoveTurn?: number;
 }
 
-/**
- * Information about an active duel
- */
-export interface DuelInfoDTO {
-    inProgress: boolean;
-    attackerId?: string;
-    defenderId?: string;
-    attackingPiecePos?: string;
-    defendingPiecePos?: string;
+export interface PrimitiveDuelStateDTO {
+    attackingPiece?: PrimitiveChessPieceDTO;
+    defendingPiece?: PrimitiveChessPieceDTO;
     playerAllocated?: boolean;
     initiatedAt?: number;
-    remainingAllocationTime?: number;
+}
+
+export interface PrimitiveRetreatStateDTO {
+    attacker: PrimitiveChessPieceDTO;
+    failedTarget: string;
 }
 
 /**
@@ -54,7 +100,8 @@ export interface PrimitiveGameStateDTO {
         id: string;
         name: string;
     }[];
-    duel?: DuelInfoDTO;         // Active duel information if any
+    duel?: PrimitiveDuelStateDTO;         // Active duel information if any
+    retreat?: PrimitiveRetreatStateDTO;   // Active retreat information if any
 }
 
 /**
@@ -121,6 +168,29 @@ export const convertFromPrimitivePiece = (dto: PrimitiveChessPieceDTO): ChessPie
     );
 };
 
+export const convertToPrimitiveDuelState = (duel: IDuelState): PrimitiveDuelStateDTO => ({
+    attackingPiece: duel.attackingPiece ? convertToPrimitivePiece(duel.attackingPiece as ChessPiece) : undefined,
+    defendingPiece: duel.defendingPiece ? convertToPrimitivePiece(duel.defendingPiece as ChessPiece) : undefined,
+    playerAllocated: duel.playerAllocated ?? undefined,
+    initiatedAt: duel.initiatedAt ?? undefined
+});
+
+export const convertFromPrimitiveDuelState = (dto: PrimitiveDuelStateDTO): IDuelState => ({
+    attackingPiece: dto.attackingPiece ? convertFromPrimitivePiece(dto.attackingPiece) : undefined,
+    defendingPiece: dto.defendingPiece ? convertFromPrimitivePiece(dto.defendingPiece) : undefined,
+    playerAllocated: dto.playerAllocated ?? undefined,
+    initiatedAt: dto.initiatedAt ?? undefined
+});
+
+export const convertToPrimitiveRetreatState = (retreat: IRetreatState): PrimitiveRetreatStateDTO => ({
+    attacker: convertToPrimitivePiece(retreat.attacker as ChessPiece),
+    failedTarget: retreat.failedTarget.value
+});
+
+export const convertFromPrimitiveRetreatState = (dto: PrimitiveRetreatStateDTO): IRetreatState => ({
+    attacker: convertFromPrimitivePiece(dto.attacker),
+    failedTarget: new ChessPosition(dto.failedTarget)
+});
 export const convertToPrimitiveMove = (from: ChessPosition, to: ChessPosition): PrimitiveMoveDTO => ({
     from: from.value,
     to: to.value
@@ -194,7 +264,7 @@ export const convertFromPrimitiveGameState = (dto: PrimitiveGameStateDTO): any =
 export const convertToPrimitivePlayer = (player: Player): PrimitivePlayerDTO => ({
     id: player.id,
     name: player.name,
-    color: player.color.value
+    color: player.color?.value ?? ''
 });
 
 /**

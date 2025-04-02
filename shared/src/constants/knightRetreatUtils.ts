@@ -8,8 +8,8 @@
 // @ts-ignore
 import pako from 'pako';
 import { compressedKnightRetreatTable } from './knightRetreatData';
-import { RetreatCost } from '../tactical';
 import { ChessPosition, ChessPositionType } from '../chess/types';
+import { IRetreatOption } from '../chess/contracts';
 
 // Cache the decompressed table to avoid repeated decompression
 let decompressedTable: Record<string, number[]> | null = null;
@@ -116,9 +116,9 @@ export function generateRetreatKey(
  * @param packed Bit-packed retreat option (9 bits)
  * @returns Unpacked retreat option with x, y coordinates and cost
  */
-export function unpackRetreatOption(packed: number): RetreatCost {
+export function unpackRetreatOption(packed: number): IRetreatOption {
   return {
-    to: ChessPosition.fromCoordinates((packed >> 6) & 0x7, (packed >> 3) & 0x7),
+    to: ChessPosition.fromCoordinates((packed >> 6) & 0x7, (packed >> 3) & 0x7).value,
     cost: packed & 0x7
   };
 }
@@ -135,7 +135,7 @@ export function unpackRetreatOption(packed: number): RetreatCost {
 export function getKnightRetreats(
   startX: number, startY: number,
   attackX: number, attackY: number
-): RetreatCost[] {
+): IRetreatOption[] {
   // Get the lookup table
   const table = decompressKnightRetreatTable();
   
@@ -160,7 +160,7 @@ export function getKnightRetreats(
 export function getKnightRetreatsFromPositions(
   startPosition: ChessPositionType,
   attackPosition: ChessPositionType
-): RetreatCost[] {
+): IRetreatOption[] {
   // Convert positions to coordinates
   const [startX, startY] = startPosition instanceof ChessPosition ? 
     startPosition.toCoordinates() : ChessPosition.from(startPosition).toCoordinates();

@@ -6,7 +6,7 @@ import {
   ChatSettings,
   SharedConfigKey,
   SharedConfigValue,
-  ValidationResult
+  ConfigurationValidationResult
 } from './types';
 
 /**
@@ -82,7 +82,7 @@ export class ConfigProvider implements IConfigProvider {
    * @returns Validation result indicating success or failure
    * @throws {ConfigurationError} If provider is already initialized
    */
-  initialize(config: GameConfig): ValidationResult {
+  initialize(config: GameConfig): ConfigurationValidationResult {
     if (this.initialized) {
       throw new ConfigurationError('Config provider already initialized');
     }
@@ -151,7 +151,7 @@ export class ConfigProvider implements IConfigProvider {
     return this.initialized;
   }
 
-  validateConfig(config: Partial<GameConfig>): ValidationResult {
+  validateConfig(config: Partial<GameConfig>): ConfigurationValidationResult {
     const errors: string[] = [];
 
     // Validate Gambit Chess settings

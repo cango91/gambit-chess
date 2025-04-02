@@ -10,7 +10,8 @@ import {
     PrimitivePlayerDTO,
     PrimitiveSpectatorDTO,
     PrimitiveChatMessageDTO,
-    DuelInfoDTO,
+    PrimitiveDuelStateDTO,
+    DuelInitiatedDTO,
     convertToPrimitivePiece,
     convertFromPrimitivePiece,
     convertToPrimitiveMove,
@@ -24,7 +25,17 @@ import {
     convertToPrimitiveSpectator,
     convertFromPrimitiveSpectator,
     convertToPrimitiveChatMessage,
-    convertFromPrimitiveChatMessage
+    convertFromPrimitiveChatMessage,
+    PlayerNameDTO,
+    DrawResponseDTO,
+    ErrorDTO,
+    BPAllocationDTO,
+    DuelOutcomeDTO,
+    convertToPrimitiveDuelState,
+    convertFromPrimitiveDuelState,
+    convertFromPrimitiveRetreatState,
+    convertToPrimitiveRetreatState,
+    PrimitiveRetreatStateDTO
 } from './primitives';
 
 // Re-export primitive DTOs
@@ -36,7 +47,14 @@ export {
     PrimitivePlayerDTO as PlayerDTO,
     PrimitiveSpectatorDTO as SpectatorDTO,
     PrimitiveChatMessageDTO as ChatMessageDTO,
-    DuelInfoDTO
+    PrimitiveDuelStateDTO as DuelStateDTO,
+    PrimitiveRetreatStateDTO as RetreatStateDTO,
+    DuelInitiatedDTO,
+    DuelOutcomeDTO,
+    BPAllocationDTO,
+    ErrorDTO,
+    DrawResponseDTO,
+    PlayerNameDTO,  
 };
 
 // Re-export converters
@@ -54,54 +72,10 @@ export {
     convertToPrimitiveSpectator as toSpectatorDTO,
     convertFromPrimitiveSpectator as fromSpectatorDTO,
     convertToPrimitiveChatMessage as toChatMessageDTO,
-    convertFromPrimitiveChatMessage as fromChatMessageDTO
+    convertFromPrimitiveChatMessage as fromChatMessageDTO,
+    convertToPrimitiveDuelState as toDuelStateDTO,
+    convertFromPrimitiveDuelState as fromDuelStateDTO,
+    convertToPrimitiveRetreatState as toRetreatStateDTO,
+    convertFromPrimitiveRetreatState as fromRetreatStateDTO
 };
 
-/**
- * DTO for duel initiation notification
- */
-export interface DuelInitiatedDTO {
-    attackingPiece: string;  // Position as string e.g., 'e4'
-    defendingPiece: string;  // Position as string e.g., 'e5'
-    position: string;        // Position as string e.g., 'e5'
-}
-
-/**
- * DTO for duel outcome notification
- */
-export interface DuelOutcomeDTO {
-    winner: string;           // 'w'|'b'
-    result: string;          // MoveOutcome as string
-    attackerAllocation: number;
-    defenderAllocation: number;
-}
-
-/**
- * DTO for BP update notification
- */
-export interface BPAllocationDTO {
-    bp: number;
-}
-
-/**
- * DTO for error messages
- */
-export interface ErrorDTO {
-    code: string;
-    message: string;
-}
-
-/**
- * DTO for draw response
- */
-export interface DrawResponseDTO {
-    accept: boolean;
-}
-
-/**
- * DTO for player name setting
- */
-export interface PlayerNameDTO {
-    gameId: string;
-    name: string;
-}

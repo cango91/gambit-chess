@@ -5,10 +5,11 @@
 // Core interfaces
 export {
     IMinimalChessEngine,
-    IMinimalEngineState,
+    IGameState,
     IMoveValidationResult,
     IBPAllocationValidationResult,
     IRetreatOption,
+    IDuelState,
 } from './contracts';
 
 // Minimal engine implementation
@@ -47,15 +48,3 @@ export {
     fenToPieces,
     piecesToFen,
 } from './fen';
-
-/**
- * IMPORTANT: This module provides:
- * 1. Minimal chess engine for client-side validation
- * 2. Pure utility functions for chess operations
- * 3. Type definitions and interfaces
- * 4. Value objects for chess domain
- * 5. Factory functions for creating value objects
- * 
- * The server should NOT rely on MinimalChessEngine for authoritative validation.
- * It should implement its own complete validation using the pure utility functions.
- */

@@ -1,5 +1,5 @@
 import { ChessPieceTypeSymbol } from "../chess/types";
-import { BPRegenBonuses, BPRegenBonusType } from "../types";
+import { TacticalAdvantageType } from "../tactical/types";
 
 /**
  * Shared configuration keys that are safe to use in both client and server code.
@@ -61,7 +61,7 @@ export interface IConfigProvider {
   /** Check if provider has been initialized with configuration */
   isConfigured(): boolean;
   /** Validate partial configuration object */
-  validateConfig(config: Partial<GameConfig>): ValidationResult;
+  validateConfig(config: Partial<GameConfig>): ConfigurationValidationResult;
 }
 
 /**
@@ -70,7 +70,7 @@ export interface IConfigProvider {
  */
 export interface BPRegenBonusDescription {
   /** The tactical advantage type */
-  type: BPRegenBonusType;
+  type: TacticalAdvantageType;
   
   /** Human-readable description of how this bonus is calculated */
   description: string;
@@ -82,7 +82,7 @@ export interface BPRegenBonusDescription {
 /**
  * Collection of BP regeneration bonus descriptions
  */
-export type BPRegenBonusDescriptions = Record<BPRegenBonusType, BPRegenBonusDescription>;
+export type BPRegenBonusDescriptions = Record<TacticalAdvantageType, BPRegenBonusDescription>;
 
 /**
  * BP Regeneration Settings visible to client.
@@ -164,7 +164,7 @@ export interface GameConfig {
 /**
  * Configuration validation result
  */
-export interface ValidationResult {
+export interface ConfigurationValidationResult {
   /** Whether the configuration is valid */
   isValid: boolean;
   /** Validation errors if any */

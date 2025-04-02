@@ -219,7 +219,6 @@ export function validateDuelInitiatedDTO(dto: Partial<DuelInitiatedDTO>): boolea
   
   if (!validatePosition(dto.attackingPiece)) return false;
   if (!validatePosition(dto.defendingPiece)) return false;
-  if (!validatePosition(dto.position)) return false;
   
   return true;
 }
@@ -232,8 +231,7 @@ export function validateDuelInitiatedDTO(dto: Partial<DuelInitiatedDTO>): boolea
 export function validateDuelOutcomeDTO(dto: Partial<DuelOutcomeDTO>): boolean {
   if (!dto) return false;
   
-  if (!validatePieceColor(dto.winner)) return false;
-  if (dto.result !== 'success' && dto.result !== 'failed') return false;
+  if (dto.outcome !== 'success' && dto.outcome !== 'failed') return false;
   if (!validateBPAmount(dto.attackerAllocation)) return false;
   if (!validateBPAmount(dto.defenderAllocation)) return false;
   

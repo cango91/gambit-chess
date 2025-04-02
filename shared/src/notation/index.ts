@@ -7,13 +7,14 @@
  * hiding rules based on player perspective.
  */
 
-import { MoveOutcome, Duel, Move, ExtendedMove, MoveHistory, PGNHeaders } from '@/types';
+import { MoveOutcome, Move, GambitMove, MoveHistory, PGNHeaders } from '@/types';
 import { 
   ChessPieceColor,
   ChessPieceTypeSymbol,
   ChessPosition,
 } from '../chess/types';
-import { RetreatCost } from '../tactical';
+import { IDuelOutcome, IRetreatOption } from '../chess/contracts';
+import { PIECE_COLOR } from '@/chess';
 
 /**
  * Represents a parsed move from notation
@@ -30,16 +31,9 @@ interface ParsedMove {
   /** Castle direction, if the move is a castle */
   castle: 'kingside' | 'queenside' | null;
   /** Duel information, if the move involved a duel */
-  duel: { 
-    attackerAllocation: number; 
-    defenderAllocation: number; 
-    outcome: MoveOutcome;
-  } | null;
+  duel: IDuelOutcome | null;
   /** Retreat information, if the move involved a retreat */
-  retreat: { 
-    to: string; 
-    cost: number;
-  } | null;
+  retreat: IRetreatOption | null;
   /** BP regeneration amount */
   bpRegeneration: number;
   /** Color of the player making the move */
@@ -179,8 +173,8 @@ export function moveToSAN(move: Move): string {
  */
 export function toGambitNotation(
   move: Move,
-  duel: Duel | null = null,
-  retreat: RetreatCost | null = null,
+  duel: IDuelOutcome | null = null,
+  retreat: IRetreatOption | null = null,
   bpRegeneration: number = 0,
   shouldIncludeBpRegen: boolean = true
 ): string {
@@ -205,7 +199,7 @@ export function toGambitNotation(
   // Add retreat information if present and the duel failed
   if (retreat && duel && duel.outcome === 'failed') {
     // Validate retreat object
-    if (!retreat.to || typeof retreat.cost !== 'number') {
+    if (!retreat.to || !retreat.cost) {
       throw new Error('Invalid retreat: Must have destination and cost');
     }
     
@@ -301,21 +295,19 @@ export function generateVisibleGameHistory(
 
   return moves.map(moveData => {
     // Clone the move data to avoid modifying the original
-    const visibleMoveData: ExtendedMove = {
-      ...moveData,
-      duel: moveData.duel ? { ...moveData.duel } : null,
-    };
+    const visibleMoveData: GambitMove = {...moveData};
 
     // Apply visibility rules based on viewer perspective
+    const playerColor = visibleMoveData.move.turnNumber % 2 ? PIECE_COLOR('w') : PIECE_COLOR('b');
     
     // Rule 1: Players can only see their own BP allocation in duels
-    if (visibleMoveData.duel && visibleMoveData.playerColor !== viewerColor && viewerColor !== 'spectator') {
+    if (visibleMoveData.duel && playerColor !== viewerColor && viewerColor !== 'spectator') {
       // This is an opponent's move, hide their BP allocation
       visibleMoveData.duel.attackerAllocation = Number(opponentBPPlaceholder);
     }
 
     // Rule 2: Players can only see their own BP regeneration
-    if (visibleMoveData.playerColor !== viewerColor && viewerColor !== 'spectator') {
+    if (playerColor !== viewerColor && viewerColor !== 'spectator') {
       visibleMoveData.bpRegeneration = 0;
     }
 
@@ -550,11 +542,13 @@ export function toPGN(
     if (i % 2 === 0) {
       pgn += `${moveNumber}. `;
     }
+
+    const playerColor = moveData.move.turnNumber % 2 ? PIECE_COLOR('w') : PIECE_COLOR('b');
     
     // Add move notation
     const shouldIncludeBpRegen = viewerColor === null || 
                                gameOver || 
-                               moveData.playerColor === viewerColor;
+                               playerColor === viewerColor;
     
     pgn += toGambitMoveString(moveData, shouldIncludeBpRegen) + ' ';
     
@@ -573,7 +567,7 @@ export function toPGN(
  * @param shouldIncludeBpRegen Whether to include BP regeneration information
  * @returns Formatted move string
  */
-function toGambitMoveString(moveData: ExtendedMove, shouldIncludeBpRegen: boolean = true): string {
+function toGambitMoveString(moveData: GambitMove, shouldIncludeBpRegen: boolean = true): string {
   // Input validation
   if (!moveData || typeof moveData !== 'object' || !moveData.move) {
     throw new Error('Invalid moveData: Must be a valid ExtendedMove object with a move property');

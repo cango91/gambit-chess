@@ -4,7 +4,7 @@ export type {
   GambitChessSettings,
   TimeControlSettings,
   ChatSettings,
-  ValidationResult,
+  ConfigurationValidationResult,
   BPRegenerationSettings,
   PieceTypeBPCapacities,
   SharedConfigValue,

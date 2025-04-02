@@ -31,10 +31,14 @@ export type {
 // Re-export core interfaces
 export type {
     IMinimalChessEngine,
-    IMinimalEngineState,
+    IGameState,
     IMoveValidationResult,
     IBPAllocationValidationResult,
     IRetreatOption,
+    IBoard,
+    IChessPiece,
+    IDuelState,
+    IDuelOutcome,
 } from './chess/contracts';
 
 export * from './dtos';
@@ -50,6 +54,9 @@ export * from './events';
 
 // Re-export tactical types
 export * from './tactical';
+
+// Re-export security types
+export * from './security';
 
 // Re-export validation utilities
 

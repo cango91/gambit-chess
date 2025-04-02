@@ -4,6 +4,11 @@ import { GambitChessEngine } from '../core/gambit-chess-engine';
 import { ServerConfigProvider } from '../config/provider';
 import { IncomingMessage } from 'http';
 import { GameStateDTO, DuelInfoDTO } from '@gambit-chess/shared';
+import { AuthService } from '../security/auth-service';
+import { v4 as uuidv4 } from 'uuid';
+import { GameManager } from '../services/game-manager';
+import { ServiceFactory } from '../services';
+import { RetreatOption } from '../services/tactical';
 
 /**
  * WebSocket client connection
@@ -24,13 +29,17 @@ interface WSClient {
  */
 export class WebSocketController {
     private clients: Map<string, WSClient> = new Map();
-    private games: Map<string, GambitChessEngine> = new Map();
     private security: SecureMessageManager;
     private configProvider: ServerConfigProvider;
+    private authService: AuthService;
+    private gameManager: GameManager;
     
     constructor() {
         this.security = new SecureMessageManager();
         this.configProvider = ServerConfigProvider.getInstance();
+        this.authService = AuthService.getInstance();
+        // Get the GameManager instance from the ServiceFactory
+        this.gameManager = ServiceFactory.getGameManager();
     }
     
     /**
@@ -142,34 +151,46 @@ export class WebSocketController {
      * Handle client authentication response
      */
     private handleAuthResponse(clientId: string, message: any): void {
-        // This can handle both initial auth responses and reconnection attempts
-        
-        // For the game jam implementation, this might be simplified
-        // but a real-world implementation would validate challenge responses
-        
         const client = this.clients.get(clientId);
         if (!client) return;
         
         // Check if this is a join request for a new game
         if (message.action === 'join_game') {
+            this.handleJoinGame(clientId, message);
+        }
+    }
+    
+    /**
+     * Handle join game request
+     */
+    private async handleJoinGame(clientId: string, message: any): Promise<void> {
+        const client = this.clients.get(clientId);
+        if (!client) return;
+        
+        try {
             // Create or get the game
             let gameId = message.gameId;
             if (!gameId) {
                 // Create new game if no ID provided
-                gameId = this.createGame();
+                gameId = await this.gameManager.createGame();
             }
             
             // Register player in game
             const playerId = message.playerId || this.generatePlayerId(gameId);
             const isSpectator = message.isSpectator || false;
             
-            // Create session
+            // Create session with AuthService
             const connectionInfo = {
                 ip: client.ip || 'unknown',
                 userAgent: client.userAgent || 'unknown'
             };
             
-            const { token, secret } = this.security.createSession(playerId, connectionInfo);
+            const { token, refreshToken, sessionId } = this.authService.createSession(
+                playerId,
+                gameId,
+                isSpectator,
+                connectionInfo
+            );
             
             // Update client info
             client.playerId = playerId;
@@ -181,30 +202,34 @@ export class WebSocketController {
                 type: 'AUTH_RESULT',
                 success: true,
                 token,
-                secret,
+                refreshToken,
                 gameId,
-                playerId
+                playerId,
+                sessionId
             };
             
             client.socket.send(JSON.stringify(authResultEvent));
             
             // Send current game state
             this.sendGameState(clientId);
+        } catch (error) {
+            console.error(`Error handling join game for client ${clientId}:`, error);
+            this.sendError(clientId, 'Error joining game');
         }
     }
     
     /**
      * Route game event to appropriate handler
      */
-    private routeGameEvent(clientId: string, message: SecureMessage): void {
+    private async routeGameEvent(clientId: string, message: SecureMessage): Promise<void> {
         const client = this.clients.get(clientId);
         if (!client || !client.gameId || !client.playerId) return;
         
         const gameId = client.gameId;
         const playerId = client.playerId;
         
-        // Get game engine
-        const engine = this.games.get(gameId);
+        // Get game engine from GameManager
+        const engine = await this.gameManager.getGame(gameId);
         if (!engine) {
             this.sendError(clientId, 'Game not found');
             return;
@@ -213,15 +238,15 @@ export class WebSocketController {
         // Handle based on event type
         switch (message.event.type) {
             case 'MOVE_REQUEST':
-                this.handleMoveRequest(engine, playerId, message.event);
+                await this.handleMoveRequest(clientId, gameId, playerId, message.event);
                 break;
                 
             case 'BP_ALLOCATION':
-                this.handleBPAllocation(engine, playerId, message.event);
+                await this.handleBPAllocation(clientId, gameId, playerId, message.event);
                 break;
                 
             case 'TACTICAL_RETREAT':
-                this.handleTacticalRetreat(engine, playerId, message.event);
+                await this.handleTacticalRetreat(engine, playerId, message.event);
                 break;
                 
             case 'CHAT_MESSAGE':
@@ -256,31 +281,28 @@ export class WebSocketController {
     /**
      * Handle move request from client
      */
-    private handleMoveRequest(engine: GambitChessEngine, playerId: string, event: GameEvent): void {
+    private async handleMoveRequest(clientId: string, gameId: string, playerId: string, event: GameEvent): Promise<void> {
         // Extract move data
         const { from, to } = event;
         
         try {
-            // Validate and execute move
-            const moveValidation = engine.validateMove(from, to);
+            // Use GameManager to process the move
+            const result = await this.gameManager.processMove(gameId, from, to);
             
-            if (!moveValidation.valid) {
-                this.sendPlayerError(playerId, `Invalid move: ${moveValidation.reason}`);
+            if (!result.success) {
+                this.sendPlayerError(playerId, result.error || 'Invalid move');
                 return;
             }
             
-            // Check for capture attempt
-            if (moveValidation.capturedPiece) {
-                // Initiate duel
-                this.initiateDuel(engine, playerId, from, to, moveValidation.capturedPiece);
+            if (result.captureAttempt) {
+                // Handle capture attempt (duel) separately
+                // This would be implemented in the handleDuelSetup method
+                this.handleDuelSetup(gameId, playerId, from, to);
                 return;
             }
             
-            // Regular move (no capture)
-            // In a real implementation, we would update the game state here
-            
-            // Broadcast updated game state
-            this.broadcastGameState(engine);
+            // Send updated game state to all players
+            this.broadcastGameState(gameId);
             
         } catch (error) {
             console.error('Error processing move request:', error);
@@ -289,92 +311,34 @@ export class WebSocketController {
     }
     
     /**
-     * Initiate BP duel for capture attempt
-     */
-    private initiateDuel(
-        engine: GambitChessEngine,
-        attackerId: string,
-        from: string,
-        to: string,
-        targetPiece: any
-    ): void {
-        // Determine defender player ID
-        // We'll access the color conversion method in a type-safe way
-        const attackerColor = attackerId === 'white' ? 'w' : 'b';
-        const defenderColor = attackerColor === 'w' ? 'b' : 'w';
-        const defenderId = defenderColor === 'w' ? 'white' : 'black';
-        
-        // Get attacking piece
-        const attackingPiece = engine.getBoard().getPieceAt(from);
-        if (!attackingPiece) return;
-        
-        // Send duel initiated event to both players
-        const duelInitiatedEvent: GameEvent = {
-            type: 'DUEL_INITIATED',
-            from,
-            to,
-            attackingPiece: {
-                type: attackingPiece.type.value,
-                position: from
-            },
-            targetPiece: {
-                type: targetPiece.type,
-                position: to
-            },
-            allocationTimeMs: this.configProvider.gambitChess.timeControl.bpAllocationTime
-        };
-        
-        // Send to attacker
-        this.sendToPlayer(attackerId, duelInitiatedEvent);
-        
-        // Send to defender
-        this.sendToPlayer(defenderId, duelInitiatedEvent);
-    }
-    
-    /**
      * Handle BP allocation for duel
      */
-    private handleBPAllocation(engine: GambitChessEngine, playerId: string, event: GameEvent): void {
+    private async handleBPAllocation(clientId: string, gameId: string, playerId: string, event: GameEvent): Promise<void> {
         const { piecePosition, amount } = event;
         
         try {
-            // Record BP allocation
-            engine.recordBPAllocation(playerId, piecePosition, amount);
+            // Use GameManager to process BP allocation
+            const result = await this.gameManager.processBPAllocation(gameId, playerId, piecePosition, amount);
             
-            // Get the current duel info
-            const playerState = engine.getStateForPlayer(playerId);
-            
-            if (playerState.duel && playerState.duel.attackerId && playerState.duel.defenderId) {
-                const attackerId = playerState.duel.attackerId;
-                const defenderId = playerState.duel.defenderId;
-                
-                // Check if both players have allocated BP
-                const otherPlayerId = playerId === attackerId ? defenderId : attackerId;
-                const otherPlayerState = engine.getStateForPlayer(otherPlayerId);
-                
-                if (playerState.duel.playerAllocated && otherPlayerState.duel?.playerAllocated) {
-                    // Both players have allocated, resolve the duel
-                    const duelResult = engine.resolveBPDuel(attackerId, defenderId);
-                    
-                    // Broadcast duel outcome
-                    this.broadcastDuelOutcome(engine, duelResult);
-                } else {
-                    // Only one player has allocated, wait for the other
-                    // Notify the player that their allocation has been recorded
-                    const allocationConfirmEvent: GameEvent = {
-                        type: 'BP_ALLOCATION_CONFIRMED',
-                        piecePosition,
-                        amount
-                    };
-                    
-                    this.sendToPlayer(playerId, allocationConfirmEvent);
-                    
-                    // Update game state for both players
-                    this.broadcastGameState(engine);
-                }
-            } else {
-                this.sendPlayerError(playerId, 'No active duel in progress or missing duel information');
+            if (!result.success) {
+                this.sendPlayerError(playerId, result.error || 'Invalid BP allocation');
+                return;
             }
+            
+            // Notify the player that their allocation has been recorded
+            const allocationConfirmEvent: GameEvent = {
+                type: 'BP_ALLOCATION_CONFIRMED',
+                piecePosition,
+                amount
+            };
+            
+            this.sendToPlayer(playerId, allocationConfirmEvent);
+            
+            // Check if duel is ready to be resolved
+            // This would be handled by the GameManager internally
+            
+            // Update game state for all players
+            this.broadcastGameState(gameId);
             
         } catch (error) {
             console.error('Error processing BP allocation:', error);
@@ -383,34 +347,159 @@ export class WebSocketController {
     }
     
     /**
+     * Set up a duel between two players
+     */
+    private async handleDuelSetup(gameId: string, attackerId: string, from: string, to: string): Promise<void> {
+        try {
+            const engine = await this.gameManager.getGame(gameId);
+            if (!engine) return;
+            
+            // Get information about the defending piece/player
+            const defenderColor = attackerId === 'white' ? 'b' : 'w';
+            const defenderId = defenderColor === 'w' ? 'white' : 'black';
+            
+            // Get pieces involved in the duel
+            const attackingPiece = engine.getBoard().getPieceAt(from);
+            const defendingPiece = engine.getBoard().getPieceAt(to);
+            
+            if (!attackingPiece || !defendingPiece) {
+                console.error('Invalid duel setup: missing pieces');
+                return;
+            }
+            
+            // Initiate the duel in the engine
+            engine.initiateDuel(attackerId, defenderId, from, to);
+            
+            // Send duel initiated event to both players
+            const duelInitiatedEvent: GameEvent = {
+                type: 'DUEL_INITIATED',
+                from,
+                to,
+                attackingPiece: {
+                    type: attackingPiece.type.value,
+                    position: from
+                },
+                targetPiece: {
+                    type: defendingPiece.type.value,
+                    position: to
+                },
+                allocationTimeMs: this.configProvider.gambitChess.timeControl.bpAllocationTime
+            };
+            
+            // Send to attacker
+            this.sendToPlayer(attackerId, duelInitiatedEvent);
+            
+            // Send to defender
+            this.sendToPlayer(defenderId, duelInitiatedEvent);
+            
+            // Save game state
+            await this.gameManager.saveGameState(gameId);
+            
+        } catch (error) {
+            console.error('Error setting up duel:', error);
+        }
+    }
+    
+    /**
+     * Send game state to a specific client
+     */
+    private async sendGameState(clientId: string): Promise<void> {
+        const client = this.clients.get(clientId);
+        if (!client || !client.gameId || !client.playerId) return;
+        
+        try {
+            const engine = await this.gameManager.getGame(client.gameId);
+            if (!engine) return;
+            
+            // Get player-specific game state
+            const gameState = engine.getStateForPlayer(client.playerId);
+            
+            // Create game state update event
+            const stateEvent: GameEvent = {
+                type: 'GAME_STATE_UPDATE',
+                state: gameState
+            };
+            
+            // Send state using secure message
+            const token = this.getTokenForClient(clientId);
+            if (!token) return;
+            
+            const secureMessage = this.security.createSecureResponse(token, stateEvent);
+            client.socket.send(JSON.stringify(secureMessage));
+        } catch (error) {
+            console.error(`Error sending game state to client ${clientId}:`, error);
+        }
+    }
+    
+    /**
+     * Broadcast game state to all players in a game
+     */
+    private async broadcastGameState(gameId: string): Promise<void> {
+        // Find all clients for this game
+        for (const [clientId, client] of this.clients.entries()) {
+            if (client.gameId === gameId && client.playerId) {
+                await this.sendGameState(clientId);
+            }
+        }
+    }
+    
+    /**
      * Handle tactical retreat request
      */
-    private handleTacticalRetreat(engine: GambitChessEngine, playerId: string, event: GameEvent): void {
+    private async handleTacticalRetreat(engine: GambitChessEngine, playerId: string, event: GameEvent): Promise<void> {
         const { piecePosition, targetPosition, failedCaptureTarget } = event;
         
         try {
-            // Validate tactical retreat
-            const retreatOptions = engine.validateTacticalRetreat(piecePosition, failedCaptureTarget);
+            // Find the gameId for this engine
+            let gameId: string | undefined;
+            for (const [clientId, client] of this.clients.entries()) {
+                if (client.playerId === playerId && client.gameId) {
+                    gameId = client.gameId;
+                    break;
+                }
+            }
+            
+            if (!gameId) {
+                this.sendPlayerError(playerId, 'Game not found');
+                return;
+            }
+            
+            // Get retreat options from the GameManager
+            const retreatOptions = await this.gameManager.getTacticalRetreats(
+                gameId, 
+                piecePosition, 
+                failedCaptureTarget
+            );
+            
+            if (!retreatOptions.options || retreatOptions.options.length === 0) {
+                this.sendPlayerError(playerId, retreatOptions.error || 'No valid retreat options available');
+                return;
+            }
             
             // Find the selected retreat option
-            const selectedOption = retreatOptions.find(option => option.to === targetPosition);
+            const selectedOption = retreatOptions.options.find((option: RetreatOption) => option.to === targetPosition);
             
             if (!selectedOption) {
                 this.sendPlayerError(playerId, 'Invalid tactical retreat position');
                 return;
             }
             
-            // Check if player has enough BP for the retreat
-            const bpCost = selectedOption.cost;
-            if (!engine.subtractPlayerBP(playerId, bpCost)) {
-                this.sendPlayerError(playerId, 'Insufficient BP for tactical retreat');
+            // Execute the retreat using GameManager
+            const result = await this.gameManager.executeTacticalRetreat(
+                gameId,
+                playerId,
+                piecePosition,
+                targetPosition,
+                selectedOption.cost
+            );
+            
+            if (!result.success) {
+                this.sendPlayerError(playerId, result.error || 'Failed to execute tactical retreat');
                 return;
             }
             
-            // Apply the retreat (in a real implementation)
-            
             // Broadcast updated game state
-            this.broadcastGameState(engine);
+            await this.broadcastGameState(gameId);
             
         } catch (error) {
             console.error('Error processing tactical retreat:', error);
@@ -446,7 +535,7 @@ export class WebSocketController {
     /**
      * Handle game resignation
      */
-    private handleGameResign(engine: GambitChessEngine, gameId: string, playerId: string): void {
+    private async handleGameResign(engine: GambitChessEngine, gameId: string, playerId: string): Promise<void> {
         // Set game result (in a real implementation)
         
         // Broadcast game over
@@ -479,7 +568,7 @@ export class WebSocketController {
     /**
      * Handle response to draw offer
      */
-    private handleDrawResponse(engine: GambitChessEngine, gameId: string, playerId: string, event: GameEvent): void {
+    private async handleDrawResponse(engine: GambitChessEngine, gameId: string, playerId: string, event: GameEvent): Promise<void> {
         const { accepted } = event;
         
         if (accepted) {
@@ -571,92 +660,6 @@ export class WebSocketController {
     }
     
     /**
-     * Create a new game
-     */
-    private createGame(): string {
-        const gameId = this.generateGameId();
-        
-        // Create game engine
-        const engine = new GambitChessEngine(this.configProvider);
-        this.games.set(gameId, engine);
-        
-        return gameId;
-    }
-    
-    /**
-     * Send game state to a specific client
-     */
-    private sendGameState(clientId: string): void {
-        const client = this.clients.get(clientId);
-        if (!client || !client.gameId || !client.playerId) return;
-        
-        const engine = this.games.get(client.gameId);
-        if (!engine) return;
-        
-        // Get player-specific game state
-        const gameState = engine.getStateForPlayer(client.playerId);
-        
-        // Create game state update event
-        const stateEvent: GameEvent = {
-            type: 'GAME_STATE_UPDATE',
-            state: gameState
-        };
-        
-        // Send state using secure message
-        const token = this.getTokenForClient(clientId);
-        if (!token) return;
-        
-        const secureMessage = this.security.createSecureResponse(token, stateEvent);
-        client.socket.send(JSON.stringify(secureMessage));
-    }
-    
-    /**
-     * Broadcast game state to all players in a game
-     */
-    private broadcastGameState(engine: GambitChessEngine): void {
-        // Find all clients for this game
-        for (const [clientId, client] of this.clients.entries()) {
-            if (client.gameId && client.playerId) {
-                this.sendGameState(clientId);
-            }
-        }
-    }
-    
-    /**
-     * Broadcast duel outcome
-     */
-    private broadcastDuelOutcome(
-        engine: GambitChessEngine,
-        result: { attackerWins: boolean, attackerAmount: number, defenderAmount: number }
-    ): void {
-        // Create duel outcome event
-        const duelOutcomeEvent: GameEvent = {
-            type: 'DUEL_OUTCOME',
-            attackerWins: result.attackerWins,
-            attackerAmount: result.attackerAmount,
-            defenderAmount: result.defenderAmount,
-            // Include tactical advantages if any were gained from this duel
-            tacticalAdvantages: [] // This would be populated in a real implementation
-        };
-        
-        // Find game ID for this engine
-        let gameId: string | undefined;
-        for (const [id, game] of this.games.entries()) {
-            if (game === engine) {
-                gameId = id;
-                break;
-            }
-        }
-        
-        if (gameId) {
-            this.broadcastToGame(gameId, duelOutcomeEvent);
-            
-            // After duel outcome, update game state with any tactical advantages
-            this.broadcastGameState(engine);
-        }
-    }
-    
-    /**
      * Send an event to a specific player
      */
     private sendToPlayer(playerId: string, event: GameEvent): void {
@@ -731,25 +734,40 @@ export class WebSocketController {
      * Get session token for a client
      */
     private getTokenForClient(clientId: string): string | undefined {
-        // In a real implementation, we would look up the token from a session store
-        // For simplicity, we'll assume it's available for all established connections
+        const client = this.clients.get(clientId);
+        if (!client || !client.playerId || !client.gameId) {
+            return undefined;
+        }
         
-        // This is a placeholder for a real implementation
-        return 'placeholder_token';
+        // Get the client's session information
+        const connectionInfo = {
+            ip: client.ip || 'unknown',
+            userAgent: client.userAgent || 'unknown'
+        };
+        
+        // Create a new session and return the token
+        const { token } = this.authService.createSession(
+            client.playerId,
+            client.gameId,
+            client.isSpectator,
+            connectionInfo
+        );
+        
+        return token;
     }
     
     /**
      * Generate unique client ID
      */
     private generateClientId(): string {
-        return 'client_' + Math.random().toString(36).substring(2, 15);
+        return 'client_' + uuidv4();
     }
     
     /**
      * Generate unique game ID
      */
     private generateGameId(): string {
-        return 'game_' + Math.random().toString(36).substring(2, 10);
+        return 'game_' + uuidv4();
     }
     
     /**
@@ -772,6 +790,6 @@ export class WebSocketController {
         if (!hasBlackPlayer) return 'black';
         
         // If both colors are taken, make them a spectator
-        return 'spectator_' + Math.random().toString(36).substring(2, 10);
+        return 'spectator_' + uuidv4();
     }
 } 

@@ -17,3 +17,9 @@ export const PIECE_VALUES = {
   q: 9, // Queen
   k: 0, // King (no capture value)
 };
+
+export const SECURITY_CONSTANTS = {
+  MAX_AGE: 1000 * 60 * 60 * 24, // 1 day
+  MAX_NONCE_AGE: 1000 * 60 * 10, // 10 minutes
+  MAX_REPLAY_AGE: 1000 * 60 * 10, // 10 minutes
+};

@@ -238,6 +238,14 @@ export class ChessPosition implements ValueObject<string> {
         }
         throw new Error('Invalid position');
     }
+
+    get x(): number {
+        return this.toCoordinates()[0];
+    }
+
+    get y(): number {
+        return this.toCoordinates()[1];
+    }
 }
 
 export type ChessPositionType = string | number[] | ChessCoordinates | ChessPosition;
@@ -248,14 +256,14 @@ export type ChessPositionType = string | number[] | ChessCoordinates | ChessPosi
  * Can be initialized with a string (e.g. "w" or "b")
  * Can be used anywhere a string is expected
  */
-export class ChessPieceColor implements ValueObject<string> {
+export class ChessPieceColor implements ValueObject<string | 'w' | 'b'> {
     static readonly colors = {
         w: 'white',
         b: 'black'
     }
     private _value: 'w' | 'b' = 'w';
 
-    constructor(value: string | ChessPieceColor) {
+    constructor(value: string | ChessPieceColor | 'w' | 'b') {
         if (value instanceof ChessPieceColor)
             this.value = value.value;
         else
@@ -265,6 +273,7 @@ export class ChessPieceColor implements ValueObject<string> {
     get value(): string {
         return this._value;
     }
+
 
     set value(value: string) {
         if (!value) throw new Error('Invalid color');
@@ -406,13 +415,15 @@ export class ChessPiece implements IChessPiece {
     private _position: ChessPosition | null;
     private _hasMoved: boolean;
     private _lastMoveTurn: number | undefined;
+    private _firstMoveTurn: number | undefined;
 
-    constructor(type: ChessPieceType, color: ChessPieceColor, position: ChessPosition | null, hasMoved: boolean = false, lastMoveTurn: number | undefined = undefined) {
+    constructor(type: ChessPieceType, color: ChessPieceColor, position: ChessPosition | null, hasMoved: boolean = false, lastMoveTurn: number | undefined = undefined, firstMoveTurn: number | undefined = undefined) {
         this._type = type;
         this._color = color;
         this._position = position;
         this._hasMoved = hasMoved;
         this._lastMoveTurn = lastMoveTurn;
+        this._firstMoveTurn = firstMoveTurn;
     }
 
     get type(): ChessPieceType {
@@ -435,6 +446,10 @@ export class ChessPiece implements IChessPiece {
         return this._lastMoveTurn;
     }
 
+    get firstMoveTurn(): number | undefined {
+        return this._firstMoveTurn;
+    }
+
     set lastMoveTurn(lastMoveTurn: number | undefined) {
         this._lastMoveTurn = lastMoveTurn;
     }
@@ -451,6 +466,7 @@ export class ChessPiece implements IChessPiece {
         this._position = position ? ChessPosition.from(position) : null;
         this._hasMoved = true;
         this._lastMoveTurn = turn ?? this._lastMoveTurn;
+        this._firstMoveTurn = this._firstMoveTurn ?? turn;
     }
 
     removeFromBoard() {
@@ -478,21 +494,27 @@ export class ChessPiece implements IChessPiece {
             if (value.includes(' ')) {
                 const parts = value.split(' ');
                 if (parts.length === 3) {
-                    return new ChessPiece(ChessPieceType.from(parts[0]), ChessPieceColor.from(parts[1]), ChessPosition.from(parts[2]), false, undefined);
+                    return new ChessPiece(ChessPieceType.from(parts[0]), ChessPieceColor.from(parts[1]), ChessPosition.from(parts[2]), false, undefined, undefined);
                 } else if (parts.length === 4) {
-                    return new ChessPiece(ChessPieceType.from(parts[0]), ChessPieceColor.from(parts[1]), ChessPosition.from(parts[2]), true, parseInt(parts[3]));
+                    return new ChessPiece(ChessPieceType.from(parts[0]), ChessPieceColor.from(parts[1]), ChessPosition.from(parts[2]), true, parseInt(parts[3]), parseInt(parts[3]));
+                }else if (parts.length === 5) {
+                    return new ChessPiece(ChessPieceType.from(parts[0]), ChessPieceColor.from(parts[1]), ChessPosition.from(parts[2]), true, parseInt(parts[3]), parseInt(parts[4]));
                 }
             } else if (value.includes('@')) {
                 const parts = value.split('@');
                 if (parts.length === 2 && parts[0].length === 2 && parts[1].length === 2) {
-                    return new ChessPiece(ChessPieceType.from(parts[0][0]), ChessPieceColor.from(parts[0][1]), ChessPosition.from(parts[1]), false, undefined);
+                    return new ChessPiece(ChessPieceType.from(parts[0][0]), ChessPieceColor.from(parts[0][1]), ChessPosition.from(parts[1]), false, undefined, undefined);
                 } else if (parts.length === 2 && parts[0].length === 2 && parts[1].includes(',')) {
                     const [type, color] = parts[0].split('');
-                    const [_, turn] = parts[1].split(',');
-                    return new ChessPiece(ChessPieceType.from(type), ChessPieceColor.from(color), ChessPosition.from(parts[1]), true, parseInt(turn));
+                    const splitParts = parts[1].split(',');
+                    if(splitParts.length === 2) {
+                        return new ChessPiece(ChessPieceType.from(type), ChessPieceColor.from(color), ChessPosition.from(splitParts[0]), true, parseInt(splitParts[1]), parseInt(splitParts[1]));
+                    }else if (splitParts.length === 3) {
+                        return new ChessPiece(ChessPieceType.from(type), ChessPieceColor.from(color), ChessPosition.from(splitParts[0]), true, parseInt(splitParts[1]), parseInt(splitParts[2]));
+                    }
                 }
             }
-            return new ChessPiece(ChessPieceType.from(value), ChessPieceColor.from(value), null, false, undefined);
+            throw new Error('Invalid piece string');
         } catch (e) {
             return undefined;
         }
@@ -505,19 +527,19 @@ export class ChessPiece implements IChessPiece {
 
     static from(type: ChessPieceTypeType, color: ChessPieceColorType): ChessPiece | undefined;
     static from(type: ChessPieceTypeType, color: ChessPieceColorType, position: ChessPositionType): ChessPiece | undefined;
-    static from(type: ChessPieceTypeType, color: ChessPieceColorType, position: ChessPositionType, lastMoveTurn: number): ChessPiece | undefined;
+    static from(type: ChessPieceTypeType, color: ChessPieceColorType, position: ChessPositionType, lastMoveTurn: number | undefined, firstMoveTurn: number | undefined): ChessPiece | undefined;
     // Implementation
     static from(...args: any[]): ChessPiece | undefined {
         try {
             if (args.length === 1) {
                 const value = args[0];
                 if (value instanceof ChessPiece)
-                    return new ChessPiece(value.type, value.color, value.position, value.hasMoved, value.lastMoveTurn);
+                    return new ChessPiece(value.type, value.color, value.position, value.hasMoved, value.lastMoveTurn, value.firstMoveTurn);
                 if (typeof value === 'string')
                     return ChessPiece.fromString(value);
             } else if (args.length === 2) {
                 const [type, color] = args;
-                return new ChessPiece(ChessPieceType.from(type), ChessPieceColor.from(color), null, false, undefined);
+                return new ChessPiece(ChessPieceType.from(type), ChessPieceColor.from(color), null, false, undefined, undefined);
             } else if (args.length === 3) {
                 const [type, color, position] = args;
                 return new ChessPiece(
@@ -528,13 +550,14 @@ export class ChessPiece implements IChessPiece {
                     undefined
                 );
             } else if (args.length >= 4) {
-                const [type, color, position, lastMoveTurn] = args;
+                const [type, color, position, lastMoveTurn, firstMoveTurn] = args;
                 return new ChessPiece(
                     ChessPieceType.from(type),
                     ChessPieceColor.from(color),
                     ChessPosition.from(position),
                     true,
-                    lastMoveTurn
+                    lastMoveTurn,
+                    firstMoveTurn
                 );
             }
             return undefined;

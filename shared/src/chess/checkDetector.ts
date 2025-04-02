@@ -23,14 +23,15 @@
 import { ChessPiece, ChessPieceColor, ChessPosition } from './types';
 import { isValidPieceMove, isSlidingPiece } from './movement';
 import { ChessPieceType, ChessPieceColorType, ChessPositionType } from './types';
+import { IChessPiece } from './contracts';
 
 /**
  * Minimal interface for a board to be used with check detector functions
  * This helps avoid circular dependencies with the full BoardSnapshot class
  */
 export interface IBoardForCheckDetection {
-  getPieceAt(position: ChessPositionType): ChessPiece | undefined;
-  getPiecesByColor(color: ChessPieceColorType): ChessPiece[];
+  getPieceAt(position: ChessPositionType): IChessPiece | undefined;
+  getPiecesByColor(color: ChessPieceColorType): IChessPiece[];
   getKingPosition(color: ChessPieceColorType): ChessPosition | undefined;
   makeMove(from: ChessPositionType, to: ChessPositionType): { success: boolean };
   clone(): IBoardForCheckDetection;
@@ -54,7 +55,7 @@ export function isKingInCheck(board: IBoardForCheckDetection, kingColor: ChessPi
   
   // Check if any opponent piece can capture the king
   for (const piece of opponentPieces) {
-    if (canPieceAttackKing(board, piece, kingPosition)) {
+    if (canPieceAttackKing(board, piece as ChessPiece, kingPosition)) {
       return true;
     }
   }
@@ -139,8 +140,8 @@ export function getKingAttackers(board: IBoardForCheckDetection, kingColor: Ches
   const attackers: ChessPiece[] = [];
   
   for (const piece of opponentPieces) {
-    if (canPieceAttackKing(board, piece, kingPosition)) {
-      attackers.push(piece);
+    if (canPieceAttackKing(board, piece as ChessPiece, kingPosition)) {
+      attackers.push(piece as ChessPiece);
     }
   }
   
@@ -208,7 +209,7 @@ export function wouldMoveResultInSelfCheck(board: IBoardForCheckDetection, from:
       }
       
       // Check if this opponent piece can attack the king at its new position
-      if (canPieceAttackSquare(board, opponentPiece, to)) {
+      if (canPieceAttackSquare(board, opponentPiece as ChessPiece, to)) {
         return true;
       }
     }
@@ -288,7 +289,7 @@ export function wouldMoveLeaveKingInCheck(board: IBoardForCheckDetection, from: 
     }
     
     // Check if this opponent piece would attack the king after the move
-    if (wouldPieceAttackKingAfterMove(board, opponentPiece, kingPos as ChessPosition, from, to)) {
+    if (wouldPieceAttackKingAfterMove(board, opponentPiece as ChessPiece, kingPos as ChessPosition, from, to)) {
       return true;
     }
   }
