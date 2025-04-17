@@ -19,6 +19,7 @@ module.exports = {
     '!src/**/*.test.ts',
     '!src/constants/knightRetreatData.ts' // Exclude auto-generated file
   ],
+  verbose: true,
   coverageReporters: ['text', 'lcov', 'html'],
   // coverageThreshold: {
   //   global: {
