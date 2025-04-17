@@ -8,10 +8,9 @@
     "build:clean": "rimraf dist && tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:integration": "ts-node src/tests/testRunner.ts",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
     "docs": "typedoc",
     "docs:clean": "rimraf docs/api && typedoc",
     "clean": "rimraf dist"
@@ -20,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@gambit-chess/shared": "*",
+    "chess.js": "^1.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
