@@ -7,7 +7,7 @@ export const STANDARD_PIECE_VALUES: Record<PieceSymbol, number> = {
   b: 3, // bishop
   r: 5, // rook
   q: 9, // queen
-  k: 1000 // king, value doesn't matter since king cannot be captured: used for pin/skewer detection
+  k: 10 // king, value doesn't matter since king cannot be captured: used for pin/skewer detection
 };
 
 // Calculate the total value of all pieces for a side

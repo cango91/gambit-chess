@@ -6,6 +6,7 @@ export interface GameConfig {
   initialBattlePoints: number;
   maxPieceBattlePoints: number;
   pieceValues: Record<PieceSymbol, number>;
+  pieceBPCapacities: Record<PieceSymbol, number>;
   regenerationRules: BPRegenerationRules;
   tacticalRetreatRules: TacticalRetreatRules;
   informationHiding: {

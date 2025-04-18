@@ -5,7 +5,6 @@ export enum SpecialAttackType {
     PIN = 'PIN',
     SKEWER = 'SKEWER',
     FORK = 'FORK',
-    DIRECT_DEFENCE = 'DIRECT_DEFENCE',
     DISCOVERED_ATTACK = 'DISCOVERED_ATTACK',
     CHECK = 'CHECK'
   }
@@ -54,18 +53,6 @@ export interface ForkDTO{
     };
 }
 
-export interface DirectDefenceDTO {
-    type: SpecialAttackType.DIRECT_DEFENCE;
-    defendedPiece: {
-        type: PieceSymbol;
-        square: Square;
-    };
-    defendingPiece: {
-        type: PieceSymbol;
-        square: Square;
-    };
-}
-
 export interface DiscoveredAttackDTO {
     type: SpecialAttackType.DISCOVERED_ATTACK;
     attackedPiece: {
@@ -92,4 +79,4 @@ export interface CheckDTO {
     };
 }
 
-export type TacticsDTO = PinDTO | SkewerDTO | ForkDTO | DirectDefenceDTO | DiscoveredAttackDTO | CheckDTO;
+export type TacticsDTO = PinDTO | SkewerDTO | ForkDTO | DiscoveredAttackDTO | CheckDTO;

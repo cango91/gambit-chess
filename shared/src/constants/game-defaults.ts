@@ -7,6 +7,7 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
   initialBattlePoints: TOTAL_STARTING_PIECES_VALUE,
   maxPieceBattlePoints: 10,
   pieceValues: STANDARD_PIECE_VALUES,
+  pieceBPCapacities: STANDARD_PIECE_VALUES,
   regenerationRules: {
     baseTurnRegeneration: 1,
     specialAttackRegeneration: {
@@ -24,11 +25,6 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
         enabled: true,
         formula: 'Math.min(...forkedPiecesValues)',
         description: 'Regenerate the lower of the forked pieces\' values'
-      },
-      [SpecialAttackType.DIRECT_DEFENCE]: {
-        enabled: true,
-        formula: 'Math.max(1, Math.abs(defendedPieceValue - defenderPieceValue))',
-        description: 'Regenerate the difference of the defended and defender piece values (minimum 1)'
       },
       [SpecialAttackType.DISCOVERED_ATTACK]: {
         enabled: true,
@@ -81,11 +77,6 @@ export const BEGINNER_GAME_CONFIG: GameConfig = {
         formula: '0',
         description: 'No regeneration for forks in beginner mode'
       },
-      [SpecialAttackType.DIRECT_DEFENCE]: {
-        enabled: true,
-        formula: '1',
-        description: 'Regenerate 1 BP for defending a piece (simplified)'
-      },
       [SpecialAttackType.DISCOVERED_ATTACK]: {
         enabled: false,
         formula: '0',
@@ -137,11 +128,6 @@ export const ADVANCED_GAME_CONFIG: GameConfig = {
         enabled: true,
         formula: 'forkedPiecesValues.reduce((sum, value) => sum + value, 0) / 2',
         description: 'Regenerate 50% of the sum of all forked pieces\' values'
-      },
-      [SpecialAttackType.DIRECT_DEFENCE]: {
-        enabled: true,
-        formula: 'Math.max(2, defendedPieceValue)',
-        description: 'Regenerate the defended piece\'s value (minimum 2)'
       },
       [SpecialAttackType.DISCOVERED_ATTACK]: {
         enabled: true,
