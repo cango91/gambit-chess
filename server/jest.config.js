@@ -11,8 +11,7 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/**/*.test.ts',
-    '!src/**/index.ts',
+    '!src/tests/**',
   ],
   coverageReporters: ['text', 'lcov', 'clover', 'html'],
   coverageDirectory: 'coverage',
@@ -25,10 +24,14 @@ module.exports = {
     },
   },
   verbose: true,
-  testTimeout: 30000,
+  testTimeout: 10000,
+  forceExit: true,
+  detectOpenHandles: true,
+  maxWorkers: 1,
   
   // Add moduleNameMapper for path aliases
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/../shared/src/$1'
-  }
+  },
+  setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts'],
 }; 

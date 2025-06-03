@@ -2,7 +2,6 @@ import { validateDuelAllocation, isDuelComplete, canAllocateInDuel } from './due
 import { BaseGameState, GameStatus, Player } from '../types/game';
 import { Chess } from 'chess.js';
 import { DEFAULT_GAME_CONFIG } from '../constants/game-defaults';
-import { GameState } from '../../../server/src/types/game';
 
 describe('Duel Validators', () => {
   // Setup common test data
@@ -33,7 +32,9 @@ describe('Duel Validators', () => {
       moveHistory: [],
       pendingDuel: null,
       gameStatus: GameStatus.IN_PROGRESS,
-      config: DEFAULT_GAME_CONFIG
+      config: DEFAULT_GAME_CONFIG,
+      halfmoveClockManual: 0,
+      positionHistory: []
     };
   });
   

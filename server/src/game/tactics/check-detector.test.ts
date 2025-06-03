@@ -1,15 +1,14 @@
-import { GambitChess, GambitMove, CheckDTO, SpecialAttackType } from "@gambit-chess/shared";
+import { GambitMove, CheckDTO, SpecialAttackType } from "@gambit-chess/shared";
 import { detectChecks } from "./check-detector";
-import { Color, PieceSymbol, Square, Move } from "chess.js";
+import { Chess } from "chess.js";
 
 describe("detectChecks", () => {
-    let board: GambitChess;
-    let previousBoard: GambitChess;
+    let board: Chess;
+    let previousBoard: Chess;
 
     beforeEach(() => {
-        // Use GambitChess for consistency
-        board = new GambitChess();
-        previousBoard = new GambitChess();
+        board = new Chess();
+        previousBoard = new Chess();
     });
 
     test("should return empty array when no check occurs", () => {

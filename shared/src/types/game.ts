@@ -43,6 +43,8 @@ export interface BaseGameState {
   pendingDuel: PendingDuel | null;
   gameStatus: GameStatus;
   config: GameConfig;
+  halfmoveClockManual: number;
+  positionHistory: Array<{ fen: string; turn: Color }>;
 }
 
 // Pending Duel

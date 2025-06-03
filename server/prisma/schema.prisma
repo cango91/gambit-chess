@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum GameStatus {
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum GameResult {
+  WHITE_WINS
+  BLACK_WINS
+  DRAW
+}
+
+enum GameResultReason {
+  CHECKMATE
+  STALEMATE
+  TIME_FORFEIT
+  RESIGNATION
+  AGREEMENT
+  ABANDONMENT
+  FIFTY_MOVE_RULE
+  THREEFOLD_REPETITION
+  INSUFFICIENT_MATERIAL
+}
+
+model User {
+  id             String   @id @default(uuid())
+  username       String   @unique
+  email          String   @unique
+  hashedPassword String
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  gamesAsWhite Game[] @relation("WhitePlayer")
+  gamesAsBlack Game[] @relation("BlackPlayer")
+  refreshTokens RefreshToken[] // Relation to refresh tokens
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique // The actual opaque token value
+  family    String   // Identifier for the token family/session
+  isUsed    Boolean  @default(false) // To detect reuse for blacklisting
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Cascade delete tokens if user is deleted
+
+  @@index([userId])
+  @@index([family])
+}
+
+model Game {
+  id             String    @id @default(uuid())
+  createdAt      DateTime  @default(now())
+  endedAt        DateTime?
+  status         GameStatus
+  result         GameResult?
+  resultReason   GameResultReason?
+  finalFEN       String?
+
+  whitePlayerId  String?
+  blackPlayerId  String?
+  whitePlayer    User?     @relation("WhitePlayer", fields: [whitePlayerId], references: [id])
+  blackPlayer    User?     @relation("BlackPlayer", fields: [blackPlayerId], references: [id])
+
+  anonymousUserId String?   // Stores temp ID for an anonymous user before registration. Not unique.
+
+  initialConfig  Json
+  moveHistory    Json
+
+  @@index([whitePlayerId])
+  @@index([blackPlayerId])
+  @@index([anonymousUserId])
+  @@index([createdAt])
+}

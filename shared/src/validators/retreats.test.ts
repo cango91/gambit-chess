@@ -1,8 +1,7 @@
 import { BaseGameState, GameStatus } from '../types/game';
 import { Chess } from 'chess.js';
 import { validateTacticalRetreat } from './retreats';
-import { DEFAULT_GAME_CONFIG } from '../constants/game-defaults';
-import { GambitChess } from '../utils/chess-extensions';
+import { DEFAULT_GAME_CONFIG } from '../constants';
 
 describe('Tactical Retreat Validators', () => {
   let mockGameState: BaseGameState;
@@ -30,7 +29,9 @@ describe('Tactical Retreat Validators', () => {
       moveHistory: [],
       pendingDuel: null,
       gameStatus: GameStatus.IN_PROGRESS,
-      config: DEFAULT_GAME_CONFIG
+      config: DEFAULT_GAME_CONFIG,
+      halfmoveClockManual: 0,
+      positionHistory: []
     };
   });
   
@@ -78,7 +79,7 @@ describe('Tactical Retreat Validators', () => {
     
     it('should return invalid if the target square is invalid', () => {
       // Setup a specific position for testing
-      const gambitChess = new GambitChess();
+      const gambitChess = new Chess();
       
       // Set up a bishop at c3 that tried to capture at f6 but failed
       gambitChess.load('rnbqkbnr/pppppppp/8/8/8/2B5/PPPPPPPP/RNBQK1NR w KQkq - 0 1');
@@ -116,7 +117,7 @@ describe('Tactical Retreat Validators', () => {
 
     it('should return invalid if player has insufficient battle points for retreat', () => {
       // Setup a specific position for testing
-      const gambitChess = new GambitChess();
+      const gambitChess = new Chess();
       
       // Set up a bishop at c3 that tried to capture at f6 but failed
       gambitChess.load('rnbqkbnr/pppppppp/8/8/8/2B5/PPPPPPPP/RNBQK1NR w KQkq - 0 1');
@@ -155,7 +156,7 @@ describe('Tactical Retreat Validators', () => {
     
     it('should return valid for legitimate retreat', () => {
       // Setup a specific position for testing
-      const gambitChess = new GambitChess();
+      const gambitChess = new Chess();
       
       // Set up a bishop at c3 that tried to capture at f6 but failed
       gambitChess.load('rnbqkbnr/pppppppp/8/8/8/2B5/PPPPPPPP/RNBQK1NR w KQkq - 0 1');

@@ -1,5 +1,5 @@
-import { GambitChess, GambitMove, CheckDTO, SpecialAttackType, getOppositeColor } from "@gambit-chess/shared";
-import { Color } from "chess.js";
+import { GambitMove, CheckDTO, SpecialAttackType, getOppositeColor, getPieceAt, getKingPosition } from "@gambit-chess/shared";
+import { Color, Chess } from "chess.js";
 
 /**
  * Detects checks (including double checks) resulting from the last move.
@@ -8,7 +8,7 @@ import { Color } from "chess.js";
  * @param lastMove - The last move made.
  * @returns An array containing a CheckDTO if a *new* check occurred, otherwise empty.
  */
-export function detectChecks(boardState: GambitChess, previousBoardState: GambitChess, lastMove: GambitMove): CheckDTO[] {
+export function detectChecks(boardState: Chess, previousBoardState: Chess, lastMove: GambitMove): CheckDTO[] {
     const opponentColor: Color = getOppositeColor(lastMove.color);
 
     // Only trigger if the opponent is now in check
@@ -17,7 +17,7 @@ export function detectChecks(boardState: GambitChess, previousBoardState: Gambit
     }
 
     const checks: CheckDTO[] = [];
-    const kingPosition = boardState.getKingPosition(opponentColor);
+    const kingPosition = getKingPosition(boardState, opponentColor);
     if (!kingPosition) {
         // Should not happen in a valid game state
         console.error("Could not find opponent's king position.");
@@ -35,7 +35,7 @@ export function detectChecks(boardState: GambitChess, previousBoardState: Gambit
 
     // If there is only one attacker, it is a single check
     if (attackers.length === 1) {
-        const attackerPiece = boardState.getPieceAt(attackers[0]);
+        const attackerPiece = getPieceAt(boardState, attackers[0]);
         if (!attackerPiece) { // Should not happen
             console.error(`Attacker piece not found at ${attackers[0]} during check detection.`);
             return [];
@@ -51,8 +51,8 @@ export function detectChecks(boardState: GambitChess, previousBoardState: Gambit
     }
     // If there are multiple attackers, it is a double check
     else { // attackers.length > 1 implied by isCheck() and previous check
-        const attacker1Piece = boardState.getPieceAt(attackers[0]);
-        const attacker2Piece = boardState.getPieceAt(attackers[1]);
+        const attacker1Piece = getPieceAt(boardState, attackers[0]);
+        const attacker2Piece = getPieceAt(boardState, attackers[1]);
 
         if (!attacker1Piece || !attacker2Piece) { // Should not happen
             console.error(`Attacker piece(s) not found at ${attackers[0]} or ${attackers[1]} during double check detection.`);

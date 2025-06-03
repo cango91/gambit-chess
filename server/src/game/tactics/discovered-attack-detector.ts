@@ -1,18 +1,15 @@
 import {
     GambitMove,
     DiscoveredAttackDTO,
-    GambitChess,
     getOppositeColor,
     SpecialAttackType,
     getPiecesByColor,
     isSlidingPiece,
-    getDirection,
-    castRay,
     getSquaresBetween,
     squareToCoords,
     coordsToSquare
 } from "@gambit-chess/shared";
-import { Square, Piece } from "chess.js";
+import { Chess } from "chess.js";
 
 /**
  * Detects discovered attacks revealed by the last move. Assumes lastMove is valid and occurred.
@@ -21,7 +18,7 @@ import { Square, Piece } from "chess.js";
  * @param lastMove - The last move made.
  * @returns An array containing DiscoveredAttackDTOs if any discovered attacks were revealed, otherwise empty.
  */
-export function detectDiscoveredAttacks(boardState: GambitChess, previousBoardState: GambitChess, lastMove: GambitMove): DiscoveredAttackDTO[] {
+export function detectDiscoveredAttacks(boardState: Chess, previousBoardState: Chess, lastMove: GambitMove): DiscoveredAttackDTO[] {
     const attacks: DiscoveredAttackDTO[] = [];
     const lastMoveColor = lastMove.color;
     const oppositeColor = getOppositeColor(lastMoveColor);

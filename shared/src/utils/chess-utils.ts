@@ -1,6 +1,7 @@
 import { Color, PieceSymbol, Square, Piece, Chess } from "chess.js";
-import { STANDARD_PIECE_VALUES } from "../constants";
-import { GambitChess } from "./chess-extensions";
+import { GameConfig } from "../types/config";
+import { calculateTacticalRetreats } from './tactical-retreat';
+import { DEFAULT_GAME_CONFIG } from "../constants";
 
 /**
  * Represents a direction vector on the chessboard.
@@ -11,12 +12,13 @@ export interface Direction {
 }
 
 /**
- * Gets the numerical value of a piece.
+ * Gets the numerical value of a piece based on game config.
+ * @param config The game configuration containing piece values.
  * @param pieceSymbol The symbol of the piece (e.g., 'p', 'N').
  * @returns The value of the piece.
  */
-export function getPieceValue(pieceSymbol: PieceSymbol): number {
-    return STANDARD_PIECE_VALUES[pieceSymbol.toLowerCase() as PieceSymbol] ?? 0;
+export function getPieceValue(pieceSymbol: PieceSymbol, config: GameConfig = DEFAULT_GAME_CONFIG): number {
+    return config.pieceValues[pieceSymbol.toLowerCase() as PieceSymbol] ?? 0;
 }
 
 /**
@@ -85,7 +87,7 @@ export function getDirection(from: Square, to: Square): Direction | null {
  * @param board The chess board instance.
  * @param startSquare The square from which to cast the ray.
  * @param direction The direction vector {dx, dy}.
- * @returns The first Piece encountered, or null if no piece is hit before the edge.
+ * @returns The first Piece encountered along with its square, or null if no piece is hit before the edge.
  */
 export function castRay(board: Chess, startSquare: Square, direction: Direction): {piece: Piece, square: Square} | null {
     let currentCoords = squareToCoords(startSquare);
@@ -169,14 +171,18 @@ export function getSquaresBetween(sq1: Square, sq2: Square): Square[] {
 
 /**
  * Checks if any pieces exist on the squares between sq1 and sq2.
+ * @param board The standard Chess instance.
  */
-export function isLineBlocked(board: GambitChess, sq1: Square, sq2: Square): boolean {
+export function isLineBlocked(board: Chess, sq1: Square, sq2: Square): boolean {
     const between = getSquaresBetween(sq1, sq2);
     return between.some(sq => board.get(sq) !== null);
 }
 
-// Helper to get all pieces of a given color
-export function getPiecesByColor(board: GambitChess, color: Color): { square: Square; type: PieceSymbol }[] {
+/**
+ * Helper to get all pieces of a given color.
+ * @param board The standard Chess instance.
+ */
+export function getPiecesByColor(board: Chess, color: Color): { square: Square; type: PieceSymbol }[] {
     const pieces: { square: Square; type: PieceSymbol }[] = [];
     const currentBoard = board.board();
     for (let r = 0; r < 8; r++) {
@@ -188,4 +194,39 @@ export function getPiecesByColor(board: GambitChess, color: Color): { square: Sq
         }
     }
     return pieces;
-} 
+}
+
+/**
+ * Get the position of the king of a given color from a board state.
+ * @param board The standard Chess instance.
+ */
+export function getKingPosition(board: Chess, color: Color): Square | undefined {
+    const king = board.board().flat().find(piece => piece?.type === 'k' && piece.color === color);
+    return king?.square;
+}
+
+/**
+ * Determine if a move from a given board state would result in a capture.
+ * @param board The standard Chess instance.
+ */
+export function wouldCapture(board: Chess, from: Square, to: Square): boolean {
+    try {
+        // Use standard board.moves()
+        const moves = board.moves({ square: from, verbose: true });
+        const move = moves.find(m => m.to === to);
+        return !!move?.captured;
+    } catch (e) {
+        // Handle cases where the move generation might fail (e.g., invalid 'from' square)
+        return false;
+    }
+}
+
+/**
+ * Get the piece at a specific square from a board state.
+ * @param board The standard Chess instance.
+ */
+export function getPieceAt(board: Chess, square: Square): { type: PieceSymbol; color: Color } | null {
+    // Use standard board.get()
+    const piece = board.get(square);
+    return piece || null;
+}

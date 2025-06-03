@@ -1,6 +1,6 @@
-import { castRay, GambitChess, getDirection, getOppositeColor, getPiecesByColor, isSlidingPiece } from "@gambit-chess/shared";
+import { castRay, getDirection, getOppositeColor, getPiecesByColor, isSlidingPiece } from "@gambit-chess/shared";
 import { RayCastDTO } from "../../types";
-import { Color } from "chess.js";
+import { Color, Chess } from "chess.js";
 
 const memoizedCasts = new Map<string, RayCastDTO[]>();
 
@@ -11,7 +11,7 @@ const memoizedCasts = new Map<string, RayCastDTO[]>();
  * @param useCache Whether to use memoization.
  * @returns An array of RayCastDTO objects representing the two-hit ray casts detected.
  */
-export function getAllTwoHitRayCasts(board: GambitChess, color: Color, useCache: boolean = true): RayCastDTO[] {
+export function getAllTwoHitRayCasts(board: Chess, color: Color, useCache: boolean = true): RayCastDTO[] {
     const memoKey = `${color}-${board.fen()}`;
     if(useCache && memoizedCasts.has(memoKey)){
         return memoizedCasts.get(memoKey) ?? [];

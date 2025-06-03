@@ -1,5 +1,5 @@
-import { GambitChess, GambitMove, getOppositeColor, getPieceValue, SkewerDTO, SpecialAttackType } from "@gambit-chess/shared";
-import { Color } from "chess.js";
+import { GambitMove, getOppositeColor, getPieceValue, SkewerDTO, SpecialAttackType } from "@gambit-chess/shared";
+import { Color, Chess } from "chess.js";
 import { getAllTwoHitRayCasts } from "./utils";
 
 /**
@@ -8,7 +8,7 @@ import { getAllTwoHitRayCasts } from "./utils";
  * @param color The color of the pieces which interact with skewers.
  * @returns An array of SkewerDTO objects representing the skewers detected.
  */
-function detectAllSkewers(board: GambitChess, color: Color): SkewerDTO[] {
+function detectAllSkewers(board: Chess, color: Color): SkewerDTO[] {
     return getAllTwoHitRayCasts(board, color).filter(cast => {
         return getPieceValue(cast.firstHit.type) >= getPieceValue(cast.secondHit.type);
     }).map(cast => {
@@ -36,7 +36,7 @@ function detectAllSkewers(board: GambitChess, color: Color): SkewerDTO[] {
  * @param lastMove The last move made.
  * @returns An array of SkewerDTO objects representing the skewers detected.
  */
-export function detectSkewers(currentBoard: GambitChess, previousBoard: GambitChess, lastMove: GambitMove): SkewerDTO[] {
+export function detectSkewers(currentBoard: Chess, previousBoard: Chess, lastMove: GambitMove): SkewerDTO[] {
     const existingSkewers = detectAllSkewers(previousBoard, getOppositeColor(lastMove.color));
     const finalSkewers = detectAllSkewers(currentBoard, getOppositeColor(lastMove.color));
     return finalSkewers.filter(skewer => !existingSkewers.some(existingSkewer => existingSkewer.skeweredPiece.square === skewer.skeweredPiece.square && existingSkewer.skeweredTo.square === skewer.skeweredTo.square && existingSkewer.skeweredBy.square === skewer.skeweredBy.square));

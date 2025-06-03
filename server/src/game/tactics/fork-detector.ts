@@ -1,4 +1,4 @@
-import { GambitMove, ForkDTO, SpecialAttackType, GambitChess, getOppositeColor, getPiecesByColor } from "@gambit-chess/shared";
+import { GambitMove, ForkDTO, SpecialAttackType, getOppositeColor, getPiecesByColor } from "@gambit-chess/shared";
 import { Chess, Color, Square } from "chess.js";
 
 /**
@@ -8,7 +8,7 @@ import { Chess, Color, Square } from "chess.js";
  * @param lastMove - The last move made.
  * @returns An array containing ForkDTOs if any forks were created, otherwise empty.
  */
-export function detectForks(boardState: GambitChess, previousBoardState: GambitChess, lastMove: GambitMove): ForkDTO[] {
+export function detectForks(boardState: Chess, previousBoardState: Chess, lastMove: GambitMove): ForkDTO[] {
     const forkedByColor = lastMove.color;
     const existingForks = detectAllForks(previousBoardState, forkedByColor);
     const finalForks = detectAllForks(boardState, forkedByColor);
@@ -28,7 +28,7 @@ export function detectForks(boardState: GambitChess, previousBoardState: GambitC
     }));
 }
 
-function detectAllForks(board: GambitChess, forkedByColor: Color): ForkDTO[] {
+function detectAllForks(board: Chess, forkedByColor: Color): ForkDTO[] {
     const opponentColor = getOppositeColor(forkedByColor);
     const opponentPieces = getPiecesByColor(board, opponentColor);
     const attackerMap = new Map<Square, Square[]>();

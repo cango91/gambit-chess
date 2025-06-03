@@ -10,6 +10,13 @@ dist/
 # Test coverage
 coverage/
 
+# Database files
+*.db
+*.db-journal*
+
+# Prisma generated client
+/src/generated/prisma/
+
 # Log files
 *.log
 npm-debug.log*

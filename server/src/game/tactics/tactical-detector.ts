@@ -1,4 +1,5 @@
-import { GambitChess, GambitMove, TacticsDTO } from "@gambit-chess/shared";
+import { GambitMove, TacticsDTO } from "@gambit-chess/shared";
+import { Chess } from 'chess.js';
 import { detectChecks } from "./check-detector";
 import { detectDiscoveredAttacks } from "./discovered-attack-detector";
 import { detectForks } from "./fork-detector";
@@ -16,8 +17,8 @@ export function detectTactics(lastMove: GambitMove): TacticsDTO[] {
     if(lastMove.tacticalRetreat && lastMove.tacticalRetreat.retreatSquare === lastMove.from){
         return [];
     }
-    const previousBoardState = new GambitChess(lastMove.before);
-    const boardState = new GambitChess(lastMove.after);
+    const previousBoardState = new Chess(lastMove.before);
+    const boardState = new Chess(lastMove.after);
 
     const tactics: TacticsDTO[] = [
         ...detectChecks(boardState, previousBoardState, lastMove),
