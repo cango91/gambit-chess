@@ -23,7 +23,12 @@ import { DEFAULT_GAME_CONFIG } from './constants/game-defaults';
 /**
  * Create a new Gambit Chess game state
  */
-export function createNewGame(gameId: string, whitePlayerId: string, blackPlayerId?: string): BaseGameState {
+export function createNewGame(
+  gameId: string, 
+  whitePlayerId: string, 
+  blackPlayerId?: string, 
+  gameType?: 'ai' | 'human' | 'practice'
+): BaseGameState {
   const chess = new Chess();
   const initialFen = chess.fen(); // Get initial FEN
   
@@ -53,6 +58,7 @@ export function createNewGame(gameId: string, whitePlayerId: string, blackPlayer
     pendingDuel: null,
     gameStatus,
     config: DEFAULT_GAME_CONFIG,
+    gameType: gameType,
     // Initialize manual draw tracking fields
     halfmoveClockManual: 0,
     positionHistory: [{ fen: initialFen, turn: 'w' }] // Initial position, white to move next

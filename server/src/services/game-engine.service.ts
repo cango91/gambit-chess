@@ -13,9 +13,11 @@ import {
   DuelAllocationAction,
   TacticalRetreatAction,
   DuelContext,
-  chessToGambitMove
+  chessToGambitMove,
+  GameConfig,
+  BPCalculationReport
 } from '@gambit-chess/shared';
-import { validateTacticalRetreat, getValidTacticalRetreats } from '@gambit-chess/shared';
+import { validateTacticalRetreat, getValidTacticalRetreats, calculateTacticalRetreats, moveToExtendedNotation } from '@gambit-chess/shared';
 import { resolveDuel } from '@gambit-chess/shared';
 import { Chess, Color, Move, Square, PieceSymbol } from 'chess.js';
 import LiveGameService from './live-game.service';
@@ -29,6 +31,10 @@ import AIService from './ai.service';
  * Handles complete Gambit Chess move processing, duel resolution, and battle points management
  */
 export class GameEngineService {
+  
+  // Track recent moves to prevent duplicates (gameId -> last move with timestamp)
+  private static recentMoves = new Map<string, { move: string; timestamp: number; playerId: string }>();
+  private static DUPLICATE_MOVE_WINDOW = 5000; // 5 seconds
   
   /**
    * Process a move action from a player
@@ -51,6 +57,29 @@ export class GameEngineService {
     }
 
     try {
+      // Check for duplicate moves
+      const moveKey = `${moveAction.from}-${moveAction.to}`;
+      const recentMove = this.recentMoves.get(gameId);
+      const now = Date.now();
+      
+      if (recentMove && 
+          recentMove.move === moveKey && 
+          recentMove.playerId === playerId &&
+          (now - recentMove.timestamp) < this.DUPLICATE_MOVE_WINDOW) {
+        console.log(`🚫 Duplicate move detected for game ${gameId}: ${moveKey}`);
+        return { success: false, error: 'Duplicate move detected', events: [] };
+      }
+      
+      // Record this move attempt
+      this.recentMoves.set(gameId, { move: moveKey, timestamp: now, playerId });
+      
+      // Clean up old entries (older than 1 minute)
+      for (const [gId, data] of this.recentMoves.entries()) {
+        if (now - data.timestamp > 60000) {
+          this.recentMoves.delete(gId);
+        }
+      }
+
       // Attempt the move on chess.js board
       const chessMove = gameState.chess.move({
         from: moveAction.from,
@@ -119,6 +148,13 @@ export class GameEngineService {
         });
       }
 
+      // Generate BP calculation report for transparency/debugging
+      // This provides detailed breakdown of all BP transactions
+      if (gameState.gameType === 'practice' || !gameState.config.informationHiding.hideBattlePoints) {
+        const lastMoveForReport = gameState.moveHistory[gameState.moveHistory.length - 1];
+        gameState.bpCalculationReport = this.generateComprehensiveBPReport(gameState, lastMoveForReport);
+      }
+
       // Save updated game state and emit events
       await LiveGameService.updateGameState(gameId, gameState);
       
@@ -170,12 +206,35 @@ export class GameEngineService {
     const isDefender = (gameState.pendingDuel.defenderColor === 'w' && gameState.whitePlayer.id === playerId) ||
                       (gameState.pendingDuel.defenderColor === 'b' && gameState.blackPlayer.id === playerId);
 
-    if (!isAttacker && !isDefender) {
+    // Special handling for practice mode where same player submits both allocations
+    const isPracticeMode = gameState.gameType === 'practice';
+    let actuallyIsAttacker: boolean;
+    let actuallyIsDefender: boolean;
+    
+    if (isPracticeMode && isAttacker && isDefender) {
+      // In practice mode, determine role based on what hasn't been allocated yet
+      if (gameState.pendingDuel.attackerAllocation === undefined) {
+        actuallyIsAttacker = true;
+        actuallyIsDefender = false;
+        console.log('🥊 Practice mode: Treating as ATTACKER allocation (first submission)');
+      } else if (gameState.pendingDuel.defenderAllocation === undefined) {
+        actuallyIsAttacker = false;
+        actuallyIsDefender = true;
+        console.log('🥊 Practice mode: Treating as DEFENDER allocation (second submission)');
+      } else {
+        return { success: false, error: 'Both allocations already submitted', events: [] };
+      }
+    } else {
+      actuallyIsAttacker = isAttacker;
+      actuallyIsDefender = isDefender;
+    }
+
+    if (!actuallyIsAttacker && !actuallyIsDefender) {
       return { success: false, error: 'You are not part of this duel', events: [] };
     }
 
     // Validate allocation amount
-    const player = isAttacker ? 
+    const player = actuallyIsAttacker ? 
       (gameState.pendingDuel.attackerColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer) :
       (gameState.pendingDuel.defenderColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer);
 
@@ -184,7 +243,7 @@ export class GameEngineService {
     }
 
     // Store allocation
-    if (isAttacker) {
+    if (actuallyIsAttacker) {
       gameState.pendingDuel.attackerAllocation = allocation;
     } else {
       gameState.pendingDuel.defenderAllocation = allocation;
@@ -200,7 +259,7 @@ export class GameEngineService {
       payload: {
         playerId,
         allocation,
-        isAttacker
+        isAttacker: actuallyIsAttacker
       }
     });
 
@@ -208,9 +267,27 @@ export class GameEngineService {
     if (gameState.pendingDuel.attackerAllocation !== undefined && 
         gameState.pendingDuel.defenderAllocation !== undefined) {
       
+      console.log('🥊 Both allocations received! Resolving duel...');
+      console.log('🥊 Attacker allocation:', gameState.pendingDuel.attackerAllocation);
+      console.log('🥊 Defender allocation:', gameState.pendingDuel.defenderAllocation);
+      console.log('🥊 Game type:', gameState.gameType);
+      console.log('🥊 Attacker player ID:', gameState.pendingDuel.attackerColor === 'w' ? gameState.whitePlayer.id : gameState.blackPlayer.id);
+      console.log('🥊 Defender player ID:', gameState.pendingDuel.defenderColor === 'w' ? gameState.whitePlayer.id : gameState.blackPlayer.id);
+      
       // Resolve the duel using shared utility
       const duelResult = await this.resolveDuelComplete(gameState, gameId);
+      console.log('🥊 Duel resolution created', duelResult.events.length, 'events');
       events.push(...duelResult.events);
+    } else {
+      console.log('🥊 Waiting for more allocations...');
+      console.log('🥊 Attacker allocation:', gameState.pendingDuel.attackerAllocation);
+      console.log('🥊 Defender allocation:', gameState.pendingDuel.defenderAllocation);
+    }
+
+    // Generate BP calculation report for transparency/debugging
+    if (gameState.gameType === 'practice' || !gameState.config.informationHiding.hideBattlePoints) {
+      const lastMoveForReport = gameState.moveHistory[gameState.moveHistory.length - 1];
+      gameState.bpCalculationReport = this.generateComprehensiveBPReport(gameState, lastMoveForReport);
     }
 
     // Save updated game state and emit events
@@ -266,18 +343,69 @@ export class GameEngineService {
     // Deduct BP cost
     attackingPlayer.battlePoints -= retreatCost;
 
+    // Clear retreat options since retreat decision is complete
+    gameState.availableRetreatOptions = undefined;
+
     // Move the piece to retreat square using proper chess.js validation
-    const pieceAtOriginal = gameState.chess.get(lastMove.from as Square);
-    if (pieceAtOriginal) {
-      gameState.chess.remove(lastMove.from as Square);
-      gameState.chess.put({ 
-        type: pieceAtOriginal.type, 
-        color: pieceAtOriginal.color 
-      }, retreatSquare);
+    // Important: In a failed capture, the piece is still at its ORIGINAL square, not the target square
+    const pieceAtOriginalSquare = gameState.chess.get(lastMove.from as Square);
+    if (pieceAtOriginalSquare) {
+      // Only move the piece if the retreat square is different from the original square
+      if (lastMove.from !== retreatSquare) {
+        // Remove piece from original square (where it actually is after failed capture)
+        gameState.chess.remove(lastMove.from as Square);
+        // Place piece at retreat square
+        gameState.chess.put({ 
+          type: pieceAtOriginalSquare.type, 
+          color: pieceAtOriginalSquare.color 
+        }, retreatSquare);
+        
+        console.log(`🏃 Moved piece from original square ${lastMove.from} to retreat square ${retreatSquare}`);
+      } else {
+        console.log(`🏃 Piece stays at original square ${lastMove.from} (0-cost retreat)`);
+      }
+    } else {
+      console.error(`🚨 No piece found at original square ${lastMove.from} during tactical retreat`);
+      return { success: false, error: 'Piece not found at original position', events: [] };
     }
 
     // Resume normal game play
     gameState.gameStatus = GameStatus.IN_PROGRESS;
+    
+    // After tactical retreat, turn goes to the opponent (the defender who won the duel)
+    // The attacking player just completed their retreat, so turn switches to the other player
+    gameState.currentTurn = gameState.currentTurn === 'w' ? 'b' : 'w';
+    
+    // IMPORTANT: Handle tactical retreat state transition properly
+    // For 0-cost tactical retreats (piece stays at original square), we need to:
+    // 1. Change the turn 2. Clear en passant 3. PRESERVE move history
+    
+    // Store the move history BEFORE any chess.js manipulation
+    const preservedHistory = gameState.chess.history();
+    
+    // Update the FEN to reflect turn change and en passant clearing
+    const currentFen = gameState.chess.fen();
+    const fenParts = currentFen.split(' ');
+    fenParts[1] = gameState.currentTurn; // Update turn
+    fenParts[3] = '-'; // Clear en passant square
+    const updatedFen = fenParts.join(' ');
+    
+    // Load the updated position
+    gameState.chess.load(updatedFen);
+    
+    // CRITICAL: Store the preserved history in the game state for serialization
+    // The LiveGameService will use this when serializing to maintain proper move history
+    (gameState.chess as any)._preservedHistory = preservedHistory;
+    
+    // ENHANCED: Store complete GambitMove history with extended notation
+    // This preserves all duel results, retreat costs, and BP changes for reconnecting clients
+    (gameState.chess as any)._preservedGambitHistory = gameState.moveHistory.map(move => ({
+      ...move,
+      extendedNotation: moveToExtendedNotation ? moveToExtendedNotation(move) : undefined
+    }));
+    
+    console.log(`🏃 Tactical retreat completed. Turn now goes to: ${gameState.currentTurn}`);
+    console.log(`🏃 Updated chess.js FEN: ${gameState.chess.fen()}`);
 
     const events: GameEvent[] = [
       {
@@ -302,6 +430,12 @@ export class GameEngineService {
         }
       }
     ];
+
+    // Generate BP calculation report for transparency/debugging
+    if (gameState.gameType === 'practice' || !gameState.config.informationHiding.hideBattlePoints) {
+      const lastMoveForReport = gameState.moveHistory[gameState.moveHistory.length - 1];
+      gameState.bpCalculationReport = this.generateComprehensiveBPReport(gameState, lastMoveForReport);
+    }
 
     // Save updated game state and emit events
     await LiveGameService.updateGameState(gameId, gameState);
@@ -440,11 +574,15 @@ export class GameEngineService {
    * Resolve a duel between two pieces using shared utilities
    */
   private static async resolveDuelComplete(gameState: BaseGameState, gameId: string): Promise<{ events: GameEvent[] }> {
+    console.log('🥊 Starting duel resolution for game:', gameId);
     const events: GameEvent[] = [];
     const duel = gameState.pendingDuel!;
     
     const attackerPlayer = duel.attackerColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer;
     const defenderPlayer = duel.defenderColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer;
+
+    console.log('🥊 Attacker BP before:', attackerPlayer.battlePoints);
+    console.log('🥊 Defender BP before:', defenderPlayer.battlePoints);
 
     // Create duel context for shared utility with complete player information
     const duelContext: DuelContext = {
@@ -470,9 +608,14 @@ export class GameEngineService {
       gameState.config
     );
 
+    console.log('🥊 Duel outcome:', outcome);
+
     // Update player battle points
     attackerPlayer.battlePoints = outcome.attackerRemainingBP;
     defenderPlayer.battlePoints = outcome.defenderRemainingBP;
+
+    console.log('🥊 Attacker BP after:', attackerPlayer.battlePoints);
+    console.log('🥊 Defender BP after:', defenderPlayer.battlePoints);
 
     // Create duel result
     const duelResult: DuelResult = {
@@ -512,7 +655,18 @@ export class GameEngineService {
       
       // Switch to tactical retreat decision
       gameState.gameStatus = GameStatus.TACTICAL_RETREAT_DECISION;
-      gameState.currentTurn = duel.defenderColor; // Turn goes to defender while attacker decides on retreat
+      // Keep turn with attacker - they need to decide on tactical retreat
+      gameState.currentTurn = duel.attackerColor;
+      
+      // Calculate available retreat options for the attacker (server-authoritative)
+      const retreatOptions = calculateTacticalRetreats(
+        gameState.chess,
+        failedMove.from as Square,
+        failedMove.to as Square,
+        gameState.config
+      );
+      gameState.availableRetreatOptions = retreatOptions;
+      console.log('🏃 Server calculated retreat options:', retreatOptions);
     }
 
     // Clear pending duel
@@ -557,6 +711,10 @@ export class GameEngineService {
         reason: 'duel_participation'
       }
     });
+
+    console.log('🥊 Created', events.length, 'events for duel resolution');
+    console.log('🥊 Game status after duel:', gameState.gameStatus);
+    console.log('🥊 Current turn after duel:', gameState.currentTurn);
 
     return { events };
   }
@@ -617,6 +775,260 @@ export class GameEngineService {
     }
 
     return { success: false, error: 'AI not applicable for current game state', events: [] };
+  }
+
+  /**
+   * Enhanced BP calculation report: Track ALL BP transactions for transparency
+   * Includes duel costs, retreat costs, and regeneration calculations
+   */
+  static generateComprehensiveBPReport(gameState: BaseGameState, lastMove?: GambitMove): BPCalculationReport {
+    const report = {
+      playerBP: {
+        white: gameState.whitePlayer.battlePoints,
+        black: gameState.blackPlayer.battlePoints
+      },
+      transactions: [] as Array<{
+        type: 'duel_cost' | 'retreat_cost' | 'regeneration' | 'initial';
+        player: 'white' | 'black';
+        amount: number;
+        details: string;
+        formula?: string;
+      }>,
+      calculations: [] as string[],
+      hiddenInfo: gameState.config.informationHiding.hideBattlePoints,
+      tactics: [] as any[],
+      duelDetails: undefined as any
+    };
+
+    // Add configuration details
+    report.calculations.push(`🎮 Game Configuration:`);
+    report.calculations.push(`  - Initial BP: ${gameState.config.initialBattlePoints}`);
+    report.calculations.push(`  - Max piece BP: ${gameState.config.maxPieceBattlePoints}`);
+    report.calculations.push(`  - Base turn regen: ${gameState.config.regenerationRules.baseTurnRegeneration}`);
+    report.calculations.push(`  - Information hiding: ${JSON.stringify(gameState.config.informationHiding)}`);
+
+    // Add piece values
+    report.calculations.push(`📊 Piece Values: ${JSON.stringify(gameState.config.pieceValues)}`);
+
+    // Analyze last move if provided
+    if (lastMove) {
+      report.calculations.push(`\n🎯 Last Move Analysis: ${lastMove.san || `${lastMove.from}-${lastMove.to}`}`);
+      
+      // 1. DUEL COSTS (Both players spend BP)
+      if (lastMove.duelResult) {
+        const duel = lastMove.duelResult;
+        const attackerColor = lastMove.color;
+        const defenderColor = attackerColor === 'w' ? 'b' : 'w';
+        
+        // Record attacker duel cost
+        report.transactions.push({
+          type: 'duel_cost',
+          player: attackerColor === 'w' ? 'white' : 'black',
+          amount: -duel.attackerAllocation,
+          details: `Duel allocation as attacker: ${duel.attackerAllocation} BP`,
+          formula: `Attacker spent ${duel.attackerAllocation} BP in duel`
+        });
+        
+        // Record defender duel cost
+        report.transactions.push({
+          type: 'duel_cost',
+          player: defenderColor === 'w' ? 'white' : 'black',
+          amount: -duel.defenderAllocation,
+          details: `Duel allocation as defender: ${duel.defenderAllocation} BP`,
+          formula: `Defender spent ${duel.defenderAllocation} BP in duel`
+        });
+        
+        report.duelDetails = {
+          attackerAllocation: duel.attackerAllocation,
+          defenderAllocation: duel.defenderAllocation,
+          winner: duel.attackerWon ? 'attacker' : 'defender',
+          effectiveAllocations: {
+            attacker: `${duel.attackerAllocation} BP`,
+            defender: `${duel.defenderAllocation} BP`
+          }
+        };
+        
+        report.calculations.push(`  ⚔️ Duel: ${duel.attackerAllocation} vs ${duel.defenderAllocation} → ${duel.attackerWon ? 'CAPTURE' : 'FAILED'}`);
+        report.calculations.push(`  📉 BP cost: Attacker -${duel.attackerAllocation}, Defender -${duel.defenderAllocation}`);
+      }
+
+      // 2. TACTICAL RETREAT COSTS (Attacker only, if duel failed)
+      if (lastMove.tacticalRetreat) {
+        const retreat = lastMove.tacticalRetreat;
+        const attackerColor = lastMove.color;
+        
+        report.transactions.push({
+          type: 'retreat_cost',
+          player: attackerColor === 'w' ? 'white' : 'black',
+          amount: -retreat.battlePointsCost,
+          details: `Tactical retreat: ${retreat.originalSquare} → ${retreat.retreatSquare}`,
+          formula: `Retreat cost calculated by distance and piece type: ${retreat.battlePointsCost} BP`
+        });
+        
+        report.calculations.push(`  🏃 Tactical Retreat: ${retreat.originalSquare} → ${retreat.retreatSquare}`);
+        report.calculations.push(`  💰 Retreat cost: ${retreat.battlePointsCost} BP`);
+      }
+
+      // 3. BP REGENERATION (Player who just moved gains BP from tactics)
+      const tactics = detectTactics(lastMove);
+      if (tactics.length > 0) {
+        const bpRegen = calculateBPRegen(lastMove, gameState.config);
+        const playerColor = lastMove.color;
+        
+        // Get detailed calculation breakdown
+        const regenDetails = this.getDetailedRegenCalculation(lastMove, gameState.config, tactics);
+        
+        report.transactions.push({
+          type: 'regeneration',
+          player: playerColor === 'w' ? 'white' : 'black',
+          amount: bpRegen,
+          details: `Tactical advantage BP regeneration`,
+          formula: regenDetails.formula
+        });
+        
+        report.tactics = tactics;
+        report.calculations.push(`  ✨ Tactics detected: ${tactics.map(t => t.type).join(', ')}`);
+        report.calculations.push(`  📈 BP regeneration: +${bpRegen} BP`);
+        report.calculations.push(`  🧮 Formula: ${regenDetails.formula}`);
+        report.calculations.push(`  📊 Breakdown: ${regenDetails.breakdown.join(', ')}`);
+      }
+    }
+
+    // Add retreat options if available
+    if (gameState.availableRetreatOptions) {
+      report.calculations.push(`\n🏃 Available Retreat Options:`);
+      gameState.availableRetreatOptions.forEach(option => {
+        report.calculations.push(`  - ${option.square}: ${option.cost} BP`);
+      });
+    }
+
+    return report;
+  }
+
+  /**
+   * Get detailed BP regeneration calculation breakdown with FULL component analysis
+   */
+  private static getDetailedRegenCalculation(move: GambitMove, config: GameConfig, tactics: any[]): {
+    formula: string;
+    breakdown: string[];
+  } {
+    const breakdown: string[] = [];
+    const formulaParts: string[] = [];
+    
+    // Base regeneration
+    const baseRegen = config.regenerationRules.baseTurnRegeneration;
+    breakdown.push(`🎯 Base Turn Regeneration: ${baseRegen} BP`);
+    formulaParts.push(baseRegen.toString());
+    
+    let totalTacticRegen = 0;
+    
+    // DETAILED breakdown for each tactic detected
+    for (const tactic of tactics) {
+      if (!tactic || !tactic.type) {
+        breakdown.push(`❌ Invalid tactic: ${JSON.stringify(tactic)}`);
+        continue;
+      }
+      
+      const tacticRule = config.regenerationRules.specialAttackRegeneration[tactic.type as keyof typeof config.regenerationRules.specialAttackRegeneration];
+      if (!tacticRule || !tacticRule.enabled) {
+        breakdown.push(`❌ ${tactic.type.toUpperCase()}: Disabled in config`);
+        continue;
+      }
+      
+      let tacticValue = 0;
+      let calculation = '';
+      
+      try {
+        switch (tactic.type) {
+          case 'pin':
+            const pinnedPieceType = tactic.pinnedPiece?.type as keyof typeof config.pieceValues;
+            const pinnedValue = pinnedPieceType ? (config.pieceValues[pinnedPieceType] || 0) : 0;
+            const isKingPin = tactic.pinnedTo?.type === 'k';
+            const kingBonus = isKingPin ? 1 : 0;
+            tacticValue = pinnedValue + kingBonus;
+            calculation = `${tactic.pinnedPiece?.type?.toUpperCase() || '?'}(${pinnedValue}) + kingBonus(${kingBonus}) = ${tacticValue}`;
+            breakdown.push(`📌 PIN: ${calculation}`);
+            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
+            breakdown.push(`   └─ Pinned: ${tactic.pinnedPiece?.square} (${tactic.pinnedPiece?.type})`);
+            breakdown.push(`   └─ Pinned To: ${tactic.pinnedTo?.square} (${tactic.pinnedTo?.type})`);
+            breakdown.push(`   └─ Pinned By: ${tactic.pinnedBy?.square} (${tactic.pinnedBy?.type})`);
+            break;
+            
+          case 'fork':
+            if (tactic.forkedPieces && tactic.forkedPieces.length > 0) {
+              const forkValues = tactic.forkedPieces.map((p: any) => {
+                const pieceType = p.type as keyof typeof config.pieceValues;
+                return pieceType ? (config.pieceValues[pieceType] || 0) : 0;
+              });
+              tacticValue = Math.min(...forkValues);
+              calculation = `min[${forkValues.join(',')}] = ${tacticValue}`;
+              breakdown.push(`🍴 FORK: ${calculation}`);
+              breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
+              breakdown.push(`   └─ Forked Pieces: ${tactic.forkedPieces.map((p: any) => `${p.square}(${p.type})`).join(', ')}`);
+            }
+            break;
+            
+          case 'skewer':
+            const frontPieceType = tactic.skeweredPiece?.type as keyof typeof config.pieceValues;
+            const backPieceType = tactic.skeweredTo?.type as keyof typeof config.pieceValues;
+            const frontValue = frontPieceType ? (config.pieceValues[frontPieceType] || 0) : 0;
+            const backValue = backPieceType ? (config.pieceValues[backPieceType] || 0) : 0;
+            tacticValue = Math.max(1, Math.abs(frontValue - backValue));
+            calculation = `max(1, |${frontValue} - ${backValue}|) = ${tacticValue}`;
+            breakdown.push(`🏹 SKEWER: ${calculation}`);
+            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
+            breakdown.push(`   └─ Front: ${tactic.skeweredPiece?.square} (${tactic.skeweredPiece?.type})`);
+            breakdown.push(`   └─ Back: ${tactic.skeweredTo?.square} (${tactic.skeweredTo?.type})`);
+            break;
+            
+          case 'discovered_attack':
+            const attackedPieceType = tactic.attackedPiece?.type as keyof typeof config.pieceValues;
+            const attackedValue = attackedPieceType ? (config.pieceValues[attackedPieceType] || 0) : 0;
+            tacticValue = Math.ceil(attackedValue / 2);
+            calculation = `⌈${attackedValue}/2⌉ = ${tacticValue}`;
+            breakdown.push(`💨 DISCOVERED ATTACK: ${calculation}`);
+            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
+            breakdown.push(`   └─ Attacked: ${tactic.attackedPiece?.square} (${tactic.attackedPiece?.type})`);
+            break;
+            
+          case 'check':
+            tacticValue = 2; // Fixed value from config formula
+            calculation = `Fixed = ${tacticValue}`;
+            breakdown.push(`👑 CHECK: ${calculation}`);
+            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
+            break;
+            
+          default:
+            breakdown.push(`❓ ${tactic.type.toUpperCase()}: Unknown tactic type`);
+            continue;
+        }
+        
+        if (tacticValue > 0) {
+          totalTacticRegen += tacticValue;
+          formulaParts.push(`${tactic.type}(${tacticValue})`);
+        }
+        
+      } catch (error) {
+        breakdown.push(`💥 ${tactic.type.toUpperCase()}: Error calculating - ${error}`);
+        console.error(`Error calculating ${tactic.type}:`, error, tactic);
+      }
+    }
+    
+    // Add debug information about tactics detection
+    if (tactics.length > 0) {
+      breakdown.push('');
+      breakdown.push('🔍 DEBUG: Tactics Detection Details:');
+      for (const tactic of tactics) {
+        breakdown.push(`   ${tactic.type.toUpperCase()}: ${JSON.stringify(tactic, null, 2).replace(/\n/g, '\n   ')}`);
+      }
+    }
+    
+    const totalRegen = baseRegen + totalTacticRegen;
+    
+    return {
+      formula: formulaParts.join(' + ') + ` = ${totalRegen} BP`,
+      breakdown
+    };
   }
 }
 

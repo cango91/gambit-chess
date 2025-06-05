@@ -37,13 +37,26 @@ export function validateTacticalRetreat(
   
   // Check if the player is the attacker who lost the duel
   const attackerColor = lastMove.color;
-  const playerColor = playerId === gameState.whitePlayer.id ? 'w' : 'b';
   
-  if (attackerColor !== playerColor) {
-    return { 
-      valid: false, 
-      error: 'Only the attacking player can execute a tactical retreat'
-    };
+  // In practice mode, the same player controls both colors
+  if (gameState.gameType === 'practice') {
+    // In practice mode, allow the same player to make retreats for any color
+    const isPlayerInGame = playerId === gameState.whitePlayer.id || playerId === gameState.blackPlayer.id;
+    if (!isPlayerInGame) {
+      return { 
+        valid: false, 
+        error: 'Only players in the game can execute a tactical retreat'
+      };
+    }
+  } else {
+    // In multiplayer mode, check if the player matches the attacking color
+    const playerColor = playerId === gameState.whitePlayer.id ? 'w' : 'b';
+    if (attackerColor !== playerColor) {
+      return { 
+        valid: false, 
+        error: 'Only the attacking player can execute a tactical retreat'
+      };
+    }
   }
   
   // Calculate valid tactical retreat options
@@ -64,7 +77,16 @@ export function validateTacticalRetreat(
   }
   
   // Check if player has enough battle points for the retreat
-  const player = playerColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer;
+  // Determine which player we're checking based on the attacker color and game type
+  let player;
+  if (gameState.gameType === 'practice') {
+    // In practice mode, use the attacking color to determine which BP pool to check
+    player = attackerColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer;
+  } else {
+    // In multiplayer mode, use the player's actual color
+    const playerColor = playerId === gameState.whitePlayer.id ? 'w' : 'b';
+    player = playerColor === 'w' ? gameState.whitePlayer : gameState.blackPlayer;
+  }
   if (chosenRetreat.cost > player.battlePoints) {
     return { 
       valid: false, 
@@ -98,12 +120,22 @@ export function getValidTacticalRetreats(
   
   // Check if the player is the attacker who lost the duel
   const attackerColor = lastMove.color;
-  const playerColor = playerId === gameState.whitePlayer.id ? 'w' : 'b';
   
-  if (attackerColor !== playerColor) {
-    return [];
+  // In practice mode, the same player controls both colors
+  if (gameState.gameType === 'practice') {
+    // In practice mode, allow the same player to make retreats for any color
+    const isPlayerInGame = playerId === gameState.whitePlayer.id || playerId === gameState.blackPlayer.id;
+    if (!isPlayerInGame) {
+      return [];
+    }
+  } else {
+    // In multiplayer mode, check if the player matches the attacking color
+    const playerColor = playerId === gameState.whitePlayer.id ? 'w' : 'b';
+    if (attackerColor !== playerColor) {
+      return [];
+    }
   }
-  
+  console.log('🏃 Calculating retreat options for', lastMove.from, lastMove.to);
   // Calculate valid tactical retreat options
   return calculateTacticalRetreats(
     gameState.chess,

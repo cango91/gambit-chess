@@ -32,6 +32,25 @@ export interface TacticalRetreat {
   battlePointsCost: number;
 }
 
+// BP Calculation Transaction
+export interface BPTransaction {
+  type: 'duel_cost' | 'retreat_cost' | 'regeneration' | 'initial';
+  player: 'white' | 'black';
+  amount: number;
+  details: string;
+  formula?: string;
+}
+
+// BP Calculation Report
+export interface BPCalculationReport {
+  playerBP: { white: number; black: number };
+  transactions: BPTransaction[];
+  calculations: string[];
+  hiddenInfo: boolean;
+  tactics?: any[];
+  duelDetails?: any;
+}
+
 // Game State
 export interface BaseGameState {
   id: string;
@@ -43,8 +62,11 @@ export interface BaseGameState {
   pendingDuel: PendingDuel | null;
   gameStatus: GameStatus;
   config: GameConfig;
+  gameType?: 'ai' | 'human' | 'practice'; // Optional for backward compatibility
   halfmoveClockManual: number;
   positionHistory: Array<{ fen: string; turn: Color }>;
+  availableRetreatOptions?: Array<{ square: Square; cost: number }>; // Server-calculated retreat options
+  bpCalculationReport?: BPCalculationReport; // Optional detailed BP calculation report for debug/transparency
 }
 
 // Pending Duel

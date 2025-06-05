@@ -18,8 +18,9 @@ export const socketAuthMiddleware = async (socket: AuthenticatedSocket, next: (e
   const token = socket.handshake.auth.token;
   const anonymousSessionToken = socket.handshake.auth.anonymousSessionToken;
   const userAgent = socket.handshake.headers['user-agent'] || 'unknown';
-  const acceptLanguage = socket.handshake.headers['accept-language'];
-  const xForwardedFor = socket.handshake.headers['x-forwarded-for'] as string;
+  const acceptLanguage = socket.handshake.headers['accept-language'] as string || 'unknown';
+  // Use the client IP like Express req.ip (which is the socket's remote address)
+  const xForwardedFor = socket.handshake.address;
 
   // Try JWT authentication first
   if (token) {
@@ -35,12 +36,22 @@ export const socketAuthMiddleware = async (socket: AuthenticatedSocket, next: (e
   // Try anonymous session authentication
   if (anonymousSessionToken) {
     try {
+      console.log(`🔍 WebSocket Auth Fingerprint Components:`, {
+        userAgent,
+        acceptLanguage,
+        xForwardedFor,
+        socketAddress: socket.handshake.address,
+        socketHeaders: socket.handshake.headers
+      });
+      
       // Generate client fingerprint for validation
       const clientFingerprint = AnonymousSessionService.generateClientFingerprint(
         userAgent,
-        acceptLanguage as string,
+        acceptLanguage,
         xForwardedFor
       );
+      
+      console.log(`🔍 Generated WebSocket fingerprint: ${clientFingerprint.substring(0, 8)}...`);
       
       // Validate session token
       const validation = await AnonymousSessionService.validateSession(anonymousSessionToken, clientFingerprint);
@@ -75,6 +86,8 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
       const { gameId } = data;
       const userId = socket.user?.userId || socket.anonymousSession?.sessionId;
 
+      console.log(`🏠 User ${userId} attempting to join game room: ${gameId}`);
+
       if (!userId) {
         socket.emit('error', { message: 'User identification required' });
         return;
@@ -83,6 +96,7 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
       // Verify user has access to this game
       const gameState = await LiveGameService.getGameState(gameId);
       if (!gameState) {
+        console.log(`❌ Game ${gameId} not found for user ${userId}`);
         socket.emit('error', { message: 'Game not found or access denied' });
         return;
       }
@@ -90,6 +104,7 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
       // Check if user is authorized to join this game
       const isPlayer = gameState.whitePlayer.id === userId || gameState.blackPlayer.id === userId;
       if (!isPlayer) {
+        console.log(`❌ User ${userId} not authorized for game ${gameId}. White: ${gameState.whitePlayer.id}, Black: ${gameState.blackPlayer.id}`);
         // Could allow spectators here if desired
         socket.emit('error', { message: 'You are not a player in this game' });
         return;
@@ -97,9 +112,22 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
 
       // Join the game room
       socket.join(`game:${gameId}`);
+      console.log(`✅ User ${userId} successfully joined game room: game:${gameId}`);
+      console.log(`🏠 Room now has ${io.sockets.adapter.rooms.get(`game:${gameId}`)?.size || 0} members`);
       
-      // Send current game state
-      socket.emit('game:state', gameState);
+      // Send current game state - use serialized format for consistency
+      const serializableState = {
+        ...gameState,
+        chess: {
+          fen: gameState.chess.fen(),
+          turn: gameState.chess.turn(),
+          history: gameState.chess.history(),
+          pgn: gameState.chess.pgn(),
+        },
+      };
+      
+      socket.emit('game:state', serializableState);
+      console.log(`📤 Sent initial game state to user ${userId}. FEN: ${gameState.chess.fen()}`);
       
       // Notify other players in the room
       socket.to(`game:${gameId}`).emit('game:player_connected', {
@@ -274,7 +302,18 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
         return;
       }
 
-      socket.emit('game:state', gameState);
+      // Send current game state - use serialized format for consistency
+      const serializableState = {
+        ...gameState,
+        chess: {
+          fen: gameState.chess.fen(),
+          turn: gameState.chess.turn(),
+          history: gameState.chess.history(),
+          pgn: gameState.chess.pgn(),
+        },
+      };
+      
+      socket.emit('game:state', serializableState);
     } catch (error) {
       console.error('Error getting game state:', error);
       socket.emit('error', { message: 'Failed to get game state' });
@@ -297,7 +336,23 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
  * Broadcast game state update to all players in a game
  */
 export const broadcastGameUpdate = (io: SocketIOServer, gameId: string, gameState: any) => {
-  io.to(`game:${gameId}`).emit('game:state_updated', gameState);
+  console.log(`📡 Broadcasting game:state_updated to room: game:${gameId}`);
+  console.log(`📡 Rooms in server:`, Array.from(io.sockets.adapter.rooms.keys()));
+  console.log(`📡 Sockets in game room:`, io.sockets.adapter.rooms.get(`game:${gameId}`)?.size || 0);
+  
+  // Create a serializable version of the game state (same as LiveGameService.saveGameState)
+  const serializableState = {
+    ...gameState,
+    chess: {
+      fen: gameState.chess.fen(),
+      turn: gameState.chess.turn(),
+      history: gameState.chess.history(), // Include move history for proper reconstruction
+      pgn: gameState.chess.pgn(),
+    },
+  };
+  
+  console.log(`📡 Sending serialized FEN: ${serializableState.chess.fen}`);
+  io.to(`game:${gameId}`).emit('game:state_updated', serializableState);
 };
 
 /**

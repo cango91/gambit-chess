@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-// import cookieParser from 'cookie-parser'; // Removed
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from './generated/prisma'; // Adjusted path
@@ -33,7 +33,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
-// app.use(cookieParser()); // Removed
+app.use(cookieParser()); // Phase 1: Enable cookie parsing for session management
 app.use(express.urlencoded({ extended: true }));
 
 // Mount the authentication routes

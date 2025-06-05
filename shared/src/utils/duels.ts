@@ -67,16 +67,14 @@ export function calculateEffectiveAllocation(
   if (allocation <= pieceCapacity) {
     // Within capacity, 1:1 effectiveness
     return allocation;
-  } else if (allocation <= maxPieceBP) {
-    // Above capacity but below max, overage costs double
+  } else {
+    // Above capacity, overage costs double (2:1 ratio)
     const baseAmount = pieceCapacity;
     const overage = allocation - pieceCapacity;
-    return baseAmount + (overage / 2);
-  } else {
-    // Above max, capped at max effective BP
-    const baseAmount = pieceCapacity;
-    const overage = maxPieceBP - pieceCapacity;
-    return baseAmount + (overage / 2);
+    const uncappedEffective = baseAmount + (overage / 2);
+    
+    // Cap at maximum effective BP
+    return Math.min(uncappedEffective, maxPieceBP);
   }
 }
 

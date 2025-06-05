@@ -25,7 +25,7 @@ const JoinGameSchema = z.object({
  * Helper function to validate anonymous session
  */
 async function validateAnonymousSession(req: Request): Promise<{ sessionId: string; sessionData: any } | null> {
-  const sessionToken = req.body.anonymousSessionToken || req.query.anonymousSessionToken;
+  const sessionToken = req.body?.anonymousSessionToken || req.query?.anonymousSessionToken;
   
   if (!sessionToken) {
     return null;
@@ -117,40 +117,6 @@ router.post('/', async (req: Request, res: Response, next: NextFunction): Promis
 });
 
 /**
- * GET /api/games/:gameId
- * Get game state
- */
-router.get('/:gameId', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const gameId = req.params.gameId;
-    
-    // Get requesting user ID (could be authenticated user or anonymous session)
-    const authUser = (req as AuthenticatedRequest).user;
-    let requestingUserId = authUser?.userId;
-    
-    // Check for anonymous session
-    if (!requestingUserId) {
-      const anonymousSession = await validateAnonymousSession(req);
-      if (anonymousSession) {
-        requestingUserId = anonymousSession.sessionId;
-      }
-    }
-
-    const gameState = await GameService.getGameState(gameId, requestingUserId);
-    
-    if (!gameState) {
-      res.status(404).json({ message: 'Game not found' });
-      return;
-    }
-
-    res.json(gameState);
-  } catch (error) {
-    console.error('Get game state error:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-/**
  * GET /api/games/waiting
  * Get all games waiting for players (for discovery/matchmaking)
  */
@@ -192,6 +158,40 @@ router.get('/', async (req: Request, res: Response, next: NextFunction): Promise
     res.json({ games });
   } catch (error) {
     console.error('Get user games error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+/**
+ * GET /api/games/:gameId
+ * Get game state
+ */
+router.get('/:gameId', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const gameId = req.params.gameId;
+    
+    // Get requesting user ID (could be authenticated user or anonymous session)
+    const authUser = (req as AuthenticatedRequest).user;
+    let requestingUserId = authUser?.userId;
+    
+    // Check for anonymous session
+    if (!requestingUserId) {
+      const anonymousSession = await validateAnonymousSession(req);
+      if (anonymousSession) {
+        requestingUserId = anonymousSession.sessionId;
+      }
+    }
+
+    const gameState = await GameService.getGameState(gameId, requestingUserId);
+    
+    if (!gameState) {
+      res.status(404).json({ message: 'Game not found' });
+      return;
+    }
+
+    res.json(gameState);
+  } catch (error) {
+    console.error('Get game state error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

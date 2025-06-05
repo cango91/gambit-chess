@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Validation schemas
 const CreateSessionSchema = z.object({
-  userAgent: z.string(),
+  userAgent: z.string().optional(),
   acceptLanguage: z.string().optional(),
   xForwardedFor: z.string().optional(),
 });
@@ -20,27 +20,71 @@ const RefreshSessionSchema = z.object({
 
 /**
  * POST /api/anonymous/session
- * Create a new anonymous session
+ * Create or reuse anonymous session (Cookie-based reconnection)
  */
 router.post('/session', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { userAgent, acceptLanguage, xForwardedFor } = CreateSessionSchema.parse(req.body);
+    const validatedData = CreateSessionSchema.parse(req.body);
     
-    // Generate client fingerprint
+    // Get values from headers (same as WebSocket will use)
+    const actualUserAgent = req.headers['user-agent'] || 'unknown';
+    const actualAcceptLanguage = req.headers['accept-language'] as string || 'unknown';
+    const actualXForwardedFor = req.ip;
+    
+    console.log(`🔍 HTTP Session Creation Fingerprint Components:`, {
+      userAgent: actualUserAgent,
+      acceptLanguage: actualAcceptLanguage,
+      xForwardedFor: actualXForwardedFor
+    });
+    
     const clientFingerprint = AnonymousSessionService.generateClientFingerprint(
-      userAgent,
-      acceptLanguage || req.headers['accept-language'] as string,
-      xForwardedFor || req.ip
+      actualUserAgent,
+      actualAcceptLanguage,
+      actualXForwardedFor
     );
+    
+    // PHASE 1: Check for existing session in cookies
+    const existingToken = AnonymousSessionService.parseTokenFromRequest(req);
+    if (existingToken) {
+      console.log('🔄 Found existing session token in cookies, validating...');
+      const validation = await AnonymousSessionService.validateSession(existingToken, clientFingerprint);
+      
+      if (validation) {
+        console.log(`🔄 Reusing existing session: ${validation.sessionId}`);
+        
+        // Refresh the existing session and set new cookies
+        const refreshedToken = await AnonymousSessionService.refreshSession(existingToken, clientFingerprint);
+        if (refreshedToken) {
+          AnonymousSessionService.setSessionCookies(res, refreshedToken);
+          
+          res.status(200).json({
+            success: true,
+            sessionToken: refreshedToken.sessionToken,
+            sessionId: refreshedToken.sessionId,
+            expiresAt: refreshedToken.expiresAt,
+            reconnected: true,
+          });
+          return;
+        }
+      } else {
+        console.log('🗑️ Existing session token invalid, creating new session');
+        // Clear invalid cookies
+        AnonymousSessionService.clearSessionCookies(res);
+      }
+    }
     
     // Create new session
     const sessionToken = await AnonymousSessionService.createSession(clientFingerprint);
+    
+    // Set secure session cookies (Phase 1: Cookie-based authentication)
+    AnonymousSessionService.setSessionCookies(res, sessionToken);
     
     res.status(201).json({
       success: true,
       sessionToken: sessionToken.sessionToken,
       sessionId: sessionToken.sessionId,
       expiresAt: sessionToken.expiresAt,
+      reconnected: false,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -84,6 +128,9 @@ router.post('/refresh', async (req: Request, res: Response, next: NextFunction):
       });
       return;
     }
+    
+    // Update secure session cookies
+    AnonymousSessionService.setSessionCookies(res, newSessionToken);
     
     res.json({
       success: true,
@@ -173,6 +220,10 @@ router.delete('/session', async (req: Request, res: Response, next: NextFunction
     
     if (validation) {
       await AnonymousSessionService.revokeSession(validation.sessionId);
+      
+      // Clear session cookies
+      AnonymousSessionService.clearSessionCookies(res);
+      
       res.json({ 
         success: true,
         message: 'Session revoked successfully' 

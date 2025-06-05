@@ -81,22 +81,9 @@ export class LiveGameService {
     } else if (options.gameType === 'practice') {
       const playerId = options.whitePlayerId || options.anonymousUserId || 'practice';
       
-      if (colorPreference === 'white') {
-        whitePlayerId = playerId;
-        blackPlayerId = undefined; // Will be set when someone joins
-      } else if (colorPreference === 'black') {
-        whitePlayerId = undefined; // Will be set when someone joins
-        blackPlayerId = playerId;
-      } else { // random
-        const randomChoice = Math.random() < 0.5;
-        if (randomChoice) {
-          whitePlayerId = playerId;
-          blackPlayerId = undefined;
-        } else {
-          whitePlayerId = undefined;
-          blackPlayerId = playerId;
-        }
-      }
+      // In practice mode, the same player controls both sides
+      whitePlayerId = playerId;
+      blackPlayerId = playerId;
     } else if (options.gameType === 'human') {
       // For human vs human, the creator gets their preferred color
       const playerId = options.whitePlayerId!;
@@ -120,7 +107,7 @@ export class LiveGameService {
     }
     
     // Create game state using shared function
-    const gameState = createNewGame(gameId, whitePlayerId || '', blackPlayerId);
+    const gameState = createNewGame(gameId, whitePlayerId || '', blackPlayerId, options.gameType);
     
     // Store in Redis
     await this.saveGameState(gameId, gameState);
@@ -156,7 +143,7 @@ export class LiveGameService {
   }
   
   /**
-   * Get live game state from Redis
+   * Get game state from Redis
    */
   static async getGameState(gameId: string): Promise<BaseGameState | null> {
     try {
@@ -169,9 +156,56 @@ export class LiveGameService {
       
       const gameState = JSON.parse(gameStateJson) as BaseGameState;
       
-      // Reconstruct Chess instance (JSON doesn't preserve class methods)
+      console.log('📖 Loading game state from Redis');
+      console.log('📖 Serialized chess data:', JSON.stringify((gameState.chess as any), null, 2));
+      
+      // Reconstruct Chess instance properly
       const Chess = require('chess.js').Chess;
-      gameState.chess = new Chess(gameState.chess.fen());
+      const chess = new Chess();
+      
+      // Handle different serialization formats
+      if (gameState.chess && typeof gameState.chess === 'object') {
+        const chessData = gameState.chess as any;
+        
+        // If we have move history, replay the moves to get proper chess.js state
+        if (chessData.history && Array.isArray(chessData.history) && chessData.history.length > 0) {
+          console.log('📖 Replaying moves:', chessData.history);
+          try {
+            for (const move of chessData.history) {
+              const result = chess.move(move);
+              if (!result) {
+                console.error('📖 Failed to replay move:', move);
+                break;
+              }
+            }
+            console.log('📖 After replaying moves, FEN:', chess.fen());
+            
+            // CRITICAL: If we have a serialized FEN that differs from the replayed state,
+            // use the serialized FEN as it represents the authoritative state
+            // (e.g., after tactical retreats that don't correspond to chess.js moves)
+            if (chessData.fen && chessData.fen !== chess.fen()) {
+              console.log('📖 Using serialized FEN as authoritative state:', chessData.fen);
+              chess.load(chessData.fen);
+            }
+          } catch (error) {
+            console.error('📖 Error replaying moves:', error);
+            // Fallback to FEN if available
+            const currentFen = chessData.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+            chess.load(currentFen);
+            console.log('📖 Fallback to FEN:', currentFen);
+          }
+        } else if (chessData.fen && typeof chessData.fen === 'string') {
+          // Use FEN directly if no history
+          chess.load(chessData.fen);
+          console.log('📖 Loaded from FEN:', chessData.fen);
+        }
+      }
+      
+      // Replace the serialized chess object with the reconstructed instance
+      gameState.chess = chess;
+      
+      console.log('📖 Final reconstructed FEN:', gameState.chess.fen());
+      console.log('📖 Final turn:', gameState.chess.turn());
       
       return gameState;
     } catch (error) {
@@ -193,7 +227,9 @@ export class LiveGameService {
         chess: {
           fen: gameState.chess.fen(),
           turn: gameState.chess.turn(),
-          history: gameState.chess.history(),
+          // Use preserved history if available (for tactical retreats), otherwise use current history
+          history: (gameState.chess as any)._preservedHistory || gameState.chess.history(),
+          pgn: gameState.chess.pgn(),
         },
       };
       
@@ -373,9 +409,29 @@ export class LiveGameService {
           
           // Only include games waiting for players
           if (gameState.gameStatus === GameStatus.WAITING_FOR_PLAYERS) {
-            // Reconstruct Chess instance
+            // Reconstruct Chess instance properly (same as getGameState)
             const Chess = require('chess.js').Chess;
-            gameState.chess = new Chess(gameState.chess.fen());
+            const chess = new Chess();
+            
+            if (gameState.chess && typeof gameState.chess === 'object') {
+              const chessData = gameState.chess as any;
+              
+              if (chessData.history && Array.isArray(chessData.history) && chessData.history.length > 0) {
+                try {
+                  for (const move of chessData.history) {
+                    chess.move(move);
+                  }
+                } catch (error) {
+                  console.error('Error replaying moves in getWaitingGames:', error);
+                  const currentFen = chessData.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+                  chess.load(currentFen);
+                }
+              } else if (chessData.fen) {
+                chess.load(chessData.fen);
+              }
+            }
+            
+            gameState.chess = chess;
             waitingGames.push(gameState);
           }
         }

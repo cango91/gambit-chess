@@ -98,12 +98,17 @@ export class GameEventsService {
    * Handle move made events
    */
   private static async handleMoveMade(event: GameEvent): Promise<void> {
+    console.log('🎯 Processing MOVE_MADE event for game:', event.gameId);
     broadcastGameEvent(this.io!, event.gameId, event);
     
     // Update game state for all players
     const gameState = await LiveGameService.getGameState(event.gameId);
     if (gameState) {
+      console.log('🔄 Broadcasting updated game state. FEN:', gameState.chess.fen());
+      console.log('🔄 Current turn:', gameState.chess.turn());
       broadcastGameUpdate(this.io!, event.gameId, gameState);
+    } else {
+      console.error('❌ Could not get updated game state for broadcast');
     }
   }
 
@@ -111,7 +116,18 @@ export class GameEventsService {
    * Handle duel initiated events
    */
   private static async handleDuelInitiated(event: GameEvent): Promise<void> {
+    console.log('🥊 Processing DUEL_INITIATED event for game:', event.gameId);
     broadcastGameEvent(this.io!, event.gameId, event);
+    
+    // Update game state for all players - CRITICAL: This broadcasts the duel state
+    const gameState = await LiveGameService.getGameState(event.gameId);
+    if (gameState) {
+      console.log('🥊 Broadcasting duel game state. Status:', gameState.gameStatus);
+      console.log('🥊 Pending duel:', gameState.pendingDuel ? 'Yes' : 'No');
+      broadcastGameUpdate(this.io!, event.gameId, gameState);
+    } else {
+      console.error('❌ Could not get updated game state for duel broadcast');
+    }
     
     // Notify players that a duel has started
     this.io!.to(`game:${event.gameId}`).emit('game:duel_started', {

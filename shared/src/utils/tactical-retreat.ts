@@ -15,9 +15,9 @@ export function calculateTacticalRetreats(
   const piece = chess.get(originalSquare);
   if (!piece) return [];
   
-  // Return the base case: return to original position with 0 cost
+  // Return the base case: return to original position with default 0 cost
   const retreats: { square: Square; cost: number }[] = [
-    { square: originalSquare, cost: 0 }
+    { square: originalSquare, cost: config.tacticalRetreatRules.costCalculation.baseReturnCost }
   ];
   
   // Check if tactical retreats are enabled
@@ -50,6 +50,13 @@ export function calculateTacticalRetreats(
           config
         )];
       }
+      break;
+      
+    case 'p':
+      // Pawns can only retreat to their original square
+      return [...retreats];
+
+    default:
       break;
   }
   
@@ -169,11 +176,13 @@ function calculateKnightRetreats(
   config: GameConfig
 ): { square: Square; cost: number }[] {
   const retreats: { square: Square; cost: number }[] = [];
+  console.log('🏃 calculateKnightRetreats', originalSquare, failedCaptureSquare);
   
   // Check if we should use the lookup table or manual calculation
   if (config.tacticalRetreatRules.costCalculation.useKnightLookupTable) {
     // Use the pre-calculated lookup table
     const lookupOptions = getKnightRetreatOptions(originalSquare, failedCaptureSquare);
+    console.log('🏃 lookupOptions', lookupOptions);
     
     // Filter out occupied squares
     for (const option of lookupOptions) {
@@ -181,94 +190,6 @@ function calculateKnightRetreats(
         retreats.push(option);
       }
     }
-  } else {
-    // Original rectangle-based calculation
-    const origFile = originalSquare.charCodeAt(0) - 'a'.charCodeAt(0);
-    const origRank = parseInt(originalSquare.charAt(1)) - 1;
-    const targFile = failedCaptureSquare.charCodeAt(0) - 'a'.charCodeAt(0);
-    const targRank = parseInt(failedCaptureSquare.charAt(1)) - 1;
-    
-    // Verify it's a valid knight move
-    const fileDiff = Math.abs(targFile - origFile);
-    const rankDiff = Math.abs(targRank - origRank);
-    
-    if (!((fileDiff === 1 && rankDiff === 2) || (fileDiff === 2 && rankDiff === 1))) {
-      return retreats; // Not a valid knight move
-    }
-    
-    // Determine the rectangle containing all potential retreat squares
-    const minFile = Math.min(origFile, targFile);
-    const maxFile = Math.max(origFile, targFile);
-    const minRank = Math.min(origRank, targRank);
-    const maxRank = Math.max(origRank, targRank);
-    
-    // Check all squares within the rectangle for valid retreat options
-    for (let file = minFile; file <= maxFile; file++) {
-      for (let rank = minRank; rank <= maxRank; rank++) {
-        // Skip the original and target squares
-        const square = String.fromCharCode('a'.charCodeAt(0) + file) + (rank + 1) as Square;
-        if (square === originalSquare || square === failedCaptureSquare) {
-          continue;
-        }
-        
-        // Check if the square is empty
-        if (!chess.get(square)) {
-          // Calculate the cost based on how many knight moves it would take
-          let cost: number;
-          
-          if (config.tacticalRetreatRules.costCalculation.knightCustomCostEnabled) {
-            cost = calculateKnightMoveCost(origFile, origRank, file, rank);
-          } else {
-            // Simplified cost based on distance
-            cost = Math.max(Math.abs(file - origFile), Math.abs(rank - origRank))
-              * config.tacticalRetreatRules.costCalculation.distanceMultiplier;
-          }
-          
-          retreats.push({ square, cost });
-        }
-      }
-    }
-  }
-  
-  // Always add the original square with 0 cost
-  retreats.push({ square: originalSquare, cost: config.tacticalRetreatRules.costCalculation.baseReturnCost });
-  
+  } 
   return retreats;
-}
-
-/**
- * Calculate the minimum number of knight moves required to reach a target square
- */
-function calculateKnightMoveCost(
-  fromFile: number,
-  fromRank: number,
-  toFile: number,
-  toRank: number
-): number {
-  // Special case for the same square
-  if (fromFile === toFile && fromRank === toRank) {
-    return 0;
-  }
-  
-  // The mathematical solution to the Knight's Tour problem
-  const dx = Math.abs(fromFile - toFile);
-  const dy = Math.abs(fromRank - toRank);
-  
-  if (dx === 1 && dy === 0) return 3; // 3 moves for orthogonally adjacent
-  if (dx === 0 && dy === 1) return 3;
-  if (dx === 1 && dy === 1) return 2; // 2 moves for diagonally adjacent
-  if (dx === 2 && dy === 2) return 4; // 4 moves for double diagonal
-  
-  // L-shaped move is a direct knight move
-  if ((dx === 1 && dy === 2) || (dx === 2 && dy === 1)) {
-    return 1;
-  }
-  
-  // General formula for knight distance
-  // This is an approximation - exact solutions are complex
-  if (dx <= dy) {
-    return Math.ceil((dx + dy) / 3) + ((dx + dy) % 3 === 1 ? 1 : 0);
-  } else {
-    return Math.ceil((dx + dy) / 3) + ((dx + dy) % 3 === 1 ? 1 : 0);
-  }
 }
