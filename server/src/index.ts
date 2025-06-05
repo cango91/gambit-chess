@@ -1,102 +1,109 @@
-import express from 'express';
-import * as http from 'http';
-import * as WebSocket from 'ws';
-import * as path from 'path';
+import express, { Request, Response, NextFunction } from 'express';
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { Request, Response } from 'express';
-import { WebSocketController } from './websocket/websocket-controller';
-import { ServerConfigProvider } from './config/provider';
-import { RepositoryFactory } from './repositories';
-import { ServiceFactory } from './services';
+import dotenv from 'dotenv';
+import { PrismaClient } from './generated/prisma'; // Adjusted path
+import authRoutes from './routes/auth.routes'; // Import the auth routes
+import gameRoutes from './routes/game.routes'; // Import the game routes
+import anonymousRoutes from './routes/anonymous.routes'; // Import the anonymous routes
+import { socketAuthMiddleware, setupGameSocketHandlers, AuthenticatedSocket } from './socket/game.socket';
+import GameEventsService from './services/game-events.service';
 
-// Initialize config provider
-const config = ServerConfigProvider.getInstance();
+dotenv.config();
 
-// Create repository
-const gameRepository = RepositoryFactory.createGameRepository('memory');
-
-// Create service factory and initialize game manager
-const gameManager = ServiceFactory.getGameManager(gameRepository);
-
-// Create Express app
 const app = express();
-const port = process.env.PORT || 3000;
-
-// Configure middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
-
-// HTTP routes
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: Date.now() });
-});
-
-app.get('/api/config', (req: Request, res: Response) => {
-  // Return client-safe subset of config
-  const clientConfig = {
-    timeControl: config.timeControl,
-    gambitChess: {
-      initialBP: config.gambitChess.initialBP,
-      maxBPAllocation: config.gambitChess.maxBPAllocation,
-      bpCapacities: config.gambitChess.bpCapacities,
-      bpCapacityOverloadMultiplier: config.gambitChess.bpCapacityOverloadMultiplier,
-      bpRegen: config.gambitChess.bpRegen,
-      opponentBPChar: config.gambitChess.opponentBPChar
-    },
-    chat: {
-      maxMessageLength: config.chat.maxMessageLength,
-      profanityFilter: config.chat.profanityFilter
-    }
-  };
-  
-  res.json(clientConfig);
-});
-
-// Create HTTP server
 const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:3000", // Default to localhost:3000 if not set
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
-// Create WebSocket server
-const wss = new WebSocket.Server({ server });
+const prisma = new PrismaClient();
 
-// Initialize WebSocket controller with game manager
-const wsController = new WebSocketController();
-wsController.initialize(wss);
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  credentials: true,
+}));
+app.use(express.json());
+app.use(cookieParser()); // Phase 1: Enable cookie parsing for session management
+app.use(express.urlencoded({ extended: true }));
+
+// Mount the authentication routes
+app.use('/api/auth', authRoutes);
+
+// Mount the game routes
+app.use('/api/games', gameRoutes);
+
+// Mount the anonymous routes
+app.use('/api/anonymous', anonymousRoutes);
+
+// Basic health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Gambit Chess server is running.',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Socket.IO configuration
+io.use(socketAuthMiddleware);
+
+io.on('connection', (socket: AuthenticatedSocket) => {
+  const userId = socket.user?.userId || socket.anonymousSession?.sessionId;
+  console.log(`User connected: ${userId} (${socket.id})`);
+
+  // Set up game-related event handlers
+  setupGameSocketHandlers(io, socket);
+
+  // Basic ping/pong for connection testing
+  socket.on('ping', () => {
+    socket.emit('pong', { timestamp: Date.now() });
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${userId} (${socket.id})`);
+  });
+});
 
 // Start server
-server.listen(port, () => {
-  console.log(`Server started on port ${port}`);
-  console.log(`WebSocket server available at ws://localhost:${port}`);
-});
+const startServer = async () => {
+  try {
+    // Test DB connection
+    await prisma.$connect();
+    console.log('Successfully connected to the database.');
 
-// Handle server shutdown
-const gracefulShutdown = () => {
-  console.log('Shutting down server...');
-  
-  // Close WebSocket server
-  wss.close(() => {
-    console.log('WebSocket server closed');
-    
-    // Close HTTP server
-    server.close(() => {
-      console.log('HTTP server closed');
-      process.exit(0);
+    // Initialize the game events service
+    GameEventsService.initialize(io);
+
+    server.listen(PORT, () => {
+      console.log(`\n🚀 Gambit Chess Server Started`);
+      console.log(`📡 Server listening on port ${PORT}`);
+      console.log(`🔌 WebSocket server attached`);
+      console.log(`🌐 CORS enabled for: ${process.env.CLIENT_URL || "http://localhost:3000"}`);
+      console.log(`💾 Database connected`);
+      console.log(`🎮 Game Events Service initialized`);
+      console.log(`\n📋 Available Endpoints:`);
+      console.log(`   Health Check: http://localhost:${PORT}/health`);
+      console.log(`   Auth API: http://localhost:${PORT}/api/auth/*`);
+      console.log(`   Games API: http://localhost:${PORT}/api/games/*`);
+      console.log(`   WebSocket: ws://localhost:${PORT}/socket.io/\n`);
     });
-    
-    // Force close after timeout
-    setTimeout(() => {
-      console.error('Forcing server shutdown...');
-      process.exit(1);
-    }, 5000);
-  });
+  } catch (error) {
+    console.error('Failed to connect to the database or start server:', error);
+    await prisma.$disconnect();
+    process.exit(1);
+  }
 };
 
-// Register shutdown handlers
-process.on('SIGINT', gracefulShutdown);
-process.on('SIGTERM', gracefulShutdown);
-process.on('uncaughtException', (error: Error) => {
-  console.error('Uncaught exception:', error);
-  gracefulShutdown();
-});
+startServer();
 
-export { app, server, wss }; 
+export { app, server, io, prisma }; 

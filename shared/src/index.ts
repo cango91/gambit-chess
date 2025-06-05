@@ -1,84 +1,66 @@
 /**
- * Gambit Chess Shared Domain
- * 
- * This module provides the shared types, interfaces, and pure utility functions
- * for use by both client and server domains.
+ * Gambit Chess Shared Module
+ * Contains common types, utilities, and game logic used by both client and server
  */
 
-import { 
-    ChessPosition, 
-    ChessPieceColor, 
-    ChessPieceType, 
-    ChessPiece,
-    ChessPositionType,
-    ChessPieceColorType,
-    ChessPieceTypeType,
-    ChessPieceTypeSymbol,
-} from './chess/types';
-
-// Re-export essential types and interfaces
-export type {
-    ChessPositionType,
-    ChessPieceColorType,
-    ChessPieceTypeType,
-    ChessPieceTypeSymbol,
-    ChessPosition as PiecePosition,
-    ChessPieceColor as PieceColor,
-    ChessPieceType as PieceType,
-    ChessPiece as Piece,
-} from './chess/types';
-
-// Re-export core interfaces
-export type {
-    IMinimalChessEngine,
-    IGameState,
-    IMoveValidationResult,
-    IBPAllocationValidationResult,
-    IRetreatOption,
-    IBoard,
-    IChessPiece,
-    IDuelState,
-    IDuelOutcome,
-} from './chess/contracts';
-
-export * from './dtos';
-
-// Re-export game types
+// Re-export all types
 export * from './types';
 
-// Re-export config types
-export * from './config';
+// Re-export all constants
+export * from './constants';
 
-// Re-export event types
-export * from './events';
+// Re-export all utilities
+export * from './utils';
 
-// Re-export tactical types
-export * from './tactical';
+// Re-export all validators
+export * from './validators';
 
-// Re-export security types
-export * from './security';
+// Export a function to create a new game instance with default configuration
+import { Chess } from 'chess.js';
+import { BaseGameState, GameStatus, Player } from './types/game';
+import { DEFAULT_GAME_CONFIG } from './constants/game-defaults';
 
-// Re-export validation utilities
-
-// Value object factories
-export const POSITION = (value: ChessPositionType) => new ChessPosition(value);
-export const PIECE_COLOR = (value: ChessPieceColorType) => new ChessPieceColor(value);
-export const PIECE_TYPE = (value: ChessPieceTypeType) => new ChessPieceType(value);
-export const PIECE = (value: string) => ChessPiece.fromString(value);
-
-// Re-export minimal engine and core utilities
-export {
-    MinimalChessEngine,
-    isValidPieceMove,
-    fenToPieces,
-    piecesToFen,
-} from './chess';
-
-// Re-export tactical utilities
-export {
-    calculateTacticalRetreats,
-} from './tactical';
-
-export * as NotationUtils from './notation';
-export * as ValidationUtils from './validation';
-
+/**
+ * Create a new Gambit Chess game state
+ */
+export function createNewGame(
+  gameId: string, 
+  whitePlayerId: string, 
+  blackPlayerId?: string, 
+  gameType?: 'ai' | 'human' | 'practice'
+): BaseGameState {
+  const chess = new Chess();
+  const initialFen = chess.fen(); // Get initial FEN
+  
+  const whitePlayer: Player = {
+    id: whitePlayerId,
+    color: 'w',
+    battlePoints: DEFAULT_GAME_CONFIG.initialBattlePoints
+  };
+  
+  const blackPlayer: Player = {
+    id: blackPlayerId || '', // Empty string if no second player yet
+    color: 'b',
+    battlePoints: DEFAULT_GAME_CONFIG.initialBattlePoints
+  };
+  
+  const gameStatus = blackPlayerId 
+    ? GameStatus.IN_PROGRESS 
+    : GameStatus.WAITING_FOR_PLAYERS;
+  
+  return {
+    id: gameId,
+    chess: chess, // Or perhaps just store the FEN: fen: initialFen
+    whitePlayer,
+    blackPlayer,
+    currentTurn: 'w',
+    moveHistory: [],
+    pendingDuel: null,
+    gameStatus,
+    config: DEFAULT_GAME_CONFIG,
+    gameType: gameType,
+    // Initialize manual draw tracking fields
+    halfmoveClockManual: 0,
+    positionHistory: [{ fen: initialFen, turn: 'w' }] // Initial position, white to move next
+  };
+}

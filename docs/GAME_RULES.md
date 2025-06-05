@@ -33,7 +33,6 @@ When a player attempts to capture an opponent's piece with a valid chess move, i
       * **Pin:** If the move of the player in THIS turn resulted in pinning an opponent piece: Regenerate the pinned piece's classic chess value (if the piece is pinned to the King, regenerate 1 more BP).
       * **Skewer:** If the move of the player in THIS turn resulted in a skewer: Regenerate the difference of the skewered pieces' classical chess values. If 0 regenerate 1 BP.
       * **Fork:** If the move of the player in THIS turn resulted in a forked attack: Regenerate the lower of the forked pieces' classic chess value.
-      * **Direct Defence:** If the move of the player in THIS turn resulted in a direct defence of a piece under attack: Regenerate the difference of the classical chess piece values of the defended and the defender. If 0, regen 1 BP.
       * **Discovered Attack:** If the move of the player in THIS turn resulted in a discovered attack: Regen attacked piece value/2 rounded up.
       * **Check:** Regen 2 BP.
 
@@ -62,4 +61,4 @@ This tactical retreat system adds depth to failed captures, allowing pieces to r
 3.  Both players secretly allocate Battle Points for the duel.
 4.  The allocations are revealed, and the winner of the duel is determined.
 5.  If the attacker wins, the capture occurs. If the defender wins, the capture fails. If attack fails, the attacker may choose to spend BPs for a tactical retreat before forfeiting their turn.
-6.  The game continues until a checkmate occurs under standard chess rules.
+6.  The game continues until a checkmate/stalemate/draw occurs under standard chess rules.
