@@ -37,6 +37,10 @@ interface GameStore {
   isPlayerRetreatDecision: boolean;
   retreatOptions: Array<{ square: string; cost: number; canAfford: boolean }>;
   
+  // Game end state
+  showGameEndModal: boolean;
+  gameEndResult: { winner: string; reason: string } | null;
+  
   // Actions
   waitForWebSocketConnection: () => Promise<void>;
   initializeSession: () => Promise<void>;
@@ -56,6 +60,8 @@ interface GameStore {
   setConnectionStatus: (status: 'disconnected' | 'connecting' | 'connected' | 'error') => void;
   setError: (error: string | null) => void;
   clearPendingMove: () => void;
+  clearDuelState: () => void;
+  setGameEndModal: (show: boolean, result?: { winner: string; reason: string } | null) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -78,6 +84,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   isTacticalRetreatActive: false,
   isPlayerRetreatDecision: false,
   retreatOptions: [],
+  showGameEndModal: false,
+  gameEndResult: null,
 
   // Initialize anonymous session
   initializeSession: async () => {
@@ -656,6 +664,23 @@ export const useGameStore = create<GameStore>((set, get) => ({
       pendingMoveTimeout: null 
     });
   },
+
+  // Clear duel state
+  clearDuelState: () => {
+    set({ 
+      isDuelActive: false,
+      playerDuelRole: null,
+      duelAllocationSubmitted: false,
+      isTacticalRetreatActive: false,
+      isPlayerRetreatDecision: false,
+      retreatOptions: []
+    });
+  },
+
+  // Set game end modal
+  setGameEndModal: (show: boolean, result?: { winner: string; reason: string } | null) => {
+    set({ showGameEndModal: show, gameEndResult: result });
+  },
 }));
 
 // Set up WebSocket event listeners
@@ -680,6 +705,40 @@ wsService.on('game:duel_initiated', (data) => {
 wsService.on('game:duel_resolved', (data) => {
   console.log('Duel resolved:', data);
   // Game state will be updated via game:state event
+});
+
+wsService.on('game:ended', (data) => {
+  console.log('🏁 Game ended received:', data);
+  console.log('🏁 Current game state before clearing duel:', useGameStore.getState().currentGame?.gameStatus);
+  console.log('🏁 Current FEN before clearing duel:', useGameStore.getState().currentGame?.chess?.fen());
+  console.log('🏁 Current move history length:', useGameStore.getState().currentGame?.moveHistory?.length);
+  console.log('🏁 Current move history:', useGameStore.getState().currentGame?.moveHistory?.map(m => m.san));
+  
+  // Clear duel state when game ends
+  useGameStore.getState().clearDuelState();
+  
+  // Force update the game state to reflect the final position
+  const currentGame = useGameStore.getState().currentGame;
+  if (currentGame) {
+    // If the game status hasn't been updated yet, manually set it
+    if (currentGame.gameStatus !== GameStatus.CHECKMATE && currentGame.gameStatus !== GameStatus.STALEMATE) {
+      console.log('🏁 Forcing final game state update with status:', data.reason === 'checkmate' ? 'CHECKMATE' : 'STALEMATE');
+      const updatedGame = {
+        ...currentGame,
+        gameStatus: data.reason === 'checkmate' ? GameStatus.CHECKMATE : 
+                   data.reason === 'stalemate' ? GameStatus.STALEMATE : GameStatus.DRAW
+      };
+      useGameStore.getState().updateGameState(updatedGame);
+    }
+  }
+  
+  // Show game end modal
+  useGameStore.getState().setGameEndModal(true, {
+    winner: data.winner || data.result,
+    reason: data.reason
+  });
+  
+  console.log('🏁 Game ended processing complete');
 });
 
 wsService.on('error', (error) => {

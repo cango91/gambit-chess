@@ -246,12 +246,16 @@ export class LiveGameService {
   static async updateGameState(gameId: string, gameState: BaseGameState, event?: GameEvent): Promise<void> {
     await this.saveGameState(gameId, gameState);
     
+    // Check if game is completed BEFORE emitting events
+    const shouldArchive = this.isGameCompleted(gameState);
+    
     if (event) {
-      await this.emitGameEvent(event);
+      // Pass the gameState to event processing to ensure final broadcast works
+      await this.emitGameEvent(event, shouldArchive ? gameState : undefined);
     }
     
-    // Check if game is completed and should be moved to database
-    if (this.isGameCompleted(gameState)) {
+    // Archive AFTER event processing to ensure final broadcast happens
+    if (shouldArchive) {
       await this.archiveCompletedGame(gameId, gameState);
     }
   }
@@ -304,7 +308,7 @@ export class LiveGameService {
   /**
    * Emit a game event for real-time communication
    */
-  static async emitGameEvent(event: GameEvent): Promise<void> {
+  static async emitGameEvent(event: GameEvent, finalGameState?: BaseGameState): Promise<void> {
     try {
       const eventsKey = `${GAME_EVENTS_KEY_PREFIX}${event.gameId}`;
       
@@ -313,7 +317,7 @@ export class LiveGameService {
       await RedisService.setWithTTL(eventsKey, eventJson, 60 * 60); // 1 hour
       
       // Process event through GameEventsService for Socket.IO broadcasting
-      await GameEventsService.processGameEvent(event);
+      await GameEventsService.processGameEvent(event, finalGameState);
       
     } catch (error) {
       console.error('Error emitting game event:', error);
@@ -357,12 +361,27 @@ export class LiveGameService {
   private static archiveCompletedGame(gameId: string, gameState: BaseGameState): Promise<void> {
     return new Promise(async (resolve, reject) => {
       try {
+        // Sanitize move history by removing function properties that can't be serialized
+        const sanitizedMoveHistory = gameState.moveHistory.map(move => {
+          // Create a plain object copy without function properties
+          const sanitizedMove: any = {};
+          
+          // Copy all enumerable properties that are not functions
+          for (const [key, value] of Object.entries(move)) {
+            if (typeof value !== 'function') {
+              sanitizedMove[key] = value;
+            }
+          }
+          
+          return sanitizedMove;
+        });
+        
         // Update database with final game state
         await prisma.game.update({
           where: { id: gameId },
           data: {
             status: convertToPrismaGameStatus(gameState.gameStatus),
-            moveHistory: gameState.moveHistory as any,
+            moveHistory: sanitizedMoveHistory as any,
             endedAt: new Date(),
           },
         });

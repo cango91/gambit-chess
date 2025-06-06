@@ -78,7 +78,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({
         return {
           emoji: winner === 'white' ? '👑' : '🏆',
           title: `${winner === 'white' ? 'White' : 'Black'} Wins!`,
-          message: `Victory by checkmate! The ${winner} king has been conquered.`
+          message: `Victory by checkmate! The ${winner === 'white' ? 'black' : 'white'} king has been conquered.`
         };
       case shared.GameStatus.STALEMATE:
         return {

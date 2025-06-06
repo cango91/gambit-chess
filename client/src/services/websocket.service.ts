@@ -110,6 +110,12 @@ class WebSocketService {
       this.emit('game:player_disconnected', data);
     });
 
+    // Add game:ended event handler
+    this.socket.on('game:ended', (data: any) => {
+      console.log('🏁 Game ended:', data);
+      this.emit('game:ended', data);
+    });
+
     this.socket.on('error', (error: any) => {
       console.error('🚨 Socket error:', error);
       this.emit('error', error);
@@ -195,6 +201,15 @@ class WebSocketService {
       return;
     }
     this.socket.emit('game:tactical_retreat', { gameId, retreatSquare });
+  }
+
+  requestGameState(gameId: string): void {
+    if (!this.socket?.connected) {
+      console.warn('Socket not connected, cannot request game state');
+      return;
+    }
+    console.log('🔄 Requesting latest game state for game:', gameId);
+    this.socket.emit('game:get_state', { gameId });
   }
 
   // Connection management

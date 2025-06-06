@@ -158,9 +158,17 @@ export class GameEngineService {
       // Save updated game state and emit events
       await LiveGameService.updateGameState(gameId, gameState);
       
-      // Process all events through the event service
+      // Check if game is completed to pass final state to all events
+      const isGameCompleted = [
+        GameStatus.CHECKMATE,
+        GameStatus.STALEMATE,
+        GameStatus.DRAW,
+        GameStatus.ABANDONED
+      ].includes(gameState.gameStatus);
+      
       for (const event of events) {
-        await GameEventsService.processGameEvent(event);
+        // Pass final game state to all events if game is completed
+        await GameEventsService.processGameEvent(event, isGameCompleted ? gameState : undefined);
       }
 
       // Check if it's AI's turn and trigger AI move
@@ -293,8 +301,17 @@ export class GameEngineService {
     // Save updated game state and emit events
     await LiveGameService.updateGameState(gameId, gameState);
     
+    // Check if game is completed to pass final state to all events
+    const isGameCompleted = [
+      GameStatus.CHECKMATE,
+      GameStatus.STALEMATE,
+      GameStatus.DRAW,
+      GameStatus.ABANDONED
+    ].includes(gameState.gameStatus);
+    
     for (const event of events) {
-      await GameEventsService.processGameEvent(event);
+      // Pass final game state to all events if game is completed
+      await GameEventsService.processGameEvent(event, isGameCompleted ? gameState : undefined);
     }
 
     return { success: true, events };
@@ -440,8 +457,17 @@ export class GameEngineService {
     // Save updated game state and emit events
     await LiveGameService.updateGameState(gameId, gameState);
     
+    // Check if game is completed to pass final state to all events
+    const isGameCompleted = [
+      GameStatus.CHECKMATE,
+      GameStatus.STALEMATE,
+      GameStatus.DRAW,
+      GameStatus.ABANDONED
+    ].includes(gameState.gameStatus);
+    
     for (const event of events) {
-      await GameEventsService.processGameEvent(event);
+      // Pass final game state to all events if game is completed
+      await GameEventsService.processGameEvent(event, isGameCompleted ? gameState : undefined);
     }
 
     return { success: true, events };

@@ -206,7 +206,9 @@ export const GameContainer: React.FC = () => {
     playerDuelRole,
     isTacticalRetreatActive,
     isPlayerRetreatDecision,
-    submitTacticalRetreat
+    submitTacticalRetreat,
+    showGameEndModal,
+    gameEndResult
   } = useGameStore();
 
   useEffect(() => {
@@ -227,6 +229,12 @@ export const GameContainer: React.FC = () => {
   // Handle navigation away from page
   const handleBack = () => {
     useGameStore.getState().leaveGame();
+    navigate('/');
+  };
+
+  // Handle closing the game end modal
+  const handleCloseGameEndModal = () => {
+    useGameStore.getState().setGameEndModal(false);
     navigate('/');
   };
 
@@ -369,11 +377,11 @@ export const GameContainer: React.FC = () => {
       )}
 
       {/* Game End Modal */}
-      {isGameOver && (
+      {showGameEndModal && gameEndResult && (
         <GameEndModal 
           gameStatus={currentGame.gameStatus}
-          winner={currentGame.currentTurn === 'w' ? 'black' : 'white'}
-          onClose={handleBack}
+          winner={gameEndResult.winner as 'white' | 'black'}
+          onClose={handleCloseGameEndModal}
         />
       )}
     </GameWrapper>

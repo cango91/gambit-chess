@@ -1,5 +1,5 @@
 import { Server as SocketIOServer } from 'socket.io';
-import { GameEvent, GameEventType } from '@gambit-chess/shared';
+import { GameEvent, GameEventType, BaseGameState } from '@gambit-chess/shared';
 import { broadcastGameEvent, broadcastGameUpdate } from '../socket/game.socket';
 import LiveGameService from './live-game.service';
 
@@ -21,7 +21,7 @@ export class GameEventsService {
   /**
    * Process and broadcast a game event
    */
-  static async processGameEvent(event: GameEvent): Promise<void> {
+  static async processGameEvent(event: GameEvent, finalGameState?: BaseGameState): Promise<void> {
     if (!this.io) {
       console.error('GameEventsService not initialized with Socket.IO server');
       return;
@@ -50,7 +50,7 @@ export class GameEventsService {
           break;
         
         case GameEventType.DUEL_RESOLVED:
-          await this.handleDuelResolved(event);
+          await this.handleDuelResolved(event, finalGameState);
           break;
         
         case GameEventType.TACTICAL_RETREAT_MADE:
@@ -62,7 +62,7 @@ export class GameEventsService {
           break;
         
         case GameEventType.GAME_ENDED:
-          await this.handleGameEnded(event);
+          await this.handleGameEnded(event, finalGameState);
           break;
         
         default:
@@ -152,13 +152,22 @@ export class GameEventsService {
   /**
    * Handle duel resolved events
    */
-  private static async handleDuelResolved(event: GameEvent): Promise<void> {
+  private static async handleDuelResolved(event: GameEvent, finalGameState?: BaseGameState): Promise<void> {
     broadcastGameEvent(this.io!, event.gameId, event);
     
     // Update game state after duel resolution
-    const gameState = await LiveGameService.getGameState(event.gameId);
+    // Use finalGameState if provided (for completed games) or fetch from Redis
+    let gameState = finalGameState;
+    if (!gameState) {
+      const fetchedState = await LiveGameService.getGameState(event.gameId);
+      gameState = fetchedState || undefined;
+    }
+    
     if (gameState) {
+      console.log('🥊 Broadcasting final duel state. Status:', gameState.gameStatus, 'FEN:', gameState.chess.fen());
       broadcastGameUpdate(this.io!, event.gameId, gameState);
+    } else {
+      console.error('❌ Could not get game state for duel resolution broadcast');
     }
     
     // Notify players about duel result
@@ -202,13 +211,24 @@ export class GameEventsService {
   /**
    * Handle game ended events
    */
-  private static async handleGameEnded(event: GameEvent): Promise<void> {
+  private static async handleGameEnded(event: GameEvent, finalGameState?: BaseGameState): Promise<void> {
     broadcastGameEvent(this.io!, event.gameId, event);
     
-    // Get final game state
-    const gameState = await LiveGameService.getGameState(event.gameId);
+    // Use finalGameState if provided (for completed games) or fetch from Redis
+    // This is critical because when games end, they're often archived before this handler runs
+    let gameState = finalGameState;
+    if (!gameState) {
+      const fetchedState = await LiveGameService.getGameState(event.gameId);
+      gameState = fetchedState || undefined;
+    }
+    
     if (gameState) {
+      console.log('🏁 Broadcasting final game state on game end. Status:', gameState.gameStatus, 'FEN:', gameState.chess.fen());
+      console.log('🏁 Final move history length:', gameState.moveHistory.length);
+      console.log('🏁 Final moves:', gameState.moveHistory.map(m => m.san || `${m.from}-${m.to}`));
       broadcastGameUpdate(this.io!, event.gameId, gameState);
+    } else {
+      console.error('❌ Could not get final game state for game end broadcast');
     }
     
     // Notify about game end
