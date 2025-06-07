@@ -1,6 +1,6 @@
 # Gambit Chess
 
-An innovative tactical chess variant where capture attempts are resolved through strategic Battle Points allocation duels rather than automatic captures. This creates a unique blend of chess strategy, poker-like bluffing, and resource management mechanics. Originally started being developed for [a Vibe Coding Game Jam(https://x.com/levelsio/status/1901660771505021314) (whose deadline is missed by a long-stretch ☠️ .)
+An innovative tactical chess variant where capture attempts are resolved through strategic Battle Points allocation duels rather than automatic captures. This creates a unique blend of chess strategy, poker-like bluffing, and resource management mechanics. Originally started being developed for [a Vibe Coding Game Jam](https://x.com/levelsio/status/1901660771505021314) -cwhose deadline is missed by a long-stretch ☠️ .
 
 **Current Status**: Mature implementation ready for vertical slice deployment. Practice mode fully functional with comprehensive game engine, real-time WebSocket communication, and polished UI.
 
