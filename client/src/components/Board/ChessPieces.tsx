@@ -7,7 +7,9 @@ import { useGameStore } from '../../stores/gameStore';
 interface ChessPiecesProps {
   gameState: BaseGameState;
   onPieceClick: (square: string) => void;
-  onPieceHover: (square: string | null) => void;
+  onPieceHover: (square: string | null, event?: any) => void;
+  hoveredSquare?: string | null;
+  selectedSquare?: string | null;
 }
 
 // Constants for piece positioning
@@ -31,9 +33,15 @@ const squareTo3DPosition = (square: string): [number, number, number] => {
 export const ChessPieces: React.FC<ChessPiecesProps> = ({ 
   gameState, 
   onPieceClick, 
-  onPieceHover 
+  onPieceHover,
+  hoveredSquare: propsHoveredSquare,
+  selectedSquare: propsSelectedSquare
 }) => {
-  const { selectedSquare, isPlayerTurn, pendingMove } = useGameStore();
+  const { selectedSquare: storeSelectedSquare, isPlayerTurn, pendingMove } = useGameStore();
+  
+  // Use props for outline effects, store for game logic
+  const selectedSquare = propsSelectedSquare ?? storeSelectedSquare;
+  const hoveredSquare = propsHoveredSquare;
 
   // Parse board state from FEN to get piece positions
   const pieces = useMemo(() => {
@@ -87,11 +95,12 @@ export const ChessPieces: React.FC<ChessPiecesProps> = ({
             color={color}
             position={squareTo3DPosition(square)}
             onClick={() => onPieceClick(square)}
-            onPointerOver={() => isPlayable && onPieceHover(square)}
-            onPointerOut={() => onPieceHover(null)}
+            onPointerOver={(e) => isPlayable && onPieceHover(square, e)}
+            onPointerOut={(e) => onPieceHover(null, e)}
             isPlayable={isPlayable}
             isSelected={isSelected}
             isPending={isPending}
+            isHovered={hoveredSquare === square}
           />
         </React.Suspense>
       ))}

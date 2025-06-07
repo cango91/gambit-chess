@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useGameStore } from '../../stores/gameStore';
@@ -7,6 +7,7 @@ import { ChessBoard3D } from '../Board/ChessBoard3D';
 import { PlayerPanel } from './PlayerPanel';
 import { DuelInterface } from './DuelInterface';
 import { TacticalRetreatOverlay } from './TacticalRetreatOverlay';
+
 import { GameEndModal } from './GameEndModal';
 import { MoveHistory } from './MoveHistory';
 import { BPCalculationHistory } from './BPCalculationHistory';
@@ -227,6 +228,8 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onShowTutorial }) 
   const navigate = useNavigate();
   const [showBPCalculations, setShowBPCalculations] = React.useState(false);
   const [showBugReport, setShowBugReport] = React.useState(false);
+  const [hoveredSquare, setHoveredSquare] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const {
     currentGame, 
     isGameLoading, 
@@ -273,11 +276,21 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onShowTutorial }) 
     // Board highlighting is now handled automatically by the game store
     // This callback can be used for other UI effects like tooltips
     console.log('🏃 Retreat square hover:', square, 'at', x, y);
+    setHoveredSquare(square);
+    if (x !== undefined && y !== undefined) {
+      setMousePosition({ x, y });
+    }
   }, []);
 
   // Handle tactical retreat square selection
   const handleRetreatSquareClick = useCallback((square: string) => {
     console.log('🏃 Retreat square selected:', square);
+    submitTacticalRetreat(square);
+  }, [submitTacticalRetreat]);
+
+  // Handle mobile cost bubble clicks
+  const handleMobileCostClick = useCallback((square: string) => {
+    console.log('📱 Mobile cost bubble clicked:', square);
     submitTacticalRetreat(square);
   }, [submitTacticalRetreat]);
 
@@ -384,6 +397,7 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onShowTutorial }) 
           
           <ChessBoard3D 
             gameState={currentGame}
+            onSquareHover={handleRetreatSquareHover}
           />
         </BoardContainer>
 
@@ -421,6 +435,8 @@ export const GameContainer: React.FC<GameContainerProps> = ({ onShowTutorial }) 
           onRetreatSquareClick={handleRetreatSquareClick}
         />
       )}
+
+      {/* Retreat costs are now displayed as 3D billboards in the ChessBoard3D component */}
 
       {/* Game End Modal */}
       {showGameEndModal && gameEndResult && (

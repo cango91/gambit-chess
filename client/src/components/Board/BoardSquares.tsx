@@ -7,7 +7,7 @@ interface BoardSquaresProps {
   hoveredSquare: string | null;
   pendingMove?: { from: string; to: string } | null;
   onSquareClick: (square: string) => void;
-  onSquareHover: (square: string | null) => void;
+  onSquareHover: (square: string | null, event?: any) => void;
 }
 
 // Chess board constants
@@ -43,7 +43,7 @@ const SquareMesh: React.FC<{
   isHovered: boolean;
   isPending: boolean;
   onSquareClick: (square: string) => void;
-  onSquareHover: (square: string | null) => void;
+  onSquareHover: (square: string | null, event?: any) => void;
 }> = ({ 
   square, 
   isLight, 
@@ -72,12 +72,12 @@ const SquareMesh: React.FC<{
     onSquareClick(square);
   };
 
-  const handlePointerEnter = () => {
-    onSquareHover(square);
+  const handlePointerEnter = (event: any) => {
+    onSquareHover(square, event);
   };
 
-  const handlePointerLeave = () => {
-    onSquareHover(null);
+  const handlePointerLeave = (event: any) => {
+    onSquareHover(null, event);
   };
 
   return (

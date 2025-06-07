@@ -435,8 +435,12 @@ export const BPCalculationHistory: React.FC = () => {
 
   // Build calculation history from server-provided BP reports
   const buildCalculationHistoryFromServer = (): CalculationHistoryEntry[] => {
+    console.log('🔍 Building BP history from server. Server history length:', serverBPHistory.length);
+    console.log('🔍 Current game move history length:', currentGame?.moveHistory?.length);
+    
     if (!currentGame || serverBPHistory.length === 0) {
       // Fallback to local history if server history not available
+      console.log('🔍 Using fallback local history');
       return buildCalculationHistory();
     }
 
@@ -467,13 +471,20 @@ export const BPCalculationHistory: React.FC = () => {
     serverBPHistory.forEach((report, index) => {
       // Use server-provided move information instead of trying to map by index
       const moveInfo = report.moveInfo;
-      const halfTurn = moveInfo?.moveNumber ?? (index + 1);
-      const chessRealTurn = Math.ceil(halfTurn / 2); // Chess turn number (1, 2, 3...)
+      
+      console.log(`🔍 Processing BP report ${index}:`, moveInfo);
+      
+      // Fix turn numbering: moveNumber from server is 0-based half-turn index
+      const halfTurnIndex = moveInfo?.moveNumber ?? index; // 0, 1, 2, 3... (0-based)
+      const moveSequence = halfTurnIndex + 1; // 1, 2, 3, 4... (1-based for display)
+      const chessRealTurn = Math.ceil(moveSequence / 2); // Chess turn number (1, 1, 2, 2, 3, 3...)
       const movingPlayer = moveInfo?.color === 'w' ? 'white' : 'black';
+      
+      console.log(`🔍 Calculated: halfTurnIndex=${halfTurnIndex}, moveSequence=${moveSequence}, chessRealTurn=${chessRealTurn}, movingPlayer=${movingPlayer}`);
       
       history.push({
         turn: chessRealTurn,
-        halfTurn,
+        halfTurn: moveSequence,
         move: moveInfo?.notation || 'Move',
         color: movingPlayer,
         whiteTransactions: report.transactions.filter(t => t.player === 'white'),
@@ -512,13 +523,29 @@ export const BPCalculationHistory: React.FC = () => {
     };
   }, [currentGame?.id]);
 
+  // Track the last processed BP report to prevent processing the same report multiple times
+  const lastProcessedReportRef = useRef<string | null>(null);
+  
   // Update server BP history when new moves are made (append latest calculation)
   useEffect(() => {
     if (!currentGame?.bpCalculationReport || !currentGame?.moveHistory?.length) return;
-    if (serverBPHistory.length >= currentGame.moveHistory.length) return; // Already up to date
     
-    // Append the latest BP calculation to server history
-    setServerBPHistory(prev => [...prev, currentGame.bpCalculationReport!]);
+    const currentReport = currentGame.bpCalculationReport;
+    
+    // Create a unique identifier for this report
+    const reportId = `${currentReport.moveInfo?.moveNumber}-${currentReport.moveInfo?.notation}-${currentReport.moveInfo?.color}-${currentReport.playerBP.white}-${currentReport.playerBP.black}`;
+    
+    // Check if we've already processed this exact report
+    if (lastProcessedReportRef.current === reportId) {
+      console.log('📊 Already processed this BP report, skipping:', currentReport.moveInfo);
+      return;
+    }
+    
+    // Update the last processed report
+    lastProcessedReportRef.current = reportId;
+    
+    console.log('📊 Adding new BP calculation to history:', currentReport.moveInfo);
+    setServerBPHistory(prev => [...prev, currentReport]);
   }, [currentGame?.moveHistory?.length, currentGame?.bpCalculationReport]);
 
   // Auto-scroll to latest entry
