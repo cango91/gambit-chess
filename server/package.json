@@ -4,8 +4,8 @@
   "description": "Server for Gambit Chess game with WebSocket support",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "build:clean": "rimraf dist && tsc",
+    "build": "prisma generate && tsc",
+    "build:clean": "rimraf dist && prisma generate && tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js",
     "test": "jest --testPathPattern=integration.test.ts --verbose",
