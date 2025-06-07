@@ -7,52 +7,464 @@
     <title>Gambit Chess - Tactical Chess Variant</title>
     <meta name="description" content="Play Gambit Chess - a revolutionary chess variant where captures are resolved through strategic Battle Points duels" />
     <style>
-      body {
+      * {
         margin: 0;
         padding: 0;
-        background: #1a1a1a;
-        color: #ffffff;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-          sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        overflow-x: hidden;
-      }
-      
-      * {
         box-sizing: border-box;
       }
       
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      
+      /* Loading screen specific styles */
       #root {
-        width: 100%;
         min-height: 100vh;
       }
       
-      /* Loading animation */
-      .loading-spinner {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #b58863;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        z-index: 9999;
       }
       
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      .logo {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+      
+      .title {
+        font-size: 32px;
+        font-weight: bold;
+        background: linear-gradient(45deg, #b58863, #f0d9b5);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 8px;
+      }
+      
+      .subtitle {
+        font-size: 16px;
+        opacity: 0.8;
+        margin-bottom: 40px;
+        color: #d0d0d0;
+      }
+      
+      .progress-container {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 8px;
+        position: relative;
+      }
+      
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #b58863, #f0d9b5);
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+      }
+      
+      .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      
+      .progress-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #a0a0a0;
+        margin-bottom: 20px;
+      }
+      
+      .loading-text {
+        font-size: 14px;
+        opacity: 0.7;
+        margin-bottom: 30px;
+        color: #a0a0a0;
+      }
+      
+      .chess-pieces {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 24px;
+        opacity: 0.6;
+      }
+      
+      .chess-piece {
+        animation: bounce 2s infinite;
+      }
+      
+      .chess-piece:nth-child(2) { animation-delay: 0.2s; }
+      .chess-piece:nth-child(3) { animation-delay: 0.4s; }
+      .chess-piece:nth-child(4) { animation-delay: 0.6s; }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+      
+      .loading-steps {
+        margin-top: 30px;
+        font-size: 12px;
+        opacity: 0.5;
+        text-align: left;
+        max-width: 300px;
+      }
+      
+      .step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        transition: opacity 0.3s;
+      }
+      
+      .step.active {
+        opacity: 1;
+        color: #fbbf24;
+      }
+      
+      .step.completed {
+        opacity: 0.7;
+        color: #4ade80;
+      }
+      
+      .step-icon {
+        margin-right: 8px;
+        width: 16px;
+      }
+      
+      /* Mobile responsive */
+      @media (max-width: 600px) {
+        .title {
+          font-size: 28px;
+        }
+        
+        .subtitle {
+          font-size: 14px;
+        }
+        
+        .loading-container {
+          padding: 20px 15px;
+        }
+      }
+      
+      /* Hide when React app loads */
+      .app-loaded .loading-container {
+        display: none;
+      }
+      
+      /* Ensure React app takes full space when loaded */
+      .app-loaded #root {
+        height: auto;
+        min-height: 100vh;
       }
     </style>
   </head>
   <body>
     <div id="root">
-      <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-        <div class="loading-spinner"></div>
-        <span style="margin-left: 16px;">Loading Gambit Chess...</span>
+      <div class="loading-container">
+        <div class="logo">🎮</div>
+        <h1 class="title">Gambit Chess</h1>
+        <p class="subtitle">Tactical chess where captures are resolved through Battle Points duels</p>
+        
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="progress-details">
+          <span id="loadedSize">0 KB</span>
+          <span id="totalSize">Calculating...</span>
+          <span id="percentage">0%</span>
+        </div>
+        
+        <div class="loading-text" id="loadingText">Initializing asset loading...</div>
+        
+        <div class="chess-pieces">
+          <span class="chess-piece">♜</span>
+          <span class="chess-piece">♞</span>
+          <span class="chess-piece">♝</span>
+          <span class="chess-piece">♛</span>
+        </div>
+        
+        <div class="loading-steps">
+          <div class="step active" id="step1">
+            <span class="step-icon">📦</span>
+            <span>Fetching game assets</span>
+          </div>
+          <div class="step" id="step2">
+            <span class="step-icon">🎯</span>
+            <span>Loading battle points system</span>
+          </div>
+          <div class="step" id="step3">
+            <span class="step-icon">🏰</span>
+            <span>Setting up chess board</span>
+          </div>
+          <div class="step" id="step4">
+            <span class="step-icon">⚡</span>
+            <span>Connecting to server</span>
+          </div>
+          <div class="step" id="step5">
+            <span class="step-icon">✅</span>
+            <span>Ready to play!</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <script>
+      class LoadingTracker {
+        constructor() {
+          this.loadedBytes = 0;
+          this.totalBytes = 0;
+          this.loadedFiles = 0;
+          this.currentStep = 0;
+          this.steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+          this.stepTexts = [
+            'Fetching game assets...',
+            'Loading battle points system...',
+            'Setting up chess board...',
+            'Connecting to server...',
+            'Game ready!'
+          ];
+          this.isActive = true;
+          this.stepInterval = null;
+          
+          this.setupResourceTracking();
+          this.startStepSequence();
+        }
+        
+        formatBytes(bytes) {
+          if (bytes === 0) return '0 KB';
+          const k = 1024;
+          const sizes = ['Bytes', 'KB', 'MB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        updateProgress() {
+          if (!this.isActive) return;
+          
+          const percentage = this.totalBytes > 0 ? Math.round((this.loadedBytes / this.totalBytes) * 100) : 0;
+          
+          const progressBar = document.getElementById('progressBar');
+          const loadedSize = document.getElementById('loadedSize');
+          const totalSize = document.getElementById('totalSize');
+          const percentageEl = document.getElementById('percentage');
+          
+          if (progressBar) progressBar.style.width = percentage + '%';
+          if (loadedSize) loadedSize.textContent = this.formatBytes(this.loadedBytes);
+          if (totalSize) totalSize.textContent = this.totalBytes > 0 ? this.formatBytes(this.totalBytes) : 'Calculating...';
+          if (percentageEl) percentageEl.textContent = percentage + '%';
+          
+          // Update step based on progress
+          const stepProgress = Math.floor((percentage / 100) * this.steps.length);
+          if (stepProgress !== this.currentStep && stepProgress < this.steps.length) {
+            this.nextStep();
+          }
+        }
+        
+        setupResourceTracking() {
+          // Track main script loading
+          const observer = new PerformanceObserver((list) => {
+            if (!this.isActive) return;
+            
+            for (const entry of list.getEntries()) {
+              if (entry.name.includes('.js') || entry.name.includes('.css')) {
+                // Estimate file size based on transfer time and typical speeds
+                const estimatedSize = Math.max(50000, entry.duration * 1000); // Rough estimate
+                this.totalBytes += estimatedSize;
+                
+                if (entry.responseEnd > 0) {
+                  this.loadedBytes += estimatedSize;
+                  this.loadedFiles++;
+                  this.updateProgress();
+                }
+              }
+            }
+          });
+          
+          observer.observe({ entryTypes: ['resource'] });
+          
+          // Track fetch requests
+          const originalFetch = window.fetch;
+          window.fetch = async (...args) => {
+            const response = await originalFetch(...args);
+            
+            if (this.isActive && response.ok && response.url.includes('assets')) {
+              const contentLength = response.headers.get('content-length');
+              if (contentLength) {
+                const size = parseInt(contentLength);
+                this.totalBytes += size;
+                this.loadedBytes += size;
+                this.updateProgress();
+              }
+            }
+            
+            return response;
+          };
+          
+          // Estimate total bundle size (typical for a React app)
+          setTimeout(() => {
+            if (this.isActive && this.totalBytes < 100000) {
+              this.totalBytes = 1200000; // Estimate ~1.2MB total
+              this.updateProgress();
+            }
+          }, 500);
+          
+          // Simulate some loading progress for smoother UX
+          this.simulateProgress();
+        }
+        
+        simulateProgress() {
+          const interval = setInterval(() => {
+            if (!this.isActive) {
+              clearInterval(interval);
+              return;
+            }
+            
+            if (this.loadedBytes < this.totalBytes * 0.9) {
+              this.loadedBytes += Math.random() * 50000; // Add random chunks
+              this.updateProgress();
+            } else {
+              clearInterval(interval);
+            }
+          }, 200);
+        }
+        
+        nextStep() {
+          if (!this.isActive) return;
+          
+          if (this.currentStep > 0) {
+            const prevStep = document.getElementById(this.steps[this.currentStep - 1]);
+            if (prevStep) {
+              prevStep.classList.remove('active');
+              prevStep.classList.add('completed');
+            }
+          }
+          
+          if (this.currentStep < this.steps.length) {
+            const currentStepEl = document.getElementById(this.steps[this.currentStep]);
+            const loadingText = document.getElementById('loadingText');
+            
+            if (currentStepEl) currentStepEl.classList.add('active');
+            if (loadingText) loadingText.textContent = this.stepTexts[this.currentStep];
+            this.currentStep++;
+          }
+        }
+        
+        startStepSequence() {
+          // Auto-advance steps based on time as fallback
+          this.stepInterval = setInterval(() => {
+            if (!this.isActive) {
+              clearInterval(this.stepInterval);
+              return;
+            }
+            
+            if (this.currentStep < this.steps.length - 1) {
+              this.nextStep();
+            } else {
+              clearInterval(this.stepInterval);
+            }
+          }, 800);
+        }
+        
+        complete() {
+          this.isActive = false;
+          
+          if (this.stepInterval) {
+            clearInterval(this.stepInterval);
+          }
+          
+          this.loadedBytes = this.totalBytes;
+          this.updateProgress();
+          
+          // Mark all steps as completed
+          this.steps.forEach((stepId, index) => {
+            const step = document.getElementById(stepId);
+            if (step) {
+              step.classList.remove('active');
+              step.classList.add('completed');
+            }
+          });
+          
+          const loadingText = document.getElementById('loadingText');
+          if (loadingText) loadingText.textContent = 'Game ready!';
+          
+          setTimeout(() => {
+            document.body.classList.add('app-loaded');
+            // Ensure body styling is reset for React app
+            document.body.style.overflow = 'auto';
+            document.body.style.height = 'auto';
+          }, 500);
+        }
+      }
+      
+      // Initialize loading tracker
+      const loadingTracker = new LoadingTracker();
+      
+      // Hide loading screen when React app is ready
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Check if React content has been added
+                const reactContent = document.querySelector('#root > div:not(.loading-container)');
+                if (reactContent) {
+                  loadingTracker.complete();
+                  observer.disconnect();
+                }
+              }
+            });
+          });
+          
+          observer.observe(document.getElementById('root'), {
+            childList: true,
+            subtree: true
+          });
+        }, 100);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html> 

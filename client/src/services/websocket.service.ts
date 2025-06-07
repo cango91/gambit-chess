@@ -116,6 +116,12 @@ class WebSocketService {
       this.emit('game:ended', data);
     });
 
+    // Add BP history response handler
+    this.socket.on('game:bp_history_response', (data: any) => {
+      console.log('📊 Received BP history:', data);
+      this.emit('game:bp_history_response', data);
+    });
+
     this.socket.on('error', (error: any) => {
       console.error('🚨 Socket error:', error);
       this.emit('error', error);
@@ -208,8 +214,15 @@ class WebSocketService {
       console.warn('Socket not connected, cannot request game state');
       return;
     }
-    console.log('🔄 Requesting latest game state for game:', gameId);
     this.socket.emit('game:get_state', { gameId });
+  }
+
+  requestBPHistory(gameId: string): void {
+    if (!this.socket?.connected) {
+      console.warn('Socket not connected, cannot request BP history');
+      return;
+    }
+    this.socket.emit('game:bp_history', { gameId });
   }
 
   // Connection management

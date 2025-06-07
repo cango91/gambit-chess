@@ -41,6 +41,28 @@ export interface BPTransaction {
   formula?: string;
 }
 
+// Detailed tactic regeneration breakdown for transparency and debugging
+export interface TacticRegenerationDetail {
+  type: string; // SpecialAttackType as string for serialization
+  detectedTactic: any; // TacticsDTO - keeping as any for now to avoid circular imports
+  configFormula: string; // Original formula from config: "pinnedPieceValue + (isPinnedToKing ? 1 : 0)"
+  substitutedFormula: string; // With values substituted: "(3) + (false ? 1 : 0)"
+  evaluatedFormula: string; // After evaluation: "3 + 0"
+  result: number; // Final BP value: 3
+  breakdown: string[]; // Human-readable explanation of the tactic
+}
+
+// Complete BP regeneration calculation result
+export interface BPRegenerationResult {
+  totalBP: number;
+  baseRegeneration: number;
+  tacticRegeneration: number;
+  appliedCap?: number;
+  formula: string; // Complete formula: "1 + pin(3) + check(2) = 6 BP"
+  tacticDetails: TacticRegenerationDetail[];
+  calculations: string[]; // Step-by-step calculation log
+}
+
 // BP Calculation Report
 export interface BPCalculationReport {
   playerBP: { white: number; black: number };
@@ -49,6 +71,17 @@ export interface BPCalculationReport {
   hiddenInfo: boolean;
   tactics?: any[];
   duelDetails?: any;
+  // Add the detailed regeneration result if available
+  regenerationDetails?: BPRegenerationResult;
+  // Add move information for client display consistency
+  moveInfo?: {
+    moveNumber: number; // Half-turn number (0, 1, 2, 3...)
+    notation: string; // SAN notation like "exd5" or "Nf6"
+    color: 'w' | 'b'; // Which player moved
+    captureAttempt?: boolean; // Whether this was a capture attempt
+    duelOutcome?: 'won' | 'lost' | 'none'; // Result of any duel
+    retreatInfo?: { from: string; to: string; cost: number }; // Tactical retreat details
+  };
 }
 
 // Game State
@@ -108,7 +141,8 @@ export enum GameEventType {
   DUEL_RESOLVED = 'DUEL_RESOLVED',
   TACTICAL_RETREAT_MADE = 'TACTICAL_RETREAT_MADE',
   BATTLE_POINTS_UPDATED = 'BATTLE_POINTS_UPDATED',
-  GAME_ENDED = 'GAME_ENDED'
+  GAME_ENDED = 'GAME_ENDED',
+  BP_HISTORY_REQUESTED = 'BP_HISTORY_REQUESTED'
 }
 
 export interface GameEvent {

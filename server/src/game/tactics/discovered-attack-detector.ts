@@ -77,7 +77,7 @@ export function detectDiscoveredAttacks(boardState: Chess, previousBoardState: C
                 // revealing both a rook and a bishop attack).
             }else{
                 // Special case: En-passant "captured square" reveals a discovered attack
-                if(lastMove.isEnPassant()){
+                if(lastMove.isEnPassant && typeof lastMove.isEnPassant === 'function' && lastMove.isEnPassant()){
                     const coords = squareToCoords(lastMove.to);
                     const opponentVacatedSquare = coordsToSquare(coords.x, lastMove.color === 'w' ? coords.y + 1 : coords.y - 1);
                     if(squaresBetween.includes(opponentVacatedSquare)){

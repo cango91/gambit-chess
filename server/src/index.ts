@@ -4,12 +4,16 @@ import { Server as SocketIOServer } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import { PrismaClient } from './generated/prisma'; // Adjusted path
 import authRoutes from './routes/auth.routes'; // Import the auth routes
 import gameRoutes from './routes/game.routes'; // Import the game routes
 import anonymousRoutes from './routes/anonymous.routes'; // Import the anonymous routes
+import bugReportsRoutes from './api/bug-reports'; // Import the bug reports routes
+import adminRoutes from './api/admin'; // Import the admin routes
 import { socketAuthMiddleware, setupGameSocketHandlers, AuthenticatedSocket } from './socket/game.socket';
 import GameEventsService from './services/game-events.service';
+import { BugReportingService } from './services/bug-reporting.service';
 
 dotenv.config();
 
@@ -45,12 +49,54 @@ app.use('/api/games', gameRoutes);
 // Mount the anonymous routes
 app.use('/api/anonymous', anonymousRoutes);
 
+// Mount the bug reports routes
+app.use('/api/bug-reports', bugReportsRoutes);
+
+// Mount the admin routes
+app.use('/api/admin', adminRoutes);
+
+// Serve static files (for built client)
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Serve client build directory if it exists (production)
+const clientBuildPath = path.join(__dirname, '..', '..', 'client', 'dist');
+app.use(express.static(clientBuildPath));
+
 // Basic health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'ok', 
     message: 'Gambit Chess server is running.',
     timestamp: new Date().toISOString(),
+  });
+});
+
+// Serve admin panel
+app.get('/admin', (req, res) => {
+  const adminPath = path.join(__dirname, '..', 'public', 'admin.html');
+  res.sendFile(adminPath, (err) => {
+    if (err) {
+      console.error('Error serving admin panel:', err);
+      res.status(500).send('Admin panel not available');
+    }
+  });
+});
+
+// Handle client routing - serve index.html for any non-API routes
+app.use((req: Request, res: Response, next: NextFunction) => {
+  // Skip API routes and socket.io
+  if (req.path.startsWith('/api/') || req.path.startsWith('/socket.io/')) {
+    return next();
+  }
+  
+  // For non-API routes, serve our placeholder loading page
+  // In production, this would serve the built React app
+  const placeholderPath = path.join(__dirname, '..', 'public', 'index.html');
+  res.sendFile(placeholderPath, (err) => {
+    if (err) {
+      console.error('Error serving placeholder:', err);
+      res.status(500).send('Server Error');
+    }
   });
 });
 
@@ -83,6 +129,9 @@ const startServer = async () => {
 
     // Initialize the game events service
     GameEventsService.initialize(io);
+    
+    // Initialize the bug reporting service
+    await BugReportingService.initialize();
 
     server.listen(PORT, () => {
       console.log(`\n🚀 Gambit Chess Server Started`);
@@ -95,6 +144,7 @@ const startServer = async () => {
       console.log(`   Health Check: http://localhost:${PORT}/health`);
       console.log(`   Auth API: http://localhost:${PORT}/api/auth/*`);
       console.log(`   Games API: http://localhost:${PORT}/api/games/*`);
+      console.log(`   Bug Reports API: http://localhost:${PORT}/api/bug-reports/*`);
       console.log(`   WebSocket: ws://localhost:${PORT}/socket.io/\n`);
     });
   } catch (error) {

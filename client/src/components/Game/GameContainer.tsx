@@ -9,7 +9,8 @@ import { DuelInterface } from './DuelInterface';
 import { TacticalRetreatOverlay } from './TacticalRetreatOverlay';
 import { GameEndModal } from './GameEndModal';
 import { MoveHistory } from './MoveHistory';
-import { BPCalculationDisplay } from '../debug/BPCalculationDisplay';
+import { BPCalculationHistory } from './BPCalculationHistory';
+import BugReportModal from '../debug/BugReportModal';
 import * as shared from '@gambit-chess/shared';
 const GameWrapper = styled.div`
   height: 100vh;
@@ -47,6 +48,30 @@ const BackButton = styled.button`
   &:hover {
     background: rgba(181, 136, 99, 0.3);
   }
+`;
+
+const BugReportButton = styled.button`
+  background: rgba(220, 38, 38, 0.2);
+  color: #f0d9b5;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: rgba(220, 38, 38, 0.3);
+  }
+`;
+
+const HeaderButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
 `;
 
 const GameMain = styled.div`
@@ -193,10 +218,15 @@ const TurnIndicator = styled.div<{ $isPlayerTurn: boolean }>`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 `;
 
-export const GameContainer: React.FC = () => {
+interface GameContainerProps {
+  onShowTutorial?: () => void;
+}
+
+export const GameContainer: React.FC<GameContainerProps> = ({ onShowTutorial }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
   const [showBPCalculations, setShowBPCalculations] = React.useState(false);
+  const [showBugReport, setShowBugReport] = React.useState(false);
   const {
     currentGame, 
     isGameLoading, 
@@ -277,9 +307,28 @@ export const GameContainer: React.FC = () => {
     <GameWrapper>
       <GameHeader>
         <GameTitle>Gambit Chess</GameTitle>
-        <BackButton onClick={handleBack}>
-          ← Back to Lobby
-        </BackButton>
+        <HeaderButtons>
+          {onShowTutorial && (
+            <BugReportButton 
+              onClick={onShowTutorial}
+              style={{ 
+                background: 'rgba(251, 191, 36, 0.2)',
+                borderColor: 'rgba(251, 191, 36, 0.3)',
+                color: '#f0d9b5'
+              }}
+            >
+              <span>📚</span>
+              Tutorial
+            </BugReportButton>
+          )}
+          <BugReportButton onClick={() => setShowBugReport(true)}>
+            <span>🐛</span>
+            Report Bug
+          </BugReportButton>
+          <BackButton onClick={handleBack}>
+            ← Back to Lobby
+          </BackButton>
+        </HeaderButtons>
       </GameHeader>
 
       <GameMain>
@@ -352,11 +401,8 @@ export const GameContainer: React.FC = () => {
           
           <MoveHistory moves={currentGame.moveHistory} />
           
-          {/* BP Calculation Debug Display */}
-          <BPCalculationDisplay 
-            isVisible={showBPCalculations}
-            onToggle={() => setShowBPCalculations(!showBPCalculations)}
-          />
+          {/* BP Calculation History */}
+          <BPCalculationHistory />
         </RightPanel>
       </GameMain>
 
@@ -384,6 +430,12 @@ export const GameContainer: React.FC = () => {
           onClose={handleCloseGameEndModal}
         />
       )}
+
+      {/* Bug Report Modal */}
+      <BugReportModal 
+        isOpen={showBugReport}
+        onClose={() => setShowBugReport(false)}
+      />
     </GameWrapper>
   );
 }; 

@@ -49,6 +49,19 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
       useKnightLookupTable: true
     }
   },
+  duelResolutionRules: {
+    defenderWinsTies: true, // Current implementation: defender wins ties
+    rulesetType: 'current'
+  },
+  pieceLossRules: {
+    attackerCanLosePiece: false, // Current implementation: attacker never loses piece
+    retreatPaymentRules: {
+      enabled: true, // Retreats can cost BP (but original square is free)
+      originalSquareRetreatCost: 0, // Current implementation: free retreat to original
+      costToDefenderEnabled: false, // Current implementation: no payment to defender
+      costToDefenderPercentage: 0
+    }
+  },
   informationHiding: {
     hideBattlePoints: false,
     hideAllocationHistory: false
@@ -98,6 +111,19 @@ export const BEGINNER_GAME_CONFIG: GameConfig = {
       distanceMultiplier: 0.5, // Half cost for retreats
       knightCustomCostEnabled: false, // Simplified knight costs
       useKnightLookupTable: true
+    }
+  },
+  duelResolutionRules: {
+    defenderWinsTies: true, // Keep beginner-friendly defender advantage
+    rulesetType: 'current'
+  },
+  pieceLossRules: {
+    attackerCanLosePiece: false, // Beginner-friendly: no piece loss
+    retreatPaymentRules: {
+      enabled: true,
+      originalSquareRetreatCost: 0, // Free retreats for beginners
+      costToDefenderEnabled: false,
+      costToDefenderPercentage: 0
     }
   },
   informationHiding: {
@@ -152,15 +178,74 @@ export const ADVANCED_GAME_CONFIG: GameConfig = {
       useKnightLookupTable: true
     }
   },
+  duelResolutionRules: {
+    defenderWinsTies: false, // Advanced: attacker wins ties for more aggressive play
+    rulesetType: 'custom'
+  },
+  pieceLossRules: {
+    attackerCanLosePiece: false, // Keep current rules for now
+    retreatPaymentRules: {
+      enabled: true,
+      originalSquareRetreatCost: 1, // Small cost even for original square retreat
+      costToDefenderEnabled: false,
+      costToDefenderPercentage: 0
+    }
+  },
   informationHiding: {
     hideBattlePoints: true, // Hide BP in advanced mode for more strategic play
     hideAllocationHistory: false
   }
 };
 
+// NEW: Risky Ruleset - Attackers can lose pieces, must pay for retreats
+export const RISKY_GAME_CONFIG: GameConfig = {
+  ...DEFAULT_GAME_CONFIG,
+  initialBattlePoints: Math.round(TOTAL_STARTING_PIECES_VALUE * 1.2), // Slightly more BP for riskier gameplay
+  duelResolutionRules: {
+    defenderWinsTies: true, // Keep defender advantage to balance the risk
+    rulesetType: 'risky'
+  },
+  pieceLossRules: {
+    attackerCanLosePiece: true, // NEW: Attackers can lose pieces in failed captures
+    retreatPaymentRules: {
+      enabled: true,
+      originalSquareRetreatCost: 3, // Cost to retreat even to original square
+      costToDefenderEnabled: true, // NEW: Part of retreat cost goes to defender
+      costToDefenderPercentage: 50 // 50% of retreat cost goes to defending player
+    }
+  },
+  tacticalRetreatRules: {
+    enabled: true,
+    longRangePiecesEnabled: true,
+    knightsEnabled: true,
+    costCalculation: {
+      baseReturnCost: 3, // Higher base cost for risky rules
+      distanceMultiplier: 2, // Much higher cost for distant retreats
+      knightCustomCostEnabled: true,
+      useKnightLookupTable: true
+    }
+  },
+  informationHiding: {
+    hideBattlePoints: false, // Show BP so players can make informed risk decisions
+    hideAllocationHistory: false
+  }
+};
+
+// NEW: Experimental Tie-Breaking Ruleset
+export const ATTACKER_WINS_TIES_CONFIG: GameConfig = {
+  ...DEFAULT_GAME_CONFIG,
+  duelResolutionRules: {
+    defenderWinsTies: false, // NEW: Attacker wins ties
+    rulesetType: 'custom'
+  },
+  // Keep all other rules the same for A/B testing
+};
+
 // Configuration templates mapping
 export const GAME_CONFIG_TEMPLATES = {
   standard: DEFAULT_GAME_CONFIG,
   beginner: BEGINNER_GAME_CONFIG,
-  advanced: ADVANCED_GAME_CONFIG
+  advanced: ADVANCED_GAME_CONFIG,
+  risky: RISKY_GAME_CONFIG, // NEW
+  attackerWinsTies: ATTACKER_WINS_TIES_CONFIG, // NEW
 };

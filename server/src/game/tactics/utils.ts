@@ -20,21 +20,32 @@ function canPieceMoveToClearRay(board: Chess, pieceSquare: string, attackerSquar
     // Get all legal moves for this piece
     const moves = board.moves({ square: pieceSquare as Square, verbose: true });
     
+    console.log(`    🔍 Checking if ${piece.type} on ${pieceSquare} can clear ray from ${attackerSquare}`);
+    console.log(`    🔍 Available moves: ${moves.map(m => m.san).join(', ')}`);
+    
     // Check if any move would clear the ray from attacker
     for (const move of moves) {
         // Simulate the move
         const moveResult = board.move(move);
         if (moveResult) {
-                         // After the move, cast a ray from attacker in the same direction to see if it now goes further
-             const newRay = castRay(board, attackerSquare as Square, direction);
+            // After the move, cast a ray from attacker in the same direction
+            const newRay = castRay(board, attackerSquare as Square, direction);
             
             // Undo the move
             board.undo();
             
-            // If the ray now hits a different piece (or goes further), this move clears the ray
-            if (newRay && newRay.square !== pieceSquare) {
-                console.log(`    🎯 Move ${move.san} would clear ray from ${attackerSquare} (new target: ${newRay.square})`);
+            // CRITICAL FIX: The ray is cleared ONLY if:
+            // 1. No piece is hit (ray goes to edge of board), OR
+            // 2. A DIFFERENT piece (different color/type) is hit
+            // The ray is NOT cleared if the same piece is hit at its new location
+            const rayCleared = !newRay || 
+                               (newRay.piece.color !== piece.color || newRay.piece.type !== piece.type);
+            
+            if (rayCleared) {
+                console.log(`    🎯 Move ${move.san} WOULD clear ray from ${attackerSquare} - ray target: ${newRay ? `${newRay.square}(${newRay.piece.type})` : 'none'}`);
                 return true;
+            } else {
+                console.log(`    ⚪ Move ${move.san} would NOT clear ray - same piece still blocking at ${newRay?.square}`);
             }
         }
     }
@@ -83,6 +94,7 @@ export function getAllTwoHitRayCasts(board: Chess, color: Color, useCache: boole
             
             if (!canClearRay) {
                 // Skip this candidate - piece cannot meaningfully move to clear the ray
+                console.log(`    🚫 Skipping pin candidate: ${piece.type} on ${piece.square} cannot clear ray from ${attackerSquare}`);
                 continue;
             }
 

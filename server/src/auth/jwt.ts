@@ -5,9 +5,26 @@ import { User } from '../generated/prisma'; // Adjusted import path
 import crypto from 'crypto'; // Added import
 import { timeStringToSeconds } from '../utils/time'; // Import the new utility
 
-// TODO: Move these to .env file
+// SECURITY: Check for production environment and reject default secrets
 const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET || 'your-access-token-secret';
 const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET || 'your-refresh-token-secret';
+
+// CRITICAL SECURITY CHECK: Prevent default secrets in production
+if (process.env.NODE_ENV === 'production') {
+  if (ACCESS_TOKEN_SECRET === 'your-access-token-secret' || REFRESH_TOKEN_SECRET === 'your-refresh-token-secret') {
+    console.error('🚨 SECURITY ERROR: Default JWT secrets detected in production!');
+    console.error('Please set ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET environment variables.');
+    process.exit(1);
+  }
+}
+
+// Warn about default secrets in development
+if (process.env.NODE_ENV !== 'production') {
+  if (ACCESS_TOKEN_SECRET === 'your-access-token-secret' || REFRESH_TOKEN_SECRET === 'your-refresh-token-secret') {
+    console.warn('⚠️  WARNING: Using default JWT secrets. Set ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET for security.');
+  }
+}
+
 const ACCESS_TOKEN_EXPIRATION_STRING: string = process.env.ACCESS_TOKEN_EXPIRATION || '15m';
 const REFRESH_TOKEN_EXPIRATION_STRING: string = process.env.REFRESH_TOKEN_EXPIRATION || '7d';
 const REFRESH_TOKEN_EXTENDED_EXPIRATION_STRING: string = process.env.REFRESH_TOKEN_EXTENDED_EXPIRATION || '90d';

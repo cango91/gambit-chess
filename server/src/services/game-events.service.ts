@@ -9,6 +9,46 @@ import LiveGameService from './live-game.service';
  */
 export class GameEventsService {
   private static io: SocketIOServer | null = null;
+  
+  // Player-Socket Mapping System for Private Communications
+  private static playerSocketMap: Map<string, string> = new Map(); // playerId -> socketId
+  private static socketPlayerMap: Map<string, string> = new Map(); // socketId -> playerId
+  private static playerGameMap: Map<string, string> = new Map(); // playerId -> gameId
+
+  /**
+   * CRITICAL PRIVACY WARNING: Current Implementation Has Major Security Flaws
+   * 
+   * 🚨 KNOWN PRIVACY VIOLATIONS:
+   * 
+   * 1. Battle Points Updates (Line ~200): Claims "only broadcast to specific player"
+   *    but actually broadcasts to ALL players in game room via `io.to('game:gameId')`
+   * 
+   * 2. Duel Allocations: While duel allocation handler doesn't broadcast allocations,
+   *    the game state updates do broadcast the ENTIRE game state including sensitive data
+   * 
+   * 3. All `broadcastGameUpdate()` calls send complete game state to all players,
+   *    potentially exposing information that should be player-specific
+   * 
+   * 🔧 TO FIX PRIVACY VIOLATIONS:
+   * 
+   * A. Implement Player-Socket Mapping:
+   *    - Track which socket belongs to which player: Map<playerId, socketId>
+   *    - Send private messages: `io.to(socketId).emit(...)`
+   *    - Maintain mapping on join/disconnect
+   * 
+   * B. Implement State Filtering:
+   *    - Create `getGameStateForPlayer(gameState, playerId)` that filters sensitive data
+   *    - Send player-specific state: hidden BP, masked opponent allocations, etc.
+   *    - Follow INFORMATION_ARCHITECTURE.md visibility rules
+   * 
+   * C. Review All Broadcast Points:
+   *    - `handleBattlePointsUpdated()` - MUST be player-specific
+   *    - `broadcastGameUpdate()` - MUST filter state per player
+   *    - Duel resolution - Show allocations only after resolution
+   * 
+   * ⚠️  CURRENT STATUS: All "privacy" claims in this file are FALSE
+   *     Players can see opponent's battle points and potentially other sensitive data
+   */
 
   /**
    * Initialize the service with Socket.IO server instance
@@ -16,6 +56,63 @@ export class GameEventsService {
   static initialize(socketServer: SocketIOServer): void {
     this.io = socketServer;
     console.log('GameEventsService initialized with Socket.IO server');
+  }
+
+  /**
+   * Register a player-socket mapping when they join a game
+   */
+  static registerPlayerSocket(playerId: string, socketId: string, gameId: string): void {
+    // Clean up any existing mappings for this player
+    this.unregisterPlayerSocket(playerId);
+    
+    // Store the mappings
+    this.playerSocketMap.set(playerId, socketId);
+    this.socketPlayerMap.set(socketId, playerId);
+    this.playerGameMap.set(playerId, gameId);
+    
+    console.log(`🔐 Registered player-socket mapping: ${playerId} -> ${socketId} (game: ${gameId})`);
+  }
+
+  /**
+   * Unregister a player-socket mapping when they disconnect
+   */
+  static unregisterPlayerSocket(playerId: string): void {
+    const existingSocketId = this.playerSocketMap.get(playerId);
+    if (existingSocketId) {
+      this.socketPlayerMap.delete(existingSocketId);
+      this.playerGameMap.delete(playerId);
+      console.log(`🔐 Unregistered player-socket mapping: ${playerId} -> ${existingSocketId}`);
+    }
+    this.playerSocketMap.delete(playerId);
+  }
+
+  /**
+   * Unregister a socket when it disconnects
+   */
+  static unregisterSocket(socketId: string): void {
+    const playerId = this.socketPlayerMap.get(socketId);
+    if (playerId) {
+      this.unregisterPlayerSocket(playerId);
+    }
+  }
+
+  /**
+   * Get socket ID for a player (for private messages)
+   */
+  static getSocketIdForPlayer(playerId: string): string | undefined {
+    return this.playerSocketMap.get(playerId);
+  }
+
+  /**
+   * Send a private message to a specific player
+   */
+  static sendToPlayer(playerId: string, event: string, data: any): boolean {
+    const socketId = this.getSocketIdForPlayer(playerId);
+    if (socketId && this.io) {
+      this.io.to(socketId).emit(event, data);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -193,19 +290,23 @@ export class GameEventsService {
   }
 
   /**
-   * Handle battle points updated events
+   * Handle battle points updated events - FIXED with proper privacy
    */
   private static async handleBattlePointsUpdated(event: GameEvent): Promise<void> {
-    // Only broadcast to the specific player whose BP changed (for privacy)
     const targetPlayerId = event.payload.playerId;
     
-    // Find socket for the target player and send private update
-    // This is a simplified approach - in production you'd maintain user-socket mappings
-    this.io!.to(`game:${event.gameId}`).emit('game:battle_points_updated', {
+    // ✅ PRIVACY FIXED: Send only to the specific player whose BP changed
+    const success = this.sendToPlayer(targetPlayerId, 'game:battle_points_updated', {
       playerId: targetPlayerId,
       newAmount: event.payload.newAmount,
       change: event.payload.change,
     });
+    
+    if (success) {
+      console.log(`🔐 Sent private BP update to player ${targetPlayerId}: ${event.payload.change} BP`);
+    } else {
+      console.warn(`⚠️ Could not send BP update to player ${targetPlayerId} - not connected`);
+    }
   }
 
   /**

@@ -15,6 +15,9 @@ export * from './utils';
 // Re-export all validators
 export * from './validators';
 
+// Bug reporting system
+export * from './types/bug-reporting';
+
 // Export a function to create a new game instance with default configuration
 import { Chess } from 'chess.js';
 import { BaseGameState, GameStatus, Player } from './types/game';

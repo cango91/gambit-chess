@@ -15,9 +15,13 @@ export function calculateTacticalRetreats(
   const piece = chess.get(originalSquare);
   if (!piece) return [];
   
-  // Return the base case: return to original position with default 0 cost
+  // Return the base case: return to original position using config cost
+  const originalSquareCost = config.pieceLossRules.retreatPaymentRules.enabled 
+    ? config.pieceLossRules.retreatPaymentRules.originalSquareRetreatCost
+    : 0;
+    
   const retreats: { square: Square; cost: number }[] = [
-    { square: originalSquare, cost: config.tacticalRetreatRules.costCalculation.baseReturnCost }
+    { square: originalSquare, cost: originalSquareCost }
   ];
   
   // Check if tactical retreats are enabled
@@ -124,7 +128,10 @@ function calculateLongPieceRetreats(
         Math.abs(currRank - origRank)
       );
       
-      const cost = distance * config.tacticalRetreatRules.costCalculation.distanceMultiplier;
+      const baseCost = config.pieceLossRules.retreatPaymentRules.enabled 
+        ? config.pieceLossRules.retreatPaymentRules.originalSquareRetreatCost
+        : config.tacticalRetreatRules.costCalculation.baseReturnCost;
+      const cost = baseCost + (distance * config.tacticalRetreatRules.costCalculation.distanceMultiplier);
       retreats.push({ square, cost });
     } else {
       // Stop if we hit a piece
@@ -155,7 +162,10 @@ function calculateLongPieceRetreats(
         Math.abs(currRank - origRank)
       );
       
-      const cost = distance * config.tacticalRetreatRules.costCalculation.distanceMultiplier;
+      const baseCost = config.pieceLossRules.retreatPaymentRules.enabled 
+        ? config.pieceLossRules.retreatPaymentRules.originalSquareRetreatCost
+        : config.tacticalRetreatRules.costCalculation.baseReturnCost;
+      const cost = baseCost + (distance * config.tacticalRetreatRules.costCalculation.distanceMultiplier);
       retreats.push({ square, cost });
     } else {
       // Stop if we hit a piece

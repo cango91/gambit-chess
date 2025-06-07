@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gambit Chess - Loading...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .loading-container {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #b58863, #f0d9b5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            color: #d0d0d0;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #b58863, #f0d9b5);
+            border-radius: 4px;
+            width: 0%;
+            animation: fillProgress 3s ease-out forwards;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            25% { width: 30%; }
+            50% { width: 60%; }
+            75% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+            color: #a0a0a0;
+        }
+
+        .chess-pieces {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 24px;
+            opacity: 0.6;
+        }
+
+        .chess-piece {
+            animation: bounce 2s infinite;
+        }
+
+        .chess-piece:nth-child(2) { animation-delay: 0.2s; }
+        .chess-piece:nth-child(3) { animation-delay: 0.4s; }
+        .chess-piece:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .loading-steps {
+            margin-top: 30px;
+            font-size: 12px;
+            opacity: 0.5;
+            text-align: left;
+            max-width: 300px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            transition: opacity 0.3s;
+        }
+
+        .step.active {
+            opacity: 1;
+            color: #fbbf24;
+        }
+
+        .step-icon {
+            margin-right: 8px;
+            width: 16px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            .title {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 14px;
+            }
+            
+            .loading-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo">🎮</div>
+        <h1 class="title">Gambit Chess</h1>
+        <p class="subtitle">Tactical chess where captures are resolved through Battle Points duels</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <div class="loading-text" id="loadingText">Initializing game engine...</div>
+        
+        <div class="chess-pieces">
+            <span class="chess-piece">♜</span>
+            <span class="chess-piece">♞</span>
+            <span class="chess-piece">♝</span>
+            <span class="chess-piece">♛</span>
+        </div>
+        
+        <div class="loading-steps">
+            <div class="step active" id="step1">
+                <span class="step-icon">🔧</span>
+                <span>Loading game engine</span>
+            </div>
+            <div class="step" id="step2">
+                <span class="step-icon">🎯</span>
+                <span>Initializing battle points system</span>
+            </div>
+            <div class="step" id="step3">
+                <span class="step-icon">🏰</span>
+                <span>Setting up chess board</span>
+            </div>
+            <div class="step" id="step4">
+                <span class="step-icon">⚡</span>
+                <span>Connecting to server</span>
+            </div>
+            <div class="step" id="step5">
+                <span class="step-icon">✅</span>
+                <span>Ready to play!</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple loading simulation
+        const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
+        const texts = [
+            'Initializing game engine...',
+            'Loading battle points system...',
+            'Setting up chess board...',
+            'Connecting to server...',
+            'Loading complete!'
+        ];
+        
+        let currentStep = 0;
+        
+        function nextStep() {
+            if (currentStep > 0) {
+                document.getElementById(steps[currentStep - 1]).classList.remove('active');
+            }
+            
+            if (currentStep < steps.length) {
+                document.getElementById(steps[currentStep]).classList.add('active');
+                document.getElementById('loadingText').textContent = texts[currentStep];
+                currentStep++;
+                
+                if (currentStep < steps.length) {
+                    setTimeout(nextStep, 600 + Math.random() * 400);
+                } else {
+                    // Try to redirect to the actual app after loading is complete
+                    setTimeout(() => {
+                        if (window.location.pathname === '/') {
+                            window.location.reload(); // Reload to get the actual React app
+                        }
+                    }, 1000);
+                }
+            }
+        }
+        
+        // Start the loading sequence
+        setTimeout(nextStep, 500);
+    </script>
+</body>
+</html> 

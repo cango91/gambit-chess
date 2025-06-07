@@ -1,5 +1,6 @@
 import { Chess, Move } from 'chess.js';
 import { BaseGameState, GameAction, MoveAction } from '@gambit-chess/shared';
+import { PieceSymbol } from 'chess.js';
 
 /**
  * Simple AI Service for Gambit Chess
@@ -121,14 +122,12 @@ export class AIService {
   private static evaluateMove(gameState: BaseGameState, move: Move): number {
     let score = 0;
     
-    // Basic piece values
-    const pieceValues: Record<string, number> = {
-      'p': 1, 'n': 3, 'b': 3, 'r': 5, 'q': 9, 'k': 0
-    };
+    // Use piece values from game configuration instead of hardcoded values
+    const pieceValues = gameState.config.pieceValues;
     
     // Bonus for captures
     if (move.captured) {
-      score += pieceValues[move.captured.toLowerCase()] * 10;
+      score += pieceValues[move.captured.toLowerCase() as PieceSymbol] * 10;
     }
     
     // Bonus for checks

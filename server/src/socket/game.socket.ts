@@ -3,6 +3,7 @@ import { verifyAccessToken, JwtPayload } from '../auth/jwt';
 import LiveGameService from '../services/live-game.service';
 import AnonymousSessionService from '../services/anonymous-session.service';
 import GameEngineService from '../services/game-engine.service';
+import GameEventTrackerService from '../services/game-event-tracker.service';
 import { GameEventType, GameEvent, MoveAction } from '@gambit-chess/shared';
 import { Square } from 'chess.js';
 
@@ -115,9 +116,15 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
       console.log(`✅ User ${userId} successfully joined game room: game:${gameId}`);
       console.log(`🏠 Room now has ${io.sockets.adapter.rooms.get(`game:${gameId}`)?.size || 0} members`);
       
-      // Send current game state - use serialized format for consistency
+      // 🔐 PRIVACY FIX: Register player-socket mapping for private messages
+      const GameEventsService = require('../services/game-events.service').GameEventsService;
+      GameEventsService.registerPlayerSocket(userId, socket.id, gameId);
+      
+      // 🔐 PRIVACY FIX: Send filtered game state to the joining player
+      const { getGameStateForPlayer } = require('../utils/game-state-filter');
+      const filteredGameState = getGameStateForPlayer(gameState, userId);
       const serializableState = {
-        ...gameState,
+        ...filteredGameState,
         chess: {
           fen: gameState.chess.fen(),
           turn: gameState.chess.turn(),
@@ -127,7 +134,7 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
       };
       
       socket.emit('game:state', serializableState);
-      console.log(`📤 Sent initial game state to user ${userId}. FEN: ${gameState.chess.fen()}`);
+      console.log(`📤🔐 Sent filtered game state to user ${userId}. FEN: ${gameState.chess.fen()}`);
       
       // Notify other players in the room
       socket.to(`game:${gameId}`).emit('game:player_connected', {
@@ -321,38 +328,123 @@ export const setupGameSocketHandlers = (io: SocketIOServer, socket: Authenticate
   });
 
   /**
+   * Handle BP calculation history requests
+   */
+  socket.on('game:bp_history', async (data: { gameId: string }) => {
+    try {
+      const { gameId } = data;
+      const userId = socket.user?.userId || socket.anonymousSession?.sessionId;
+
+      if (!userId) {
+        socket.emit('error', { message: 'User identification required' });
+        return;
+      }
+
+      const gameState = await LiveGameService.getGameState(gameId);
+      if (!gameState) {
+        socket.emit('error', { message: 'Game not found' });
+        return;
+      }
+
+      // Check authorization
+      const isPlayer = gameState.whitePlayer.id === userId || gameState.blackPlayer.id === userId;
+      if (!isPlayer) {
+        socket.emit('error', { message: 'Access denied' });
+        return;
+      }
+
+      // Get BP calculation history with privacy filtering
+      const bpHistory = await GameEventTrackerService.getBPCalculationHistory(gameId, userId);
+      
+      socket.emit('game:bp_history_response', {
+        gameId,
+        history: bpHistory,
+        timestamp: Date.now()
+      });
+
+      console.log(`BP history sent to ${userId} for game ${gameId}: ${bpHistory.length} entries`);
+    } catch (error) {
+      console.error('Error getting BP history:', error);
+      socket.emit('error', { message: 'Failed to get BP history' });
+    }
+  });
+
+  /**
    * Handle disconnection
    */
   socket.on('disconnect', () => {
     const userId = socket.user?.userId || socket.anonymousSession?.sessionId;
     console.log(`User ${userId} disconnected (${socket.id})`);
     
+    // 🔐 PRIVACY FIX: Clean up player-socket mappings on disconnect
+    const GameEventsService = require('../services/game-events.service').GameEventsService;
+    GameEventsService.unregisterSocket(socket.id);
+    
     // The socket will automatically leave all rooms on disconnect
-    // Could add logic here to notify game rooms about player disconnection
+    console.log(`🔐 Cleaned up socket mappings for ${userId} (${socket.id})`);
   });
 };
 
 /**
- * Broadcast game state update to all players in a game
+ * Send filtered game state updates to each player individually - PRIVACY FIXED
+ * 
+ * ✅ PRIVACY COMPLIANT: Filters game state per player based on configuration settings
+ * Each player receives only the information they should see according to:
+ * - Information hiding configuration (config.informationHiding)
+ * - Player-specific visibility rules (own BP vs opponent BP)
+ * - Current game context (turn, duel state, etc.)
  */
 export const broadcastGameUpdate = (io: SocketIOServer, gameId: string, gameState: any) => {
-  console.log(`📡 Broadcasting game:state_updated to room: game:${gameId}`);
+  console.log(`📡 Sending filtered game updates for game: ${gameId}`);
   console.log(`📡 Rooms in server:`, Array.from(io.sockets.adapter.rooms.keys()));
   console.log(`📡 Sockets in game room:`, io.sockets.adapter.rooms.get(`game:${gameId}`)?.size || 0);
   
-  // Create a serializable version of the game state (same as LiveGameService.saveGameState)
-  const serializableState = {
-    ...gameState,
+  // Import the filtering utility (dynamic import to avoid circular dependency)
+  const { getGameStateForPlayer, getFilteringSummary } = require('../utils/game-state-filter');
+  
+  // Send filtered state to white player
+  const whitePlayerId = gameState.whitePlayer.id;
+  const whiteFilteredState = getGameStateForPlayer(gameState, whitePlayerId);
+  const whiteSerializedState = {
+    ...whiteFilteredState,
     chess: {
       fen: gameState.chess.fen(),
       turn: gameState.chess.turn(),
-      history: gameState.chess.history(), // Include move history for proper reconstruction
+      history: gameState.chess.history(),
       pgn: gameState.chess.pgn(),
     },
   };
   
-  console.log(`📡 Sending serialized FEN: ${serializableState.chess.fen}`);
-  io.to(`game:${gameId}`).emit('game:state_updated', serializableState);
+  // Import GameEventsService to access socket mapping (avoid circular dependency)
+  const GameEventsService = require('../services/game-events.service').GameEventsService;
+  const whiteSocketId = GameEventsService.getSocketIdForPlayer(whitePlayerId);
+  if (whiteSocketId) {
+    io.to(whiteSocketId).emit('game:state_updated', whiteSerializedState);
+    const filteringSummary = getFilteringSummary(gameState, whiteFilteredState, whitePlayerId);
+    console.log(`🔐 Sent filtered state to white player ${whitePlayerId}. Filtered: [${filteringSummary.join(', ')}]`);
+  }
+  
+  // Send filtered state to black player
+  const blackPlayerId = gameState.blackPlayer.id;
+  const blackFilteredState = getGameStateForPlayer(gameState, blackPlayerId);
+  const blackSerializedState = {
+    ...blackFilteredState,
+    chess: {
+      fen: gameState.chess.fen(),
+      turn: gameState.chess.turn(),
+      history: gameState.chess.history(),
+      pgn: gameState.chess.pgn(),
+    },
+  };
+  
+  const blackSocketId = GameEventsService.getSocketIdForPlayer(blackPlayerId);
+  if (blackSocketId) {
+    io.to(blackSocketId).emit('game:state_updated', blackSerializedState);
+    const filteringSummary = getFilteringSummary(gameState, blackFilteredState, blackPlayerId);
+    console.log(`🔐 Sent filtered state to black player ${blackPlayerId}. Filtered: [${filteringSummary.join(', ')}]`);
+  }
+  
+  console.log(`📡 Completed privacy-compliant game state broadcast for FEN: ${gameState.chess.fen()}`);
 };
 
 /**

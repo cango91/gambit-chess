@@ -89,11 +89,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   // Initialize anonymous session
   initializeSession: async () => {
+    const { isSessionLoading, session } = get();
+    
+    // Prevent double initialization
+    if (isSessionLoading || session) {
+      console.log('🔄 Session already initialized or in progress, skipping...');
+      return;
+    }
+    
     set({ isSessionLoading: true });
     try {
+      console.log('🔄 Initializing session...');
+      // Server will check cookies and reuse existing session if available
       const session = await apiService.createAnonymousSession();
-      wsService.connect(session.sessionToken); // Pass token directly to connect
+      wsService.connect(session.sessionToken);
       set({ session, isSessionLoading: false });
+      console.log('✅ Session initialized:', session.sessionId);
     } catch (error) {
       console.error('Failed to initialize session:', error);
       set({ 

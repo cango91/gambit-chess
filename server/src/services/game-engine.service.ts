@@ -22,9 +22,10 @@ import { resolveDuel } from '@gambit-chess/shared';
 import { Chess, Color, Move, Square, PieceSymbol } from 'chess.js';
 import LiveGameService from './live-game.service';
 import GameEventsService from './game-events.service';
-import { calculateBPRegen } from '../game/bp';
 import { detectTactics } from '../game/tactics';
 import AIService from './ai.service';
+import { calculateBPRegenDetailed } from '../game/bp/bp-calculator';
+import GameEventTrackerService from './game-event-tracker.service';
 
 /**
  * Comprehensive Game Engine Service
@@ -40,8 +41,14 @@ export class GameEngineService {
    * Process a move action from a player
    */
   static async processMove(gameId: string, playerId: string, moveAction: MoveAction): Promise<{ success: boolean; error?: string; events: GameEvent[] }> {
+    const startTime = Date.now();
+    
+    // Log player action
+    GameEventTrackerService.logPlayerAction(gameId, playerId, 'move_attempt', moveAction, 'success');
+    
     const gameState = await LiveGameService.getGameState(gameId);
     if (!gameState) {
+      GameEventTrackerService.logPlayerAction(gameId, playerId, 'move_attempt', moveAction, 'error', 'Game not found');
       return { success: false, error: 'Game not found', events: [] };
     }
 
@@ -153,7 +160,13 @@ export class GameEngineService {
       if (gameState.gameType === 'practice' || !gameState.config.informationHiding.hideBattlePoints) {
         const lastMoveForReport = gameState.moveHistory[gameState.moveHistory.length - 1];
         gameState.bpCalculationReport = this.generateComprehensiveBPReport(gameState, lastMoveForReport);
+        
+        // Log BP calculation for tracking
+        GameEventTrackerService.logBPCalculation(gameId, gameState.bpCalculationReport, 'move_processed');
       }
+      
+      // Log game state snapshot
+      GameEventTrackerService.logGameStateSnapshot(gameId, gameState, 'after_move');
 
       // Save updated game state and emit events
       await LiveGameService.updateGameState(gameId, gameState);
@@ -198,8 +211,12 @@ export class GameEngineService {
    * Process duel allocation from a player
    */
   static async processDuelAllocation(gameId: string, playerId: string, allocation: number): Promise<{ success: boolean; error?: string; events: GameEvent[] }> {
+    // Log player action
+    GameEventTrackerService.logPlayerAction(gameId, playerId, 'duel_allocation', { allocation }, 'success');
+    
     const gameState = await LiveGameService.getGameState(gameId);
     if (!gameState || !gameState.pendingDuel) {
+      GameEventTrackerService.logPlayerAction(gameId, playerId, 'duel_allocation', { allocation }, 'error', 'No active duel found');
       return { success: false, error: 'No active duel found', events: [] };
     }
 
@@ -296,7 +313,13 @@ export class GameEngineService {
     if (gameState.gameType === 'practice' || !gameState.config.informationHiding.hideBattlePoints) {
       const lastMoveForReport = gameState.moveHistory[gameState.moveHistory.length - 1];
       gameState.bpCalculationReport = this.generateComprehensiveBPReport(gameState, lastMoveForReport);
+      
+      // Log BP calculation for tracking  
+      GameEventTrackerService.logBPCalculation(gameId, gameState.bpCalculationReport, 'duel_allocation_processed');
     }
+    
+    // Log game state snapshot after duel allocation
+    GameEventTrackerService.logGameStateSnapshot(gameId, gameState, 'after_duel_allocation');
 
     // Save updated game state and emit events
     await LiveGameService.updateGameState(gameId, gameState);
@@ -522,7 +545,7 @@ export class GameEngineService {
   }
 
   /**
-   * Process battle point regeneration based on tactical advantages
+   * Process battle point regeneration: base turn regeneration + tactical advantages
    */
   private static async processBattlePointRegeneration(gameState: BaseGameState, gameId: string, events: GameEvent[]): Promise<void> {
     // Get the last move from history
@@ -531,35 +554,39 @@ export class GameEngineService {
       return;
     }
 
-    // Detect tactics created by this move
-    const tactics = detectTactics(lastMove);
-    
-    if (tactics.length > 0) {
-      // Calculate BP regeneration using the existing utility
-      const bpRegen = calculateBPRegen(lastMove, gameState.config);
-      
-      if (bpRegen > 0) {
-        // Determine which player gets the regeneration (the player who just moved)
-        const currentPlayer = gameState.currentTurn === 'b' ? gameState.whitePlayer : gameState.blackPlayer; // Current turn was already switched
-        
-        // Add BP to the player
-        currentPlayer.battlePoints += bpRegen;
-        
-        // Create BP update event
-        events.push({
-          type: GameEventType.BATTLE_POINTS_UPDATED,
-          gameId,
-          timestamp: Date.now(),
-          payload: {
-            playerId: currentPlayer.id,
-            newAmount: currentPlayer.battlePoints,
-            change: bpRegen,
-            reason: 'tactical_advantage',
-            tactics: tactics.map(t => t.type) // Include which tactics were detected
-          }
-        });
+    // Determine which player gets the regeneration (the player who just moved)
+    const currentPlayer = gameState.currentTurn === 'b' ? gameState.whitePlayer : gameState.blackPlayer; // Current turn was already switched
 
-        console.log(`Player ${currentPlayer.id} gained ${bpRegen} BP from tactics:`, tactics.map(t => t.type));
+    // Calculate BP regeneration using the detailed calculation system
+    // This includes both base regeneration (applied every turn) and tactic regeneration (when applicable)
+    const bpRegenResult = calculateBPRegenDetailed(lastMove, gameState.config);
+    
+    // Apply regeneration regardless of amount (could be positive, zero, or negative for experimental rulesets)
+    if (bpRegenResult.totalBP !== 0) {
+      // Add BP to the player
+      currentPlayer.battlePoints += bpRegenResult.totalBP;
+      
+      // Determine the reason based on what contributed to the regeneration
+      const tactics = detectTactics(lastMove);
+      const reason = tactics.length > 0 ? 'turn_and_tactical_regeneration' : 'turn_regeneration';
+      
+      // Create BP update event
+      events.push({
+        type: GameEventType.BATTLE_POINTS_UPDATED,
+        gameId,
+        timestamp: Date.now(),
+        payload: {
+          playerId: currentPlayer.id,
+          newAmount: currentPlayer.battlePoints,
+          change: bpRegenResult.totalBP,
+          reason: reason,
+          tactics: tactics.map(t => t.type) // Include which tactics were detected
+        }
+      });
+
+      console.log(`Player ${currentPlayer.id} regenerated ${bpRegenResult.totalBP} BP (base: ${bpRegenResult.baseRegeneration}, tactics: ${bpRegenResult.tacticRegeneration})`);
+      if (tactics.length > 0) {
+        console.log(`  └─ Tactics detected:`, tactics.map(t => t.type));
       }
     }
   }
@@ -808,22 +835,30 @@ export class GameEngineService {
    * Includes duel costs, retreat costs, and regeneration calculations
    */
   static generateComprehensiveBPReport(gameState: BaseGameState, lastMove?: GambitMove): BPCalculationReport {
-    const report = {
+    const report: BPCalculationReport = {
       playerBP: {
         white: gameState.whitePlayer.battlePoints,
         black: gameState.blackPlayer.battlePoints
       },
-      transactions: [] as Array<{
-        type: 'duel_cost' | 'retreat_cost' | 'regeneration' | 'initial';
-        player: 'white' | 'black';
-        amount: number;
-        details: string;
-        formula?: string;
-      }>,
-      calculations: [] as string[],
+      transactions: [],
+      calculations: [],
       hiddenInfo: gameState.config.informationHiding.hideBattlePoints,
-      tactics: [] as any[],
-      duelDetails: undefined as any
+      tactics: [],
+      duelDetails: undefined,
+      regenerationDetails: undefined,
+      // Include move information for client display consistency
+      moveInfo: lastMove ? {
+        moveNumber: gameState.moveHistory.length - 1, // Half-turn index of this move
+        notation: lastMove.san || `${lastMove.from}-${lastMove.to}`,
+        color: lastMove.color,
+        captureAttempt: !!lastMove.captured || !!lastMove.duelResult,
+        duelOutcome: lastMove.duelResult ? (lastMove.duelResult.attackerWon ? 'won' : 'lost') : 'none',
+        retreatInfo: lastMove.tacticalRetreat ? {
+          from: lastMove.tacticalRetreat.originalSquare,
+          to: lastMove.tacticalRetreat.retreatSquare,
+          cost: lastMove.tacticalRetreat.battlePointsCost
+        } : undefined
+      } : undefined
     };
 
     // Add configuration details
@@ -898,25 +933,39 @@ export class GameEngineService {
       // 3. BP REGENERATION (Player who just moved gains BP from tactics)
       const tactics = detectTactics(lastMove);
       if (tactics.length > 0) {
-        const bpRegen = calculateBPRegen(lastMove, gameState.config);
         const playerColor = lastMove.color;
         
-        // Get detailed calculation breakdown
-        const regenDetails = this.getDetailedRegenCalculation(lastMove, gameState.config, tactics);
+        // Use the new detailed calculation system
+        const regenResult = calculateBPRegenDetailed(lastMove, gameState.config);
         
         report.transactions.push({
           type: 'regeneration',
           player: playerColor === 'w' ? 'white' : 'black',
-          amount: bpRegen,
+          amount: regenResult.totalBP,
           details: `Tactical advantage BP regeneration`,
-          formula: regenDetails.formula
+          formula: regenResult.formula
         });
         
         report.tactics = tactics;
+        report.regenerationDetails = regenResult;
+        
+        // Add the detailed calculations from the new system
         report.calculations.push(`  ✨ Tactics detected: ${tactics.map(t => t.type).join(', ')}`);
-        report.calculations.push(`  📈 BP regeneration: +${bpRegen} BP`);
-        report.calculations.push(`  🧮 Formula: ${regenDetails.formula}`);
-        report.calculations.push(`  📊 Breakdown: ${regenDetails.breakdown.join(', ')}`);
+        report.calculations.push(`  📈 BP regeneration: +${regenResult.totalBP} BP`);
+        report.calculations.push(`  🧮 Formula: ${regenResult.formula}`);
+        
+        // Add all the detailed step-by-step calculations
+        regenResult.calculations.forEach(calc => {
+          report.calculations.push(`  ${calc}`);
+        });
+        
+        // Add detailed breakdown for each tactic
+        regenResult.tacticDetails.forEach(detail => {
+          report.calculations.push(`  📋 ${detail.type.toUpperCase()} Breakdown:`);
+          detail.breakdown.forEach(line => {
+            report.calculations.push(`    ${line}`);
+          });
+        });
       }
     }
 
@@ -931,131 +980,7 @@ export class GameEngineService {
     return report;
   }
 
-  /**
-   * Get detailed BP regeneration calculation breakdown with FULL component analysis
-   */
-  private static getDetailedRegenCalculation(move: GambitMove, config: GameConfig, tactics: any[]): {
-    formula: string;
-    breakdown: string[];
-  } {
-    const breakdown: string[] = [];
-    const formulaParts: string[] = [];
-    
-    // Base regeneration
-    const baseRegen = config.regenerationRules.baseTurnRegeneration;
-    breakdown.push(`🎯 Base Turn Regeneration: ${baseRegen} BP`);
-    formulaParts.push(baseRegen.toString());
-    
-    let totalTacticRegen = 0;
-    
-    // DETAILED breakdown for each tactic detected
-    for (const tactic of tactics) {
-      if (!tactic || !tactic.type) {
-        breakdown.push(`❌ Invalid tactic: ${JSON.stringify(tactic)}`);
-        continue;
-      }
-      
-      const tacticRule = config.regenerationRules.specialAttackRegeneration[tactic.type as keyof typeof config.regenerationRules.specialAttackRegeneration];
-      if (!tacticRule || !tacticRule.enabled) {
-        breakdown.push(`❌ ${tactic.type.toUpperCase()}: Disabled in config`);
-        continue;
-      }
-      
-      let tacticValue = 0;
-      let calculation = '';
-      
-      try {
-        switch (tactic.type) {
-          case 'pin':
-            const pinnedPieceType = tactic.pinnedPiece?.type as keyof typeof config.pieceValues;
-            const pinnedValue = pinnedPieceType ? (config.pieceValues[pinnedPieceType] || 0) : 0;
-            const isKingPin = tactic.pinnedTo?.type === 'k';
-            const kingBonus = isKingPin ? 1 : 0;
-            tacticValue = pinnedValue + kingBonus;
-            calculation = `${tactic.pinnedPiece?.type?.toUpperCase() || '?'}(${pinnedValue}) + kingBonus(${kingBonus}) = ${tacticValue}`;
-            breakdown.push(`📌 PIN: ${calculation}`);
-            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
-            breakdown.push(`   └─ Pinned: ${tactic.pinnedPiece?.square} (${tactic.pinnedPiece?.type})`);
-            breakdown.push(`   └─ Pinned To: ${tactic.pinnedTo?.square} (${tactic.pinnedTo?.type})`);
-            breakdown.push(`   └─ Pinned By: ${tactic.pinnedBy?.square} (${tactic.pinnedBy?.type})`);
-            break;
-            
-          case 'fork':
-            if (tactic.forkedPieces && tactic.forkedPieces.length > 0) {
-              const forkValues = tactic.forkedPieces.map((p: any) => {
-                const pieceType = p.type as keyof typeof config.pieceValues;
-                return pieceType ? (config.pieceValues[pieceType] || 0) : 0;
-              });
-              tacticValue = Math.min(...forkValues);
-              calculation = `min[${forkValues.join(',')}] = ${tacticValue}`;
-              breakdown.push(`🍴 FORK: ${calculation}`);
-              breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
-              breakdown.push(`   └─ Forked Pieces: ${tactic.forkedPieces.map((p: any) => `${p.square}(${p.type})`).join(', ')}`);
-            }
-            break;
-            
-          case 'skewer':
-            const frontPieceType = tactic.skeweredPiece?.type as keyof typeof config.pieceValues;
-            const backPieceType = tactic.skeweredTo?.type as keyof typeof config.pieceValues;
-            const frontValue = frontPieceType ? (config.pieceValues[frontPieceType] || 0) : 0;
-            const backValue = backPieceType ? (config.pieceValues[backPieceType] || 0) : 0;
-            tacticValue = Math.max(1, Math.abs(frontValue - backValue));
-            calculation = `max(1, |${frontValue} - ${backValue}|) = ${tacticValue}`;
-            breakdown.push(`🏹 SKEWER: ${calculation}`);
-            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
-            breakdown.push(`   └─ Front: ${tactic.skeweredPiece?.square} (${tactic.skeweredPiece?.type})`);
-            breakdown.push(`   └─ Back: ${tactic.skeweredTo?.square} (${tactic.skeweredTo?.type})`);
-            break;
-            
-          case 'discovered_attack':
-            const attackedPieceType = tactic.attackedPiece?.type as keyof typeof config.pieceValues;
-            const attackedValue = attackedPieceType ? (config.pieceValues[attackedPieceType] || 0) : 0;
-            tacticValue = Math.ceil(attackedValue / 2);
-            calculation = `⌈${attackedValue}/2⌉ = ${tacticValue}`;
-            breakdown.push(`💨 DISCOVERED ATTACK: ${calculation}`);
-            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
-            breakdown.push(`   └─ Attacked: ${tactic.attackedPiece?.square} (${tactic.attackedPiece?.type})`);
-            break;
-            
-          case 'check':
-            tacticValue = 2; // Fixed value from config formula
-            calculation = `Fixed = ${tacticValue}`;
-            breakdown.push(`👑 CHECK: ${calculation}`);
-            breakdown.push(`   └─ Formula: ${tacticRule.formula}`);
-            break;
-            
-          default:
-            breakdown.push(`❓ ${tactic.type.toUpperCase()}: Unknown tactic type`);
-            continue;
-        }
-        
-        if (tacticValue > 0) {
-          totalTacticRegen += tacticValue;
-          formulaParts.push(`${tactic.type}(${tacticValue})`);
-        }
-        
-      } catch (error) {
-        breakdown.push(`💥 ${tactic.type.toUpperCase()}: Error calculating - ${error}`);
-        console.error(`Error calculating ${tactic.type}:`, error, tactic);
-      }
-    }
-    
-    // Add debug information about tactics detection
-    if (tactics.length > 0) {
-      breakdown.push('');
-      breakdown.push('🔍 DEBUG: Tactics Detection Details:');
-      for (const tactic of tactics) {
-        breakdown.push(`   ${tactic.type.toUpperCase()}: ${JSON.stringify(tactic, null, 2).replace(/\n/g, '\n   ')}`);
-      }
-    }
-    
-    const totalRegen = baseRegen + totalTacticRegen;
-    
-    return {
-      formula: formulaParts.join(' + ') + ` = ${totalRegen} BP`,
-      breakdown
-    };
-  }
+
 }
 
 export default GameEngineService; 

@@ -4,6 +4,11 @@ import { z } from 'zod';
 
 const router = express.Router();
 
+// Rate limiting map to prevent session creation spam
+const sessionCreationAttempts = new Map<string, { count: number; lastAttempt: number }>();
+const MAX_ATTEMPTS_PER_MINUTE = 5;
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+
 // Validation schemas
 const CreateSessionSchema = z.object({
   userAgent: z.string().optional(),
@@ -19,10 +24,44 @@ const RefreshSessionSchema = z.object({
 });
 
 /**
+ * Rate limiting middleware for session creation
+ */
+function rateLimitSessionCreation(req: Request, res: Response, next: NextFunction) {
+  const clientIP = req.ip || 'unknown';
+  const now = Date.now();
+  
+  // Clean up old entries
+  for (const [ip, data] of sessionCreationAttempts) {
+    if (now - data.lastAttempt > RATE_LIMIT_WINDOW) {
+      sessionCreationAttempts.delete(ip);
+    }
+  }
+  
+  // Check current attempts
+  const attempts = sessionCreationAttempts.get(clientIP);
+  if (attempts && attempts.count >= MAX_ATTEMPTS_PER_MINUTE && (now - attempts.lastAttempt) < RATE_LIMIT_WINDOW) {
+    console.warn(`🚫 Rate limit exceeded for session creation from IP: ${clientIP}`);
+    res.status(429).json({
+      success: false,
+      message: 'Too many session creation attempts. Please wait a minute.'
+    });
+    return;
+  }
+  
+  // Update attempts
+  sessionCreationAttempts.set(clientIP, {
+    count: (attempts?.count || 0) + 1,
+    lastAttempt: now
+  });
+  
+  next();
+}
+
+/**
  * POST /api/anonymous/session
  * Create or reuse anonymous session (Cookie-based reconnection)
  */
-router.post('/session', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+router.post('/session', rateLimitSessionCreation, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const validatedData = CreateSessionSchema.parse(req.body);
     

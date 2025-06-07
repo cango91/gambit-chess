@@ -35,8 +35,15 @@ export function resolveDuel(
     config
   );
 
-  // Determine the winner
-  const attackerWon = attackerEffectiveAllocation > defenderEffectiveAllocation;
+  // Determine the winner based on configuration
+  let attackerWon: boolean;
+  if (attackerEffectiveAllocation === defenderEffectiveAllocation) {
+    // Tie situation - use configuration to determine winner
+    attackerWon = !config.duelResolutionRules.defenderWinsTies;
+  } else {
+    // Clear winner
+    attackerWon = attackerEffectiveAllocation > defenderEffectiveAllocation;
+  }
 
   // Calculate remaining BP after duel
   const attackerRemainingBP = context.attackingPiece.playerBattlePoints - validatedAttackerAllocation;

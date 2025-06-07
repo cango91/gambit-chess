@@ -4,6 +4,7 @@ import { prisma } from '../index';
 import { createNewGame } from '@gambit-chess/shared';
 import crypto from 'crypto';
 import GameEventsService from './game-events.service';
+import GameEventTrackerService from './game-event-tracker.service';
 
 const GAME_TTL = 24 * 60 * 60; // 24 hours in seconds
 const GAME_KEY_PREFIX = 'live_game:';
@@ -109,6 +110,10 @@ export class LiveGameService {
     // Create game state using shared function
     const gameState = createNewGame(gameId, whitePlayerId || '', blackPlayerId, options.gameType);
     
+    // Initialize event tracking for this game session
+    GameEventTrackerService.startGameSession(gameId);
+    GameEventTrackerService.logGameStateSnapshot(gameId, gameState, 'game_created');
+    
     // Store in Redis
     await this.saveGameState(gameId, gameState);
     
@@ -143,6 +148,30 @@ export class LiveGameService {
   }
   
   /**
+   * Reconstruct a GambitMove from serialized data, ensuring all methods are available
+   */
+  static reconstructGambitMove(serializedMove: any): GambitMove {
+    // If it's already a proper GambitMove with methods, return as is
+    if (serializedMove && typeof serializedMove.isEnPassant === 'function') {
+      return serializedMove as GambitMove;
+    }
+
+    // Reconstruct the move with proper method bindings
+    const reconstructed: GambitMove = {
+      ...serializedMove,
+      // Ensure all chess.js Move methods are available
+      isCapture: () => !!serializedMove.captured,
+      isPromotion: () => !!serializedMove.promotion,
+      isEnPassant: () => serializedMove.flags?.includes('e') || false,
+      isKingsideCastle: () => serializedMove.flags?.includes('k') || false,
+      isQueensideCastle: () => serializedMove.flags?.includes('q') || false,
+      isBigPawn: () => serializedMove.flags?.includes('b') || false,
+    };
+
+    return reconstructed;
+  }
+  
+  /**
    * Get game state from Redis
    */
   static async getGameState(gameId: string): Promise<BaseGameState | null> {
@@ -151,58 +180,55 @@ export class LiveGameService {
       const gameStateJson = await RedisService.get(key);
       
       if (!gameStateJson) {
+        console.log('📖 No game state found in Redis for:', gameId);
         return null;
       }
-      
+
       const gameState = JSON.parse(gameStateJson) as BaseGameState;
       
-      console.log('📖 Loading game state from Redis');
-      console.log('📖 Serialized chess data:', JSON.stringify((gameState.chess as any), null, 2));
-      
       // Reconstruct Chess instance properly
-      const Chess = require('chess.js').Chess;
+      const { Chess } = require('chess.js');
       const chess = new Chess();
       
-      // Handle different serialization formats
+      // If chess is stored as serialized data, reconstruct it
       if (gameState.chess && typeof gameState.chess === 'object') {
         const chessData = gameState.chess as any;
+        console.log('📖 Serialized chess data:', {
+          fen: chessData.fen,
+          turn: chessData.turn,
+          history: chessData.history,
+          pgn: chessData.pgn?.substring(0, 100) + '...'
+        });
         
-        // If we have move history, replay the moves to get proper chess.js state
-        if (chessData.history && Array.isArray(chessData.history) && chessData.history.length > 0) {
-          console.log('📖 Replaying moves:', chessData.history);
+        // Try to use FEN directly first (most reliable)
+        if (chessData.fen && typeof chessData.fen === 'string') {
           try {
-            for (const move of chessData.history) {
-              const result = chess.move(move);
-              if (!result) {
-                console.error('📖 Failed to replay move:', move);
-                break;
-              }
-            }
-            console.log('📖 After replaying moves, FEN:', chess.fen());
-            
-            // CRITICAL: If we have a serialized FEN that differs from the replayed state,
-            // use the serialized FEN as it represents the authoritative state
-            // (e.g., after tactical retreats that don't correspond to chess.js moves)
-            if (chessData.fen && chessData.fen !== chess.fen()) {
-              console.log('📖 Using serialized FEN as authoritative state:', chessData.fen);
-              chess.load(chessData.fen);
-            }
+            chess.load(chessData.fen);
+            console.log('📖 Successfully loaded from FEN:', chessData.fen);
           } catch (error) {
-            console.error('📖 Error replaying moves:', error);
-            // Fallback to FEN if available
-            const currentFen = chessData.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-            chess.load(currentFen);
-            console.log('📖 Fallback to FEN:', currentFen);
+            console.error('📖 Error loading FEN:', chessData.fen, error);
+            // Fallback to starting position
+            chess.reset();
           }
-        } else if (chessData.fen && typeof chessData.fen === 'string') {
-          // Use FEN directly if no history
-          chess.load(chessData.fen);
-          console.log('📖 Loaded from FEN:', chessData.fen);
+        } else {
+          console.log('📖 No valid FEN found, using starting position');
+          chess.reset();
         }
+        
+        // WARNING: DO NOT replay history unless absolutely necessary
+        // The FEN should be the authoritative state
+        console.log('📖 Using FEN as authoritative state instead of replaying moves');
       }
       
       // Replace the serialized chess object with the reconstructed instance
       gameState.chess = chess;
+      
+      // Reconstruct GambitMoves in moveHistory to ensure they have proper methods
+      if (gameState.moveHistory && Array.isArray(gameState.moveHistory)) {
+        gameState.moveHistory = gameState.moveHistory.map(move => 
+          this.reconstructGambitMove(move)
+        );
+      }
       
       console.log('📖 Final reconstructed FEN:', gameState.chess.fen());
       console.log('📖 Final turn:', gameState.chess.turn());
@@ -247,7 +273,7 @@ export class LiveGameService {
     await this.saveGameState(gameId, gameState);
     
     // Check if game is completed BEFORE emitting events
-    const shouldArchive = this.isGameCompleted(gameState);
+    const shouldArchive = this.isGameCompleted(gameId, gameState);
     
     if (event) {
       // Pass the gameState to event processing to ensure final broadcast works
@@ -346,13 +372,20 @@ export class LiveGameService {
   /**
    * Check if game is completed (and should be archived)
    */
-  private static isGameCompleted(gameState: BaseGameState): boolean {
-    return [
+  private static isGameCompleted(gameId: string, gameState: BaseGameState): boolean {
+    const isCompleted = [
       GameStatus.CHECKMATE,
       GameStatus.STALEMATE,
       GameStatus.DRAW,
       GameStatus.ABANDONED
     ].includes(gameState.gameStatus);
+    
+    // End event tracking session when game completes
+    if (isCompleted) {
+      GameEventTrackerService.endGameSession(gameId);
+    }
+    
+    return isCompleted;
   }
   
   /**
@@ -429,28 +462,34 @@ export class LiveGameService {
           // Only include games waiting for players
           if (gameState.gameStatus === GameStatus.WAITING_FOR_PLAYERS) {
             // Reconstruct Chess instance properly (same as getGameState)
-            const Chess = require('chess.js').Chess;
+            const { Chess } = require('chess.js');
             const chess = new Chess();
             
             if (gameState.chess && typeof gameState.chess === 'object') {
               const chessData = gameState.chess as any;
               
-              if (chessData.history && Array.isArray(chessData.history) && chessData.history.length > 0) {
+              // Use FEN directly (most reliable) - avoid move replay
+              if (chessData.fen && typeof chessData.fen === 'string') {
                 try {
-                  for (const move of chessData.history) {
-                    chess.move(move);
-                  }
+                  chess.load(chessData.fen);
                 } catch (error) {
-                  console.error('Error replaying moves in getWaitingGames:', error);
-                  const currentFen = chessData.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-                  chess.load(currentFen);
+                  console.error('Error loading FEN in getWaitingGames:', chessData.fen, error);
+                  chess.reset(); // Fallback to starting position
                 }
-              } else if (chessData.fen) {
-                chess.load(chessData.fen);
+              } else {
+                chess.reset(); // Default to starting position
               }
             }
             
             gameState.chess = chess;
+            
+            // Reconstruct GambitMoves in moveHistory to ensure they have proper methods
+            if (gameState.moveHistory && Array.isArray(gameState.moveHistory)) {
+              gameState.moveHistory = gameState.moveHistory.map(move => 
+                this.reconstructGambitMove(move)
+              );
+            }
+            
             waitingGames.push(gameState);
           }
         }

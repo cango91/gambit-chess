@@ -73,25 +73,19 @@ router.post('/', async (req: Request, res: Response, next: NextFunction): Promis
 
     // Handle different game creation scenarios
     if (validatedData.gameType === 'ai') {
-      if (authUser) {
-        // Authenticated user vs AI
-        options.whitePlayerId = authUser.userId;
-      } else if (anonymousSession) {
-        // Anonymous user vs AI
-        options.anonymousUserId = anonymousSession.sessionId;
-        // Increment games played counter
-        await AnonymousSessionService.incrementGamesPlayed(anonymousSession.sessionId);
-      } else {
-        res.status(400).json({ message: 'Either login or provide valid anonymous session for AI games' });
-        return;
-      }
+      // AI mode is not yet implemented for public release
+      res.status(501).json({ 
+        message: 'AI mode is not yet implemented. Please try Practice Mode to experience Gambit Chess mechanics.',
+        availableModes: ['practice']
+      });
+      return;
     } else if (validatedData.gameType === 'human') {
-      if (!authUser) {
-        res.status(401).json({ message: 'Authentication required for human vs human games' });
-        return;
-      }
-      options.whitePlayerId = authUser.userId;
-      // blackPlayerId will be set when someone joins
+      // Human vs Human mode is not yet implemented for public release
+      res.status(501).json({ 
+        message: 'Multiplayer mode is not yet implemented. Please try Practice Mode to experience Gambit Chess mechanics.',
+        availableModes: ['practice']
+      });
+      return;
     } else if (validatedData.gameType === 'practice') {
       if (authUser) {
         options.whitePlayerId = authUser.userId;

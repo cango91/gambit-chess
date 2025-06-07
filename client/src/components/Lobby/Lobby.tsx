@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useGameStore } from '../../stores/gameStore';
-import { apiService, GameListItem } from '../../services/api.service';
 
 const LobbyContainer = styled.div`
   min-height: 100vh;
@@ -33,14 +32,13 @@ const Subtitle = styled.p`
 `;
 
 const Content = styled.div`
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 40px;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     gap: 20px;
   }
 `;
@@ -80,6 +78,8 @@ const GameButton = styled.button`
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     transform: translateY(-2px);
@@ -92,6 +92,22 @@ const GameButton = styled.button`
     transform: none;
     box-shadow: none;
   }
+`;
+
+const ComingSoonOverlay = styled.div`
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(45deg, #fbbf24, #f59e0b);
+  color: #1a1a1a;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transform: rotate(15deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const ButtonIcon = styled.span`
@@ -150,31 +166,13 @@ const EmptyState = styled.div`
   opacity: 0.6;
 `;
 
-export const Lobby: React.FC = () => {
+interface LobbyProps {
+  onShowTutorial?: () => void;
+}
+
+export const Lobby: React.FC<LobbyProps> = ({ onShowTutorial }) => {
   const navigate = useNavigate();
   const { createGame, isGameLoading } = useGameStore();
-  const [waitingGames, setWaitingGames] = useState<GameListItem[]>([]);
-  const [loadingGames, setLoadingGames] = useState(false);
-
-  useEffect(() => {
-    loadWaitingGames();
-    
-    // Refresh waiting games every 10 seconds
-    const interval = setInterval(loadWaitingGames, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadWaitingGames = async () => {
-    setLoadingGames(true);
-    try {
-      const { games } = await apiService.getWaitingGames();
-      setWaitingGames(games);
-    } catch (error) {
-      console.error('Failed to load waiting games:', error);
-    } finally {
-      setLoadingGames(false);
-    }
-  };
 
   const handleCreateGame = async (
     gameType: 'ai' | 'human' | 'practice',
@@ -192,15 +190,6 @@ export const Lobby: React.FC = () => {
     }
   };
 
-  const handleJoinGame = async (gameId: string) => {
-    try {
-      await apiService.joinGame(gameId);
-      navigate(`/game/${gameId}`);
-    } catch (error) {
-      console.error('Failed to join game:', error);
-    }
-  };
-
   return (
     <LobbyContainer>
       <Header>
@@ -208,6 +197,19 @@ export const Lobby: React.FC = () => {
         <Subtitle>
           Tactical chess where captures are resolved through Battle Points duels
         </Subtitle>
+        {onShowTutorial && (
+          <GameButton
+            onClick={onShowTutorial}
+            style={{ 
+              marginTop: '16px',
+              background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+              color: '#1a1a1a'
+            }}
+          >
+            <ButtonIcon>📚</ButtonIcon>
+            <ButtonText>Show Tutorial</ButtonText>
+          </GameButton>
+        )}
       </Header>
 
       <Content>
@@ -216,33 +218,37 @@ export const Lobby: React.FC = () => {
           
           <ButtonGrid>
             <GameButton
-              onClick={() => handleCreateGame('ai', 'easy')}
-              disabled={isGameLoading}
+              onClick={() => {}}
+              disabled={true}
             >
+              <ComingSoonOverlay>SOON</ComingSoonOverlay>
               <ButtonIcon>🤖</ButtonIcon>
               <ButtonText>vs Easy AI</ButtonText>
             </GameButton>
             
             <GameButton
-              onClick={() => handleCreateGame('ai', 'medium')}
-              disabled={isGameLoading}
+              onClick={() => {}}
+              disabled={true}
             >
+              <ComingSoonOverlay>SOON</ComingSoonOverlay>
               <ButtonIcon>🧠</ButtonIcon>
               <ButtonText>vs Medium AI</ButtonText>
             </GameButton>
             
             <GameButton
-              onClick={() => handleCreateGame('ai', 'hard')}
-              disabled={isGameLoading}
+              onClick={() => {}}
+              disabled={true}
             >
+              <ComingSoonOverlay>SOON</ComingSoonOverlay>
               <ButtonIcon>💀</ButtonIcon>
               <ButtonText>vs Hard AI</ButtonText>
             </GameButton>
             
             <GameButton
-              onClick={() => handleCreateGame('human')}
-              disabled={isGameLoading}
+              onClick={() => {}}
+              disabled={true}
             >
+              <ComingSoonOverlay>SOON</ComingSoonOverlay>
               <ButtonIcon>👥</ButtonIcon>
               <ButtonText>vs Human</ButtonText>
             </GameButton>
@@ -251,41 +257,24 @@ export const Lobby: React.FC = () => {
           <GameButton
             onClick={() => handleCreateGame('practice')}
             disabled={isGameLoading}
-            style={{ width: '100%' }}
+            style={{ width: '100%', background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)', border: '2px solid #16a34a' }}
           >
             <ButtonIcon>🎯</ButtonIcon>
-            <ButtonText>Practice Mode</ButtonText>
+            <ButtonText>Practice Mode - Experience Gambit Chess!</ButtonText>
           </GameButton>
         </Section>
 
-        <Section>
-          <SectionTitle>⚡ Join Waiting Games</SectionTitle>
-          
-          {loadingGames ? (
-            <EmptyState>Loading games...</EmptyState>
-          ) : waitingGames.length === 0 ? (
+        {/* Hidden for now - will be enabled when multiplayer is ready */}
+        {false && (
+          <Section>
+            <SectionTitle>⚡ Join Waiting Games</SectionTitle>
+            
             <EmptyState>
-              <p>No games waiting for players</p>
-              <p style={{ fontSize: '14px' }}>Create a new game to get started!</p>
+              <p>🚧 Human vs Human Mode Coming Soon!</p>
+              <p style={{ fontSize: '14px', opacity: '0.7' }}>For now, enjoy Practice Mode to learn Gambit Chess mechanics!</p>
             </EmptyState>
-          ) : (
-            waitingGames.map((game) => (
-              <GameCard key={game.id}>
-                <GameInfo>
-                  <GameTitle>
-                    Game vs {game.whitePlayer.id}
-                  </GameTitle>
-                  <GameDetails>
-                    Created {new Date(game.createdAt).toLocaleTimeString()}
-                  </GameDetails>
-                </GameInfo>
-                <JoinButton onClick={() => handleJoinGame(game.id)}>
-                  Join as Black
-                </JoinButton>
-              </GameCard>
-            ))
-          )}
-        </Section>
+          </Section>
+        )}
       </Content>
     </LobbyContainer>
   );

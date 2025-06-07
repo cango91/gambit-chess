@@ -1,7 +1,7 @@
 import { GameConfig, GambitMove, SpecialAttackType, TacticsDTO } from '@gambit-chess/shared';
 import { PieceSymbol, Square } from 'chess.js';
 import { DEFAULT_GAME_CONFIG } from '@gambit-chess/shared';
-import { calculateBPRegen } from './bp-calculator';
+import { calculateBPRegen, calculateBPRegenDetailed } from './bp-calculator';
 import { detectTactics } from '../tactics';
 
 // Use Jest's mocking system
@@ -515,26 +515,82 @@ describe('calculateBPRegen', () => {
     });
 
     it('should return only base regeneration if all tactic rules are disabled', () => {
-        Object.values(SpecialAttackType).forEach(type => {
-            if (config.regenerationRules.specialAttackRegeneration[type]) {
-                 config.regenerationRules.specialAttackRegeneration[type].enabled = false;
-            }
+        // Disable all tactical regeneration
+        Object.keys(config.regenerationRules.specialAttackRegeneration).forEach(key => {
+          config.regenerationRules.specialAttackRegeneration[key as SpecialAttackType].enabled = false;
         });
-        // Provide multiple tactics that would normally generate BP
-         const pinTactic: TacticsDTO = {
-           type: SpecialAttackType.PIN,
-           pinnedPiece: { type: 'n', square: 'd5' },
-           pinnedTo: { type: 'q', square: 'f7' },
-           pinnedBy: { type: 'r', square: 'b5' }
-         };
-         const checkTactic: TacticsDTO = {
-           type: SpecialAttackType.CHECK,
-           checkingPiece: { type: 'r', square: 'b5' },
-           isDoubleCheck: false
-         };
-        mockedDetectTactics.mockReturnValue([pinTactic, checkTactic]);
+        
+        const pinTactic: TacticsDTO = {
+          type: SpecialAttackType.PIN,
+          pinnedPiece: { type: 'r', square: 'd5' },
+          pinnedTo: { type: 'k', square: 'f7' },
+          pinnedBy: { type: 'b', square: 'b3' },
+        };
+        mockedDetectTactics.mockReturnValue([pinTactic]);
         const expectedRegen = config.regenerationRules.baseTurnRegeneration;
         expect(calculateBPRegen(move, config)).toBe(expectedRegen);
     });
+  });
+});
+
+// Tests for the new detailed calculation function
+describe('calculateBPRegenDetailed', () => {
+  let config: GameConfig;
+  let move: GambitMove;
+
+  beforeEach(() => {
+    config = JSON.parse(JSON.stringify(DEFAULT_GAME_CONFIG));
+    move = {} as GambitMove; // Use the same pattern as the main describe block
+    jest.clearAllMocks();
+  });
+
+  it('should provide detailed breakdown with formula traceability', () => {
+    const pinTactic: TacticsDTO = {
+      type: SpecialAttackType.PIN,
+      pinnedPiece: { type: 'r', square: 'd5' },
+      pinnedTo: { type: 'k', square: 'e5' }, // Pin to king for bonus
+      pinnedBy: { type: 'b', square: 'b3' },
+    };
+    mockedDetectTactics.mockReturnValue([pinTactic]);
+    
+    const result = calculateBPRegenDetailed(move, config);
+    
+    // Verify structure
+    expect(result).toHaveProperty('totalBP');
+    expect(result).toHaveProperty('baseRegeneration');
+    expect(result).toHaveProperty('tacticRegeneration');
+    expect(result).toHaveProperty('formula');
+    expect(result).toHaveProperty('tacticDetails');
+    expect(result).toHaveProperty('calculations');
+    
+    // Verify values
+    const rookValue = config.pieceValues['r']; // 5
+    const expectedTotal = config.regenerationRules.baseTurnRegeneration + rookValue + 1; // 1 + 5 + 1 = 7
+    expect(result.totalBP).toBe(expectedTotal);
+    expect(result.baseRegeneration).toBe(1);
+    expect(result.tacticRegeneration).toBe(6); // 5 + 1 king bonus
+    
+    // Verify tactic details contain formula traceability
+    expect(result.tacticDetails).toHaveLength(1);
+    const tacticDetail = result.tacticDetails[0];
+    expect(tacticDetail.type).toBe('PIN');
+    expect(tacticDetail.configFormula).toBe('pinnedPieceValue + (isPinnedToKing ? 1 : 0)');
+    expect(tacticDetail.substitutedFormula).toBe('5 + (true ? 1 : 0)');
+    expect(tacticDetail.evaluatedFormula).toBe('5 + 1 = 6');
+    expect(tacticDetail.result).toBe(6);
+    expect(tacticDetail.detectedTactic).toBe(pinTactic);
+    
+    // Verify breakdown contains tactical details
+    expect(tacticDetail.breakdown).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('PIN Details:'),
+        expect.stringContaining('Pinned Piece: d5 (R'),
+        expect.stringContaining('Pinned To: e5 (K'),
+        expect.stringContaining('King Pin Bonus: +1')
+      ])
+    );
+    
+    // Verify formula is correct
+    expect(result.formula).toBe('1 + PIN(6) = 7 BP');
   });
 });
