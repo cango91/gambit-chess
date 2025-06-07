@@ -13,7 +13,7 @@
     "build:shared": "yarn workspace @gambit-chess/shared build:clean",
     "build:server": "yarn workspace @gambit-chess/server build:clean",
     "build:client": "yarn workspace @gambit-chess/client build:clean",
-    "build:prod": "yarn build && cp -r client/dist/* server/public/",
+    "build:prod": "yarn build && rm -rf server/public/assets && cp -r client/dist/assets server/public/ && cp client/dist/index.html server/public/",
     "dev": "concurrently \"yarn workspace @gambit-chess/server dev\" \"yarn workspace @gambit-chess/client dev\"",
     "start": "yarn workspace @gambit-chess/server start",
     "prod": "NODE_ENV=production yarn workspace @gambit-chess/server start",

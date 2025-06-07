@@ -56,12 +56,14 @@ app.use('/api/bug-reports', bugReportsRoutes);
 // Mount the admin routes
 app.use('/api/admin', adminRoutes);
 
-// Serve static files (for built client)
+// Serve static files (built client in production, admin panel, etc.)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Serve client build directory if it exists (production)
-const clientBuildPath = path.join(__dirname, '..', '..', 'client', 'dist');
-app.use(express.static(clientBuildPath));
+// In development, also serve from client workspace
+if (process.env.NODE_ENV !== 'production') {
+  const clientBuildPath = path.join(__dirname, '..', '..', 'client', 'dist');
+  app.use(express.static(clientBuildPath));
+}
 
 // Basic health check endpoint
 app.get('/health', (req, res) => {
@@ -90,13 +92,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
   
-  // For non-API routes, serve our placeholder loading page
-  // In production, this would serve the built React app
-  const placeholderPath = path.join(__dirname, '..', 'public', 'index.html');
-  res.sendFile(placeholderPath, (err) => {
+  // Serve the built React app index.html for client-side routing
+  const indexPath = process.env.NODE_ENV === 'production' 
+    ? path.join(__dirname, '..', 'public', 'index.html')  // Production: client files copied to public/
+    : path.join(__dirname, '..', '..', 'client', 'dist', 'index.html');  // Development: serve from client workspace
+    
+  res.sendFile(indexPath, (err) => {
     if (err) {
-      console.error('Error serving placeholder:', err);
-      res.status(500).send('Server Error');
+      console.error('Error serving client app:', err);
+      res.status(500).send('Client app not available');
     }
   });
 });

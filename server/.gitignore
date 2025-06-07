@@ -28,3 +28,7 @@ yarn-error.log*
 
 # Bug reports
 data/
+
+# public files
+public/
+!public/admin.html
