@@ -14,6 +14,7 @@ import adminRoutes from './api/admin'; // Import the admin routes
 import { socketAuthMiddleware, setupGameSocketHandlers, AuthenticatedSocket } from './socket/game.socket';
 import GameEventsService from './services/game-events.service';
 import { BugReportingService } from './services/bug-reporting.service';
+import { MaintenanceService } from './services/maintenance.service';
 
 dotenv.config();
 
@@ -132,6 +133,9 @@ const startServer = async () => {
     
     // Initialize the bug reporting service
     await BugReportingService.initialize();
+    
+    // Initialize maintenance services
+    MaintenanceService.initialize();
 
     server.listen(PORT, () => {
       console.log(`\n🚀 Gambit Chess Server Started`);
@@ -140,6 +144,7 @@ const startServer = async () => {
       console.log(`🌐 CORS enabled for: ${process.env.CLIENT_URL || "http://localhost:3000"}`);
       console.log(`💾 Database connected`);
       console.log(`🎮 Game Events Service initialized`);
+      console.log(`🔧 Maintenance Service initialized`);
       console.log(`\n📋 Available Endpoints:`);
       console.log(`   Health Check: http://localhost:${PORT}/health`);
       console.log(`   Auth API: http://localhost:${PORT}/api/auth/*`);

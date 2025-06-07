@@ -409,11 +409,20 @@ export class LiveGameService {
           return sanitizedMove;
         });
         
+        // Convert game state to proper database enums
+        const { result, resultReason } = this.convertGameStateToDBResult(gameState);
+        
+        // Get final FEN position
+        const finalFEN = gameState.chess.fen();
+        
         // Update database with final game state
         await prisma.game.update({
           where: { id: gameId },
           data: {
             status: convertToPrismaGameStatus(gameState.gameStatus),
+            result,
+            resultReason,
+            finalFEN,
             moveHistory: sanitizedMoveHistory as any,
             endedAt: new Date(),
           },
@@ -422,13 +431,57 @@ export class LiveGameService {
         // Remove from Redis
         await this.removeGame(gameId);
         
-        console.log(`Game ${gameId} archived to database`);
+        console.log(`Game ${gameId} archived to database with result: ${result}, reason: ${resultReason}`);
         resolve();
       } catch (error) {
         console.error('Error archiving completed game:', error);
         reject(error);
       }
     });
+  }
+  
+  /**
+   * Convert game state to database result enums
+   */
+  private static convertGameStateToDBResult(gameState: BaseGameState): { 
+    result: 'WHITE_WINS' | 'BLACK_WINS' | 'DRAW' | null, 
+    resultReason: 'CHECKMATE' | 'STALEMATE' | 'TIME_FORFEIT' | 'RESIGNATION' | 'AGREEMENT' | 'ABANDONMENT' | 'FIFTY_MOVE_RULE' | 'THREEFOLD_REPETITION' | 'INSUFFICIENT_MATERIAL' | null 
+  } {
+    switch (gameState.gameStatus) {
+      case GameStatus.CHECKMATE:
+        // Determine winner based on whose turn it ISN'T (they got checkmated)
+        const winner = gameState.currentTurn === 'w' ? 'BLACK_WINS' : 'WHITE_WINS';
+        return { 
+          result: winner, 
+          resultReason: 'CHECKMATE' 
+        };
+        
+      case GameStatus.STALEMATE:
+        return { 
+          result: 'DRAW', 
+          resultReason: 'STALEMATE' 
+        };
+        
+      case GameStatus.DRAW:
+        return { 
+          result: 'DRAW', 
+          resultReason: 'AGREEMENT' // Could be other reasons, but this is most common for programmatic draws
+        };
+        
+      case GameStatus.ABANDONED:
+        return { 
+          result: null, // No winner in abandoned games
+          resultReason: 'ABANDONMENT' 
+        };
+        
+      default:
+        // Game is not actually completed - this shouldn't happen
+        console.warn(`convertGameStateToDBResult called on non-completed game with status: ${gameState.gameStatus}`);
+        return { 
+          result: null, 
+          resultReason: null 
+        };
+    }
   }
   
   /**

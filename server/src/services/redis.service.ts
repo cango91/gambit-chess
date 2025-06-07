@@ -122,10 +122,27 @@ async function keys(pattern: string): Promise<string[]> {
   }
 }
 
+/**
+ * Checks if a key exists in Redis.
+ * @param key The key to check.
+ * @returns True if exists, false otherwise.
+ */
+async function exists(key: string): Promise<boolean> {
+  try {
+    const redis = await getRedisClient();
+    const result = await redis.exists(key);
+    return result > 0;
+  } catch (error) {
+    console.error(`Redis EXISTS error for key ${key}:`, error);
+    return false;
+  }
+}
+
 export const RedisService = {
   setWithTTL,
   get,
   del,
   keys,
+  exists,
   getRedisClient // Expose client getter if needed elsewhere (use cautiously)
 }; 
