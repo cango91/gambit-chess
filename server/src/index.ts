@@ -32,6 +32,10 @@ const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 5000;
 
+// CRITICAL FIX: Trust proxy for consistent IP handling in production
+// This makes req.ip use x-forwarded-for headers when behind nginx/reverse proxy
+app.set('trust proxy', true);
+
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || "http://localhost:3000",

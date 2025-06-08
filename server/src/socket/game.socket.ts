@@ -21,9 +21,11 @@ export const socketAuthMiddleware = async (socket: AuthenticatedSocket, next: (e
   const userAgent = socket.handshake.headers['user-agent'] || 'unknown';
   const acceptLanguage = socket.handshake.headers['accept-language'] as string || 'unknown';
   
-  // FIXED: Use socket.handshake.address to match req.ip behavior (no trust proxy configured)
-  // This ensures consistent client fingerprints between HTTP and WebSocket
-  const xForwardedFor = socket.handshake.address;
+  // FIXED: Use forwarded headers to match Express req.ip behavior with trust proxy enabled
+  // This ensures consistent client fingerprints between HTTP and WebSocket in production
+  const xForwardedFor = socket.handshake.headers['x-forwarded-for'] as string || 
+                        socket.handshake.headers['x-real-ip'] as string ||
+                        socket.handshake.address;
 
   // Try JWT authentication first
   if (token) {
