@@ -109,7 +109,8 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = ({ gameState, onSquareH
     const BOARD_SIZE = 8;
     const BOARD_OFFSET = (BOARD_SIZE - 1) * SQUARE_SIZE / 2;
     
-    const x = file * SQUARE_SIZE - BOARD_OFFSET;
+    // FIXED: Match the flipped X coordinate system from BoardSquares
+    const x = (7 - file) * SQUARE_SIZE - BOARD_OFFSET;  // Flipped X to match board squares
     const z = rank * SQUARE_SIZE - BOARD_OFFSET;
     const y = 0.0005; // Just barely above board surface - less than 1mm above squares
     
@@ -141,10 +142,10 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = ({ gameState, onSquareH
           onScreenPositionsUpdate={setBillboardScreenPositions}
         />
 
-        {/* Camera setup - positioned for optimal viewing */}
+        {/* Camera setup - positioned for optimal viewing from WHITE'S perspective */}
         <PerspectiveCamera
           makeDefault
-          position={[0, 4, 4]}
+          position={[0, 4, -4]}
           fov={35}
           near={0.1}
           far={1000}

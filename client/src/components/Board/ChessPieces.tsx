@@ -24,7 +24,7 @@ const squareTo3DPosition = (square: string): [number, number, number] => {
   const file = square.charCodeAt(0) - 97; // 'a' = 0, 'b' = 1, etc.
   const rank = parseInt(square[1]) - 1;   // '1' = 0, '2' = 1, etc.
   
-  const x = file * SQUARE_SIZE - BOARD_OFFSET;
+  const x = (7 - file) * SQUARE_SIZE - BOARD_OFFSET;  // Flipped X to match board squares
   const z = rank * SQUARE_SIZE - BOARD_OFFSET;
   
   return [x, PIECE_HEIGHT, z];

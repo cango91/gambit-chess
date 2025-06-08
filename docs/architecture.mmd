@@ -1,0 +1,51 @@
+graph TD
+    A["Client (React + Three.js)"] --> B["WebSocket Connection"]
+    A --> C["REST API"]
+    
+    B --> D["Socket.IO Server"]
+    C --> E["Express Server"]
+    
+    D --> F["Game Engine Service"]
+    E --> F
+    
+    F --> G["Live Game Service"]
+    F --> H["Tactics Detection"]
+    F --> I["BP Calculator"]
+    
+    G --> J["Redis (Session Storage)"]
+    G --> K["Prisma ORM"]
+    K --> L["SQLite Database"]
+    
+    H --> M["Pin Detector"]
+    H --> N["Fork Detector"] 
+    H --> O["Skewer Detector"]
+    H --> P["Discovered Attack"]
+    H --> Q["Check Detector"]
+    
+    I --> R["BP Regeneration"]
+    I --> S["Duel Resolution"]
+    
+    F --> T["AI Service"]
+    
+    subgraph "Game Flow"
+        U["Player Move"] --> V["Capture Attempt?"]
+        V -->|Yes| W["Initiate Duel"]
+        V -->|No| X["Execute Move"]
+        W --> Y["Players Allocate BP"]
+        Y --> Z["Resolve Duel"]
+        Z -->|Attacker Wins| X
+        Z -->|Defender Wins| AA["Tactical Retreat?"]
+        AA -->|Yes| BB["Calculate Retreat Options"]
+        AA -->|No| CC["End Turn"]
+        X --> DD["Detect Tactics"]
+        DD --> EE["Regenerate BP"]
+        EE --> CC
+        BB --> CC
+    end
+    
+    subgraph "Shared Types"
+        FF["Game State"]
+        GG["Duel Types"]
+        HH["Tactics Types"]
+        II["Config Types"]
+    end

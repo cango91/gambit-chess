@@ -20,8 +20,13 @@ export const socketAuthMiddleware = async (socket: AuthenticatedSocket, next: (e
   const anonymousSessionToken = socket.handshake.auth.anonymousSessionToken;
   const userAgent = socket.handshake.headers['user-agent'] || 'unknown';
   const acceptLanguage = socket.handshake.headers['accept-language'] as string || 'unknown';
-  // Use the client IP like Express req.ip (which is the socket's remote address)
-  const xForwardedFor = socket.handshake.address;
+  
+  // CRITICAL FIX: Use the same IP source as HTTP requests (req.ip equivalent)
+  // This ensures consistent client fingerprints between HTTP and WebSocket
+  const xForwardedFor = socket.handshake.headers['x-forwarded-for'] as string || 
+                        socket.handshake.headers['x-real-ip'] as string ||
+                        socket.conn.remoteAddress ||
+                        socket.handshake.address;
 
   // Try JWT authentication first
   if (token) {

@@ -216,7 +216,8 @@ export const RetreatCostDisplay: React.FC<RetreatCostDisplayProps> = ({
     const squareWidth = boardRect.width / 8;
     const squareHeight = boardRect.height / 8;
 
-    const x = boardRect.left + (file + 0.5) * squareWidth;
+    // FIXED: Match the flipped X coordinate system - a(0) should be on left
+    const x = boardRect.left + ((7 - file) + 0.5) * squareWidth;  // Flipped file mapping
     const y = boardRect.top + (7 - rank + 0.5) * squareHeight; // Flip Y for display coordinates
 
     return { x, y };

@@ -18,8 +18,10 @@ const BOARD_OFFSET = (BOARD_SIZE - 1) * SQUARE_SIZE / 2;
 
 // Convert file/rank to board position
 const getSquarePosition = (file: number, rank: number): [number, number, number] => {
-  const x = file * SQUARE_SIZE - BOARD_OFFSET;
-  const z = rank * SQUARE_SIZE - BOARD_OFFSET;
+  // FIXED: Flip X coordinate so files go a,b,c,d,e,f,g,h from LEFT to RIGHT
+  // Files: a(0)=left, h(7)=right | Ranks: 1(0)=front, 8(7)=back  
+  const x = (7 - file) * SQUARE_SIZE - BOARD_OFFSET;  // FLIPPED: a(0) -> rightmost becomes leftmost
+  const z = rank * SQUARE_SIZE - BOARD_OFFSET;        // 1(0) -> negative Z (front), 8(7) -> positive Z (back)
   return [x, 0, z];
 };
 
@@ -112,7 +114,7 @@ export const BoardSquares: React.FC<BoardSquaresProps> = ({
   for (let rank = 0; rank < BOARD_SIZE; rank++) {
     for (let file = 0; file < BOARD_SIZE; file++) {
       const square = fileRankToSquare(file, rank);
-      const isLight = (rank + file) % 2 === 0;
+      const isLight = (rank + file) % 2 === 1;
       const isSelected = selectedSquare === square;
       const isHighlighted = highlightedSquares.includes(square);
       const isHovered = hoveredSquare === square;
